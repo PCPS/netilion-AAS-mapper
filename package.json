@@ -1,0 +1,30 @@
+{
+  "name": "netilion-oi4-mapper",
+  "version": "1.0.0",
+  "description": "mapper server to connect dedicated OI4 compliant repository of EH products to Netilion",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rimraf ./build && tsc",
+    "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "start:dev": "nodemon",
+    "start": "node build/index.js"
+  },
+
+  "husky": {
+    "hooks": {
+      "pre-commit": "echo \"THIS IS HUSKY PRE-COMMIT!\""
+    }
+  },
+
+  "author": "aria.ranjbar@endress.com",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.8.2",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
+  }
+}

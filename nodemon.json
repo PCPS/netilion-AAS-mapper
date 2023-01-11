@@ -1,0 +1,6 @@
+{
+    "watch": ["src"],
+    "ext": ".js, .ts",
+    "ignore": [],
+    "exec": "prettier --config .prettierrc 'src/**/*.ts' --write && ts-node ./src/index.ts"
+}
