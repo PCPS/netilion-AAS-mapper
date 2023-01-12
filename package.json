@@ -10,17 +10,9 @@
     "start:dev": "nodemon",
     "start": "node build/index.js"
   },
-
-  "husky": {
-    "hooks": {
-      "pre-commit": "echo \"THIS IS HUSKY PRE-COMMIT!\""
-    }
-  },
-
-  "author": "aria.ranjbar@endress.com",
+  "author": "Aria Ranjbar, Endress+Hauser Digital Solutiobs (DE), Freiburg",
   "license": "ISC",
   "devDependencies": {
-    "husky": "^8.0.3",
     "nodemon": "^2.0.20",
     "prettier": "^2.8.2",
     "rimraf": "^3.0.2",
