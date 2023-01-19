@@ -1,6 +1,5 @@
 import axios, {
     AxiosError,
-    AxiosRequestConfig,
     AxiosResponse,
     CreateAxiosDefaults,
     AxiosInstance
@@ -32,8 +31,8 @@ const makeToken = () => {
                     process.env.NETILION_PASSWORD
             );
             logger.info(
-                `Basic token generatad form usr: ${process.env.USERNAME},
-                 pwd: ${process.env.PASSWORD} with value [ ${token.value} ]`
+                `Basic token generatad form usr: ${process.env.NETILION_USERNAME}, \
+                    pwd: ${process.env.NETILION_PASSWORD} with value [ ${token.value} ]`
             );
             break;
         default:
@@ -63,48 +62,48 @@ export class NetelionClient {
         this.api = axios.create(apiConfig);
     }
 
-    public getAllProducts<T, R = AxiosResponse<T>>(): Promise<R> {
+    public getAllProducts<T = any, R = AxiosResponse<T>>(): Promise<R> {
+        this.api.interceptors.request.use((config) => {
+            //TODO: add support for OAUTH
+            switch (token.authType) {
+                case 'Basic':
+                    config.headers.Authorization = 'Basic ' + token.value;
+                    break;
+                default:
+                    logger.error(
+                        `Authorization method ${token.authType} is not supported for interception`
+                    );
+            }
+            logger.info(
+                `request ready with URL[${config.baseURL! + config.url!}]`
+            );
+            return config;
+        });
+        this.api.interceptors.response.use(
+            (res) => res,
+            (error: AxiosError) => {
+                const { data, status, config } = error.response!;
+                switch (status) {
+                    //TODO: make this logs with logger and display more relevant information
+                    case 400:
+                        console.error(data);
+                        break;
+
+                    case 401:
+                        console.error('unauthorised');
+                        break;
+
+                    case 404:
+                        console.error('/not-found');
+                        break;
+
+                    case 500:
+                        console.error('/server-error');
+                        break;
+                }
+                return Promise.reject(error);
+            }
+        );
         return this.api.get(`/products`);
     }
 }
-axios.interceptors.request.use((config) => {
-    //TODO: add support for OAUTH
-    switch (token.authType) {
-        case 'Basic':
-            config.headers.Authorization = 'Basic ' + token.value;
-            break;
-        default:
-            logger.error(
-                `Authorization method ${token.authType} is not supported for interception`
-            );
-    }
-    return config;
-});
-
-axios.interceptors.response.use(
-    (res) => res,
-    (error: AxiosError) => {
-        const { data, status, config } = error.response!;
-        switch (status) {
-            //TODO: make this logs with logger and display more relevant information
-            case 400:
-                console.error(data);
-                break;
-
-            case 401:
-                console.error('unauthorised');
-                break;
-
-            case 404:
-                console.error('/not-found');
-                break;
-
-            case 500:
-                console.error('/server-error');
-                break;
-        }
-        return Promise.reject(error);
-    }
-);
-
-const request = {};
