@@ -1,0 +1,18 @@
+Add necessary methods to classes. specifically, a Reference class requires a
+ method to return the model/fragment it is referring to.
+
+Implement constraints
+
+Add schema validation to submodel elements.
+
+Clarification needed on where an EventPayload fits into the model.
+
+Do something about ModelReference<Referable> data type missing from the model and
+ being simply Reference.
+
+Add EmbeddedDataSpecification implementation. needed for serialization.
+
+After implementing all XSD data types, modify ValueDataType to be an xs type/class
+ instead of js 'any'
+
+Add a serilize method to all appropriate classes
