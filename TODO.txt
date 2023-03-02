@@ -7,6 +7,10 @@ Add schema validation to submodel elements.
 
 Clarification needed on where an EventPayload fits into the model.
 
+Clarification needed on how 'isCaseOf' fits into an SMC.
+
+Complete ContactInformations submodel
+
 Do something about ModelReference<Referable> data type missing from the model and
  being simply Reference.
 
@@ -15,4 +19,7 @@ Add EmbeddedDataSpecification implementation. needed for serialization.
 After implementing all XSD data types, modify ValueDataType to be an xs type/class
  instead of js 'any'
 
-Add a serilize method to all appropriate classes
+
+Add a serilize method to serilize all appropriate classes
+
+Check to see if there are any plans to include other nameplate SMCs (markings etc.)

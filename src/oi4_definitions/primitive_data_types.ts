@@ -10,7 +10,7 @@ export interface LangStringSet extends Array<langString> {}
 
 export interface ContentType {
     mediaType: string;
-    subtype: string;
+    subType: string;
 }
 
 export class BlobType {

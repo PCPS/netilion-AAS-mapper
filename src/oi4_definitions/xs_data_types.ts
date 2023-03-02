@@ -47,6 +47,24 @@ function get_xs_dateTime(str: string): Date {
     return d;
 }
 
+function get_xs_date(str: string): Date {
+    const format =
+        /^([1-9]\d\d\d+|0\d\d\d)-(0[1-9]|1\d)-(0[1-9]|[12]\d|3[01])$/;
+    let d: Date = new Date();
+    const xs_date = str.match(format);
+    if (xs_date) {
+        const date = [
+            Number(xs_date[1]),
+            Number(xs_date[2]),
+            Number(xs_date[3])
+        ];
+        d = new Date(Date.UTC(date[0], --date[1], date[2], 0, 0, 0, 0));
+    } else {
+        logger.error('Invalid xs:date string < ' + str + ' >');
+    }
+    return d;
+}
+
 export namespace xs {
     export class dateTime {
         private _date: Date;
@@ -68,6 +86,35 @@ export namespace xs {
         set date(d: Date) {
             this._date = new Date(d);
             this._original_input = d.toISOString();
+        }
+        get input_string(): string {
+            return this._original_input;
+        }
+    }
+    export class date {
+        private _date: Date;
+        private _original_input: string;
+        public constructor(str: string) {
+            this._date = get_xs_date(str);
+            this._original_input = str;
+        }
+        get value(): string {
+            const dateTime = this._date.toISOString();
+            const date = dateTime.substring(0, dateTime.indexOf('T'));
+            return date;
+        }
+        set value(str: string) {
+            this._date = get_xs_date(str);
+            this._original_input = str;
+        }
+        get date(): Date {
+            return new Date(this._date);
+        }
+        set date(d: Date) {
+            this._date = new Date(d);
+            const dateTime = this._date.toISOString();
+            const date = dateTime.substring(0, dateTime.indexOf('T'));
+            this._original_input = date;
         }
         get input_string(): string {
             return this._original_input;
