@@ -5,7 +5,8 @@ import axios, {
     AxiosInstance
 } from 'axios';
 import dotenv, { config } from 'dotenv';
-import { logger } from '../services/logger';
+import { logger } from './logger';
+import { response } from 'express';
 
 dotenv.config();
 
@@ -60,9 +61,6 @@ export class NetelionClient {
             }
         };
         this.api = axios.create(apiConfig);
-    }
-
-    public getAllProducts<T = any, R = AxiosResponse<T>>(): Promise<R> {
         this.api.interceptors.request.use((config) => {
             //TODO: add support for OAUTH
             switch (token.authType) {
@@ -73,6 +71,7 @@ export class NetelionClient {
                     logger.error(
                         `Authorization method ${token.authType} is not supported for interception`
                     );
+                    break;
             }
             logger.info(
                 `request ready with URL[${config.baseURL! + config.url!}]`
@@ -104,6 +103,39 @@ export class NetelionClient {
                 return Promise.reject(error);
             }
         );
-        return this.api.get(`/products`);
+    }
+
+    public getAllAssets<T = any, R = AxiosResponse<T>>(): Promise<R> {
+        return this.api.get(`/assets`);
+    }
+
+    public getAsset<T = any, R = AxiosResponse<T>>(
+        asset_id: string
+    ): Promise<R> {
+        return this.api.get(`/assets/` + asset_id);
+    }
+
+    public getAssetSpecs<T = any, R = AxiosResponse<T>>(
+        asset_id: string
+    ): Promise<R> {
+        return this.api.get(`/assets/` + asset_id + '/specifications');
+    }
+
+    public getAssetSoftwares<T = any, R = AxiosResponse<T>>(
+        asset_id: string
+    ): Promise<R> {
+        return this.api.get(`/assets/` + asset_id + '/softwares');
+    }
+
+    public getProduct<T = any, R = AxiosResponse<T>>(
+        product_id: string
+    ): Promise<R> {
+        return this.api.get(`/products/` + product_id);
+    }
+
+    public getManufacturer<T = any, R = AxiosResponse<T>>(
+        manufacturer_id: string
+    ): Promise<R> {
+        return this.api.get(`/companies/` + manufacturer_id);
     }
 }

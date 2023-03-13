@@ -138,7 +138,7 @@ export type FragmentKeys = GenericFragnmentKeys | AasReferableNonIdentifiables;
 
 export type AasReferables = AasIdentifiables | AasReferableNonIdentifiables;
 
-export type KeyTypes = AasReferables;
+export type KeyTypes = FragmentKeys | AasReferables | GloballyIdentifiables;
 
 export interface Key {
     type: KeyTypes;

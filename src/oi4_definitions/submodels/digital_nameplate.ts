@@ -1,14 +1,15 @@
-import { Submodel } from '../aas_components';
+import { Reference, Submodel } from '../aas_components';
 import { ContentType, LangStringSet } from '../primitive_data_types';
 import { submodel_elements as SME } from '../submodel_elements';
 import { xs } from '../xs_data_types';
 import { contactInformationToSMC } from './contact_information';
 import { SubmodelElement } from '../aas_components';
+import { GenerateChildSemanticId } from '../../services/oi4_helpers';
 
 export function GenerateNameplate(product: {
     id: string;
     uri: string;
-    name: LangStringSet;
+    manufacturer: LangStringSet;
     shortDesignation: LangStringSet;
     contactInformation: {
         roleOfContactPerson?: string;
@@ -68,18 +69,27 @@ export function GenerateNameplate(product: {
     assetSpecificProperties?: SME.SubmodelElementCollection;
 }): Submodel {
     let nameplateElements: Array<SubmodelElement> = [];
+    const nameplateSemanticId: Reference = {
+        type: 'ModelReference',
+        keys: [
+            {
+                type: 'Submodel',
+                value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate'
+            }
+        ]
+    };
 
     const URIOFTheProduct = new SME.Property({
         idShort: 'URIOfTheProduct',
-        semanticId: {
-            type: 'GlobalReference',
+        semanticId: GenerateChildSemanticId({
+            parent: nameplateSemanticId,
             keys: [
                 {
                     type: 'Property',
                     value: '[IRDI] 0173-1#02-AAY811#001'
                 }
             ]
-        },
+        }),
         description: [
             {
                 language: 'en',
@@ -94,15 +104,15 @@ export function GenerateNameplate(product: {
 
     const ManufacturerName = new SME.MultiLanguageProperty({
         idShort: 'ManufacturerName',
-        semanticId: {
-            type: 'GlobalReference',
+        semanticId: GenerateChildSemanticId({
+            parent: nameplateSemanticId,
             keys: [
                 {
                     type: 'MultiLanguageProperty',
                     value: '[IRDI] 0173-1#02-AAO677#002'
                 }
             ]
-        },
+        }),
         description: [
             {
                 language: 'en',
@@ -111,21 +121,21 @@ export function GenerateNameplate(product: {
  labeling of a product in respect to its being brought into circulation'
             }
         ],
-        value: product.name
+        value: product.manufacturer
     });
     nameplateElements.push(ManufacturerName);
 
     const ManufacturerProductDesignation = new SME.MultiLanguageProperty({
         idShort: 'ManufacturerProductDesignation',
-        semanticId: {
-            type: 'GlobalReference',
+        semanticId: GenerateChildSemanticId({
+            parent: nameplateSemanticId,
             keys: [
                 {
                     type: 'MultiLanguageProperty',
                     value: '[IRDI] 0173-1#02-AAW338#001'
                 }
             ]
-        },
+        }),
         description: [
             {
                 language: 'en',
@@ -137,21 +147,24 @@ export function GenerateNameplate(product: {
     nameplateElements.push(ManufacturerProductDesignation);
 
     const ContactInformation: SME.SubmodelElementCollection =
-        contactInformationToSMC(product.contactInformation);
+        contactInformationToSMC({
+            contactInfo: product.contactInformation,
+            parentSemanticId: nameplateSemanticId
+        });
     nameplateElements.push(ContactInformation);
 
     if (product.root) {
         const ManufacturerProductRoot = new SME.MultiLanguageProperty({
             idShort: 'ManufacturerProductRoot',
-            semanticId: {
-                type: 'GlobalReference',
+            semanticId: GenerateChildSemanticId({
+                parent: nameplateSemanticId,
                 keys: [
                     {
                         type: 'MultiLanguageProperty',
                         value: '[IRDI] 0173-1#02-AAU732#001'
                     }
                 ]
-            },
+            }),
             description: [
                 {
                     language: 'en',
@@ -166,15 +179,15 @@ export function GenerateNameplate(product: {
     if (product.family) {
         const ManufacturerProductFamily = new SME.MultiLanguageProperty({
             idShort: 'ManufacturerProductFamily',
-            semanticId: {
-                type: 'GlobalReference',
+            semanticId: GenerateChildSemanticId({
+                parent: nameplateSemanticId,
                 keys: [
                     {
                         type: 'MultiLanguageProperty',
                         value: '[IRDI] 0173-1#02-AAU731#001'
                     }
                 ]
-            },
+            }),
             description: [
                 {
                     language: 'en',
@@ -189,15 +202,15 @@ export function GenerateNameplate(product: {
     if (product.type) {
         const ManufacturerProductType = new SME.MultiLanguageProperty({
             idShort: 'ManufacturerProductType',
-            semanticId: {
-                type: 'GlobalReference',
+            semanticId: GenerateChildSemanticId({
+                parent: nameplateSemanticId,
                 keys: [
                     {
                         type: 'MultiLanguageProperty',
                         value: '[IRDI] 0173-1#02-AAO057#002'
                     }
                 ]
-            },
+            }),
             description: [
                 {
                     language: 'en',
@@ -213,15 +226,15 @@ export function GenerateNameplate(product: {
     if (product.orderCode) {
         const OrderCodeOfManufacturer = new SME.MultiLanguageProperty({
             idShort: 'OrderCodeOfManufacturer',
-            semanticId: {
-                type: 'GlobalReference',
+            semanticId: GenerateChildSemanticId({
+                parent: nameplateSemanticId,
                 keys: [
                     {
                         type: 'MultiLanguageProperty',
                         value: '[IRDI] 0173-1#02-AAO227#002'
                     }
                 ]
-            },
+            }),
             description: [
                 {
                     language: 'en',
@@ -238,15 +251,15 @@ export function GenerateNameplate(product: {
         const ProductArticleNumberOfManufacturer =
             new SME.MultiLanguageProperty({
                 idShort: 'ProductArticleNumberOfManufacturer',
-                semanticId: {
-                    type: 'GlobalReference',
+                semanticId: GenerateChildSemanticId({
+                    parent: nameplateSemanticId,
                     keys: [
                         {
                             type: 'MultiLanguageProperty',
                             value: '[IRDI] 0173-1#02-AAO676#003'
                         }
                     ]
-                },
+                }),
                 description: [
                     {
                         language: 'en',
@@ -261,15 +274,15 @@ export function GenerateNameplate(product: {
     if (product.serialNumber) {
         const SerialNumber = new SME.Property({
             idShort: 'SerialNumber',
-            semanticId: {
-                type: 'GlobalReference',
+            semanticId: GenerateChildSemanticId({
+                parent: nameplateSemanticId,
                 keys: [
                     {
                         type: 'MultiLanguageProperty',
                         value: '[IRDI] 0173-1#02-AAM556#002'
                     }
                 ]
-            },
+            }),
             description: [
                 {
                     language: 'en',
@@ -285,15 +298,15 @@ export function GenerateNameplate(product: {
 
     const YearOfConstruction = new SME.Property({
         idShort: 'YearOfConstruction',
-        semanticId: {
-            type: 'GlobalReference',
+        semanticId: GenerateChildSemanticId({
+            parent: nameplateSemanticId,
             keys: [
                 {
                     type: 'MultiLanguageProperty',
                     value: '[IRDI] 0173-1#02-AAP906#001'
                 }
             ]
-        },
+        }),
         description: [
             {
                 language: 'en',
@@ -308,15 +321,15 @@ export function GenerateNameplate(product: {
     if (product.manufacturingDate) {
         const DateOfManufacture = new SME.Property({
             idShort: 'DateOfManufacture',
-            semanticId: {
-                type: 'GlobalReference',
+            semanticId: GenerateChildSemanticId({
+                parent: nameplateSemanticId,
                 keys: [
                     {
                         type: 'MultiLanguageProperty',
                         value: '[IRDI] 0173-1#02-AAR972#002'
                     }
                 ]
-            },
+            }),
             description: [
                 {
                     language: 'en',
@@ -333,15 +346,15 @@ export function GenerateNameplate(product: {
     if (product.hardwareVersion) {
         const HardwareVersion = new SME.MultiLanguageProperty({
             idShort: 'HardwareVersion',
-            semanticId: {
-                type: 'GlobalReference',
+            semanticId: GenerateChildSemanticId({
+                parent: nameplateSemanticId,
                 keys: [
                     {
                         type: 'MultiLanguageProperty',
                         value: '[IRDI] 0173-1#02-AAN270#002'
                     }
                 ]
-            },
+            }),
             description: [
                 {
                     language: 'en',
@@ -356,15 +369,15 @@ export function GenerateNameplate(product: {
     if (product.firmwareVersion) {
         const FirmwareVersion = new SME.MultiLanguageProperty({
             idShort: 'FirmwareVersion',
-            semanticId: {
-                type: 'GlobalReference',
+            semanticId: GenerateChildSemanticId({
+                parent: nameplateSemanticId,
                 keys: [
                     {
                         type: 'MultiLanguageProperty',
                         value: '[IRDI] 0173-1#02-AAM985#002'
                     }
                 ]
-            },
+            }),
             description: [
                 {
                     language: 'en',
@@ -379,15 +392,15 @@ export function GenerateNameplate(product: {
     if (product.softwareVersion) {
         const SoftwareVersion = new SME.MultiLanguageProperty({
             idShort: 'SoftwareVersion',
-            semanticId: {
-                type: 'GlobalReference',
+            semanticId: GenerateChildSemanticId({
+                parent: nameplateSemanticId,
                 keys: [
                     {
                         type: 'MultiLanguageProperty',
                         value: '[IRDI] 0173-1#02-AAM737#002'
                     }
                 ]
-            },
+            }),
             description: [
                 {
                     language: 'en',
@@ -402,15 +415,15 @@ export function GenerateNameplate(product: {
     if (product.countryOfOrigin) {
         const CountryOfOrigin = new SME.Property({
             idShort: 'CountryOfOrigin',
-            semanticId: {
-                type: 'GlobalReference',
+            semanticId: GenerateChildSemanticId({
+                parent: nameplateSemanticId,
                 keys: [
                     {
                         type: 'MultiLanguageProperty',
                         value: '[IRDI] 0173-1#02-AAO259#004'
                     }
                 ]
-            },
+            }),
             description: [
                 {
                     language: 'en',
@@ -430,15 +443,15 @@ export function GenerateNameplate(product: {
         };
         const CompanyLogo = new SME.File({
             idShort: 'CompanyLogo',
-            semanticId: {
-                type: 'GlobalReference',
+            semanticId: GenerateChildSemanticId({
+                parent: nameplateSemanticId,
                 keys: [
                     {
                         type: 'File',
                         value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/CompanyLogo'
                     }
                 ]
-            },
+            }),
             description: [
                 {
                     language: 'en',
@@ -463,10 +476,10 @@ export function GenerateNameplate(product: {
     }
 
     const nameplate = new Submodel({
-        id: product.id,
+        id: product.id, //This needs to be changed to represent a unique submodel of a unique product
         idShort: 'Nameplate',
         semanticId: {
-            type: 'GlobalReference',
+            type: 'ModelReference',
             keys: [
                 {
                     type: 'Submodel',
@@ -474,6 +487,12 @@ export function GenerateNameplate(product: {
                 }
             ]
         },
+        description: [
+            {
+                language: 'en',
+                text: 'Contains the nameplate information attached to the product'
+            }
+        ],
         submodelElements: nameplateElements
     });
     return nameplate;

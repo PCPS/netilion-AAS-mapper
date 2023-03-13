@@ -1,5 +1,9 @@
-Add necessary methods to classes. specifically, a Reference class requires a
- method to return the model/fragment it is referring to.
+Move values for model/submodel IRI/IRDIs to a separate lookup/config.
+
+Look into removing all redundant strings from code body into lookups that only
+ evaluate during serialization.
+
+Implement full ContactInformation SMC.
 
 Implement constraints
 
@@ -9,7 +13,9 @@ Clarification needed on where an EventPayload fits into the model.
 
 Clarification needed on how 'isCaseOf' fits into an SMC.
 
-Complete ContactInformations submodel
+Clarification on IRDI identification. how to retrieve?
+
+Complete ContactInformations submodel.
 
 Do something about ModelReference<Referable> data type missing from the model and
  being simply Reference.
@@ -19,7 +25,8 @@ Add EmbeddedDataSpecification implementation. needed for serialization.
 After implementing all XSD data types, modify ValueDataType to be an xs type/class
  instead of js 'any'
 
-
 Add a serilize method to serilize all appropriate classes
 
 Check to see if there are any plans to include other nameplate SMCs (markings etc.)
+
+Investigate possible scaling issues with promise.all() in controller.

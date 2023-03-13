@@ -1,6 +1,7 @@
 import { LangStringSet } from '../primitive_data_types';
 import { submodel_elements as SME } from '../submodel_elements';
-import { SubmodelElement } from '../aas_components';
+import { Reference, SubmodelElement } from '../aas_components';
+import { GenerateChildSemanticId } from '../../services/oi4_helpers';
 
 //actuall submodel implementation missing
 
@@ -10,7 +11,7 @@ function pad(i: number) {
     return conc.slice(conc.length - zeros.length);
 }
 
-export function contactInformationToSMC(
+export function contactInformationToSMC(opt: {
     contactInfo: {
         //incomplete. Support only added for necessary values for Nameplate
         roleOfContactPerson?: string;
@@ -52,113 +53,115 @@ export function contactInformationToSMC(
         academicTitle?: LangStringSet;
         furtherContactDetails?: LangStringSet;
         addressOfAdditionalLink?: string;
-    },
-    idShortExtention?: string
-): SME.SubmodelElementCollection {
+    };
+    parentSemanticId?: Reference;
+    idShortExtention?: string;
+}): SME.SubmodelElementCollection {
     let smcvals: Array<SubmodelElement> = [];
-    if (contactInfo.street) {
+    let smcSemanticId = GenerateChildSemanticId({
+        parent: opt.parentSemanticId,
+        keys: [
+            {
+                type: 'SubmodelElementCollection',
+                value: '[IRI] https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation'
+            }
+        ]
+    });
+    if (opt.contactInfo.street) {
         const Street = new SME.MultiLanguageProperty({
             idShort: 'Street',
-            semanticId: {
-                type: 'GlobalReference',
+            semanticId: GenerateChildSemanticId({
+                parent: smcSemanticId,
                 keys: [
                     {
                         type: 'MultiLanguageProperty',
                         value: '[IRDI] 0173-1#02-AAO128#002'
                     }
                 ]
-            },
+            }),
             description: [
                 {
                     language: 'en',
                     text: 'street name and house number'
                 }
             ],
-            value: contactInfo.street
+            value: opt.contactInfo.street
         });
         smcvals.push(Street);
     }
 
-    if (contactInfo.street) {
+    if (opt.contactInfo.zipcode) {
         const Zipocode = new SME.MultiLanguageProperty({
             idShort: 'Zipcode',
-            semanticId: {
-                type: 'GlobalReference',
+            semanticId: GenerateChildSemanticId({
+                parent: smcSemanticId,
                 keys: [
                     {
                         type: 'MultiLanguageProperty',
                         value: '[IRDI] 0173-1#02-AAO129#002'
                     }
                 ]
-            },
+            }),
             description: [
                 {
                     language: 'en',
                     text: 'ZIP code of address'
                 }
             ],
-            value: contactInfo.zipcode
+            value: opt.contactInfo.zipcode
         });
         smcvals.push(Zipocode);
     }
 
-    if (contactInfo.cityTown) {
+    if (opt.contactInfo.cityTown) {
         const CityTown = new SME.MultiLanguageProperty({
             idShort: 'CityTown',
-            semanticId: {
-                type: 'GlobalReference',
+            semanticId: GenerateChildSemanticId({
+                parent: smcSemanticId,
                 keys: [
                     {
                         type: 'MultiLanguageProperty',
                         value: '[IRDI] 0173-1#02-AAO132#002'
                     }
                 ]
-            },
+            }),
             description: [
                 {
                     language: 'en',
                     text: 'town or city'
                 }
             ],
-            value: contactInfo.cityTown
+            value: opt.contactInfo.cityTown
         });
         smcvals.push(CityTown);
     }
 
-    if (contactInfo.nationalCode) {
+    if (opt.contactInfo.nationalCode) {
         const NationalCode = new SME.MultiLanguageProperty({
             idShort: 'NationalCode',
-            semanticId: {
-                type: 'GlobalReference',
+            semanticId: GenerateChildSemanticId({
+                parent: smcSemanticId,
                 keys: [
                     {
                         type: 'MultiLanguageProperty',
                         value: '[IRDI] 0173-1#02-AAO134#002'
                     }
                 ]
-            },
+            }),
             description: [
                 {
                     language: 'en',
                     text: 'code of a country'
                 }
             ],
-            value: contactInfo.nationalCode
+            value: opt.contactInfo.nationalCode
         });
         smcvals.push(NationalCode);
     }
 
     const ContactInformation = new SME.SubmodelElementCollection({
-        idShort: 'ContactInformation' + idShortExtention,
-        semanticId: {
-            type: 'GlobalReference',
-            keys: [
-                {
-                    type: 'SubmodelElementCollection',
-                    value: '[IRI] https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation'
-                }
-            ]
-        },
+        idShort: 'ContactInformation' + opt.idShortExtention,
+        semanticId: smcSemanticId,
         description: [
             {
                 language: 'en',

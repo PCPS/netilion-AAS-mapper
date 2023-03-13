@@ -4,6 +4,7 @@ import controller from '../controllers/sample';
 const router = Router();
 
 router.get('/ping', controller.sampleHealthCheck);
-router.get('/products', controller.getAllEHProducts);
+router.get('/assets', controller.getAllEHAssets);
+router.get('/assets/:id', controller.getEHAsset);
 
 export = router;
