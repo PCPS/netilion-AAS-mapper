@@ -223,7 +223,7 @@ export abstract class Qualifier extends HasSemantics {
 }
 
 export abstract class Qualifiable {
-    public qualifiers?: Array<Qualifier> = [];
+    public qualifiers?: Array<Qualifier>;
     public constructor(opt?: { qualifiers?: Array<Qualifier> }) {
         if (opt && opt.qualifiers) {
             let qualifiers: Array<Qualifier> = [];
