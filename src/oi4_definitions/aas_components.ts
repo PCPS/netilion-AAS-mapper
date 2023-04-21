@@ -1,9 +1,6 @@
 import {
-    langString,
     LangStringSet,
-    ContentType,
     Identifier,
-    PathType,
     QualifierType,
     ValueDataType,
     ElementCategory,
@@ -13,11 +10,14 @@ import {
     AssetKind,
     Resource,
     Key,
-    KeyTypes,
-    ReferenceTypes
+    ReferenceTypes,
+    DataSpecificationContent,
+    DataTypeIEC61360,
+    LevelType
 } from './primitive_data_types';
 import { Mixin } from 'ts-mixer';
 import { logger } from '../services/logger';
+import { Serialize } from '../services/oi4_helpers';
 
 export class Reference {
     public type: ReferenceTypes;
@@ -117,14 +117,14 @@ export abstract class HasExtension {
 }
 
 export abstract class Referable extends HasExtension {
-    public category?: ElementCategory;
+    public category?: ElementCategory | string;
     public idShort?: string;
     public displayName?: LangStringSet;
     public descriptoin?: LangStringSet;
     public checksum?: string = '';
     public constructor(opt?: {
         extensions?: Array<Extension>;
-        category?: ElementCategory;
+        category?: ElementCategory | string;
         idShort?: string;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -140,7 +140,7 @@ export abstract class Referable extends HasExtension {
 }
 
 export abstract class HasDataSpecification {
-    dataSpecifications?: Array<Reference>;
+    public dataSpecifications?: Array<Reference>;
     public constructor(opt?: { dataSpecifications?: Array<Reference> }) {
         if (opt && opt.dataSpecifications) {
             let dataSpecifications: Array<Reference> = [];
@@ -153,6 +153,122 @@ export abstract class HasDataSpecification {
         }
     }
 }
+
+export interface ValuereferencePair {
+    value: string;
+    valueId: Reference;
+}
+
+export type ValueList = Array<ValuereferencePair>;
+
+export class DataSpecificationIEC61360 extends DataSpecificationContent {
+    public preferredName: LangStringSet;
+    public shortName?: LangStringSet;
+    public unit?: string;
+    public unitId?: Reference;
+    public sourceOfDefinition?: string;
+    public symbol?: string;
+    public dataType?: DataTypeIEC61360;
+    public definition?: LangStringSet;
+    public valueFormt?: string;
+    public valueList?: ValueList;
+    public value?: string;
+    public levelType?: Array<LevelType>;
+    public constructor(opt: {
+        preferredName: LangStringSet;
+        shortName?: LangStringSet;
+        unit?: string;
+        unitId?: Reference;
+        sourceOfDefinition?: string;
+        symbol?: string;
+        dataType?: DataTypeIEC61360;
+        definition?: LangStringSet;
+        valueFormt?: string;
+        valueList?: ValueList;
+        value?: string;
+        levelType?: Array<LevelType>;
+    }) {
+        super();
+        this.preferredName = opt.preferredName;
+        this.shortName = opt.shortName;
+        this.unit = opt.unit;
+        this.unitId = opt.unitId;
+        this.sourceOfDefinition = opt.sourceOfDefinition;
+        this.symbol = opt.symbol;
+        this.dataType = opt.dataType;
+        this.definition = opt.definition;
+        this.valueFormt = opt.valueFormt;
+        this.valueList = opt.valueList;
+        this.value = opt.value;
+        this.levelType = opt.levelType;
+    }
+}
+
+export class DataSpecificationPhysicalUnit extends DataSpecificationContent {
+    public unitName: string;
+    public unitSymbol: string;
+    public definition: LangStringSet;
+    public siNotion?: string;
+    public siName?: string;
+    public dinNotion?: string;
+    public eceName?: string;
+    public eceCode?: string;
+    public nistName?: string;
+    public sourceOfDefinition?: string;
+    public conversionFator?: string;
+    public registrationAuthorityId?: string;
+    public supplier?: string;
+    public constructor(opt: {
+        unitName: string;
+        unitSymbol: string;
+        definition: LangStringSet;
+        siNotion?: string;
+        siName?: string;
+        dinNotion?: string;
+        eceName?: string;
+        eceCode?: string;
+        nistName?: string;
+        sourceOfDefinition?: string;
+        conversionFator?: string;
+        registrationAuthorityId?: string;
+        supplier?: string;
+    }) {
+        super();
+        this.unitName = opt.unitName;
+        this.unitSymbol = opt.unitSymbol;
+        this.definition = opt.definition;
+        this.siNotion = opt.siNotion;
+        this.siName = opt.siName;
+        this.dinNotion = opt.dinNotion;
+        this.eceName = opt.eceName;
+        this.eceCode = opt.eceCode;
+        this.nistName = opt.nistName;
+        this.sourceOfDefinition = opt.sourceOfDefinition;
+        this.conversionFator = opt.conversionFator;
+        this.registrationAuthorityId = opt.registrationAuthorityId;
+        this.supplier = opt.supplier;
+    }
+}
+
+export class DataSpecification {
+    public administration?: AdministrativeInformation;
+    public id: Identifier;
+    public dataSpecificationContent: DataSpecificationContent;
+    public description: LangStringSet;
+    public constructor(opt: {
+        administration?: AdministrativeInformation;
+        id: Identifier;
+        dataSpecificationContent: DataSpecificationContent;
+        description: LangStringSet;
+    }) {
+        this.administration = opt.administration;
+        this.id = opt.id;
+        this.dataSpecificationContent = opt.dataSpecificationContent;
+        this.description = opt.description;
+    }
+}
+
+export class EmbeddedDataSpecification {}
 
 export class AdministrativeInformation extends HasDataSpecification {
     public revision?: string;
@@ -173,7 +289,7 @@ export abstract class Identifiable extends Referable {
     public administration?: AdministrativeInformation;
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory;
+        category?: ElementCategory | string;
         idShort?: string;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -246,7 +362,7 @@ export abstract class SubmodelElement extends Mixin(
 ) {
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory;
+        category?: ElementCategory | string;
         idShort?: string;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -268,10 +384,12 @@ export class Submodel extends Mixin(
     Qualifiable,
     HasDataSpecification
 ) {
+    readonly modelType: string = 'Submodel';
+
     public submodelElements?: Array<SubmodelElement>;
     public constructor(opt?: {
         extensions?: Array<Extension>;
-        category?: ElementCategory;
+        category?: ElementCategory | string;
         idShort?: string;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -323,7 +441,7 @@ export class AssetInformation {
     public defaultThumbnail?: Resource;
     public constructor(opt: {
         assetKind: AssetKind;
-        globalAssetId: Reference;
+        globalAssetId?: Reference;
         specificAssetIds?: Array<SpecificAssetId>;
         defaultThumbnail?: Resource;
     }) {
@@ -346,12 +464,14 @@ export class AssetAdministrationShell extends Mixin(
     Identifiable,
     HasDataSpecification
 ) {
+    readonly modelType: string = 'AssetAdministrationShell';
+
     public derivedFrom?: Reference; //To AssetAdministerationShell
     public assetInformation: AssetInformation;
     public submodels?: Array<Reference>; //To Submodel
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory;
+        category?: ElementCategory | string;
         idShort?: string;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -380,7 +500,9 @@ export class ConceptDescription extends Mixin(
     Identifiable,
     HasDataSpecification
 ) {
-    public isCaseOfs?: Array<Reference>;
+    readonly modelType: string = 'ConceptDescription';
+
+    public isCaseOf?: Array<Reference>;
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory;
@@ -391,17 +513,20 @@ export class ConceptDescription extends Mixin(
         id: string;
         administration?: AdministrativeInformation;
         dataSpecifications?: Array<Reference>;
-        isCaseOfs?: Array<Reference>;
+        isCaseOf?: Array<Reference>;
     }) {
         super(opt);
-        if (opt.isCaseOfs) {
-            let isCaseOfs: Array<Reference> = [];
-            if (opt.isCaseOfs.length > 0) {
-                opt.isCaseOfs.forEach((isCaseOf) => isCaseOfs.push(isCaseOf));
+        if (opt.isCaseOf) {
+            let isCaseOf: Array<Reference> = [];
+            if (opt.isCaseOf.length > 0) {
+                opt.isCaseOf.forEach((item) => isCaseOf.push(item));
             }
-            this.isCaseOfs = isCaseOfs;
+            this.isCaseOf = isCaseOf;
         }
     }
+    // public serialize(): Object {
+    //     return Serialize(this, {dataSpecifications: (obj: Object)=>{return undefined}}, {embeddedDataSpecification: (obj: Object)=>{return GetEmbeddedDataSpec(obj: Object)}});
+    // }
 }
 
 class Environment extends Reference {

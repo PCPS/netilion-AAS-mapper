@@ -133,6 +133,12 @@ export class NetelionClient {
         return this.api.get(`/products/` + product_id);
     }
 
+    public getProductCategories<T = any, R = AxiosResponse<T>>(
+        product_id: string
+    ): Promise<R> {
+        return this.api.get(`/products/` + product_id + '/categories');
+    }
+
     public getManufacturer<T = any, R = AxiosResponse<T>>(
         manufacturer_id: string
     ): Promise<R> {

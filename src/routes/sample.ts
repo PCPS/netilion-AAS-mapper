@@ -4,7 +4,9 @@ import controller from '../controllers/sample';
 const router = Router();
 
 router.get('/ping', controller.sampleHealthCheck);
-router.get('/assets', controller.getAllEHAssets);
-router.get('/assets/:id', controller.getEHAsset);
+router.get('/nameplates', controller.getAllEHNameplates);
+router.get('/nameplates/:id', controller.getEHNameplate);
+router.get('/aas', controller.getAllEHAAS);
+router.get('/aas/:id', controller.getEHAAS);
 
 export = router;

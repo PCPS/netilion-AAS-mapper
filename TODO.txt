@@ -1,7 +1,3 @@
-Move values for model/submodel IRI/IRDIs to a separate lookup/config.
-
-Figure out why an empty qualifiers array is added to each SME despite no qualifiers being passed.
-
 Implement retrieval and embedding of documents and images.
 
 Look into removing all redundant strings from code body into lookups that only
@@ -17,16 +13,7 @@ Add schema validation to submodel elements.
 
 Clarification needed on where an EventPayload fits into the model.
 
-Clarification needed on how 'isCaseOf' fits into an SMC.
-
-Clarification on IRDI identification. how to retrieve?
-
 Complete ContactInformations submodel.
-
-Do something about ModelReference<Referable> data type missing from the model and
- being simply Reference.
-
-Add EmbeddedDataSpecification implementation. needed for serialization.
 
 After implementing all XSD data types, modify ValueDataType to be an xs type/class
  instead of js 'any'

@@ -1,0 +1,300 @@
+{
+    "keyTypes": [
+        "AnnotatedRelationshipElement",
+        "BasicEventElement",
+        "Blob",
+        "Capability",
+        "DataElement",
+        "Entity",
+        "EventElement",
+        "File",
+        "MultiLanguageProperty",
+        "Property",
+        "Operation",
+        "Range",
+        "RelationshipElement",
+        "ReferenceElement",
+        "SubmodelElement",
+        "SubmodelElementCollection",
+        "SubmodelElementList",
+
+        "AssetAdministrationShell",
+        "ConceptDescription",
+        "Identifiable",
+        "Submodel",
+
+        "GlobalReference",
+
+        "FragmentReference"
+    ],
+
+    "referenceTypes": ["GlobalReference", "ModelReference"],
+
+    "models": {
+        "Nameplate": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate"
+                    }
+                ]
+            }
+        },
+        "URIOfTheProduct": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAY811#001"
+                    }
+                ]
+            }
+        },
+        "ManufacturerName": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAO677#002"
+                    }
+                ]
+            }
+        },
+        "ManufacturerProductDesignation": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAW338#001"
+                    }
+                ]
+            }
+        },
+        "ContactInformation": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRI] https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation"
+                    }
+                ]
+            }
+        },
+        "ManufacturerProductRoot": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAU732#001"
+                    }
+                ]
+            }
+        },
+        "ManufacturerProductFamily": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAU731#001"
+                    }
+                ]
+            }
+        },
+        "ManufacturerProductType": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAO057#002"
+                    }
+                ]
+            }
+        },
+        "OrderCodeOfManufacturer": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAO227#002"
+                    }
+                ]
+            }
+        },
+        "ProductArticleNumberOfManufacturer": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAO676#003"
+                    }
+                ]
+            }
+        },
+        "SerialNumber": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAM556#002"
+                    }
+                ]
+            }
+        },
+        "YearOfConstruction": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAP906#001"
+                    }
+                ]
+            }
+        },
+        "DateOfManufacture": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAR972#002"
+                    }
+                ]
+            }
+        },
+        "HardwareVersion": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAN270#002"
+                    }
+                ]
+            }
+        },
+        "FirmwareVersion": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAM985#002"
+                    }
+                ]
+            }
+        },
+        "SoftwareVersion": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAM737#002"
+                    }
+                ]
+            }
+        },
+        "CountryOfOrigin": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAO259#004"
+                    }
+                ]
+            }
+        },
+        "CompanyLogo": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/CompanyLogo"
+                    }
+                ]
+            }
+        },
+        "Markings": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#01-AGZ673#001"
+                    }
+                ]
+            }
+        },
+        "AssetSpecificProperties": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#01-AGZ672#001"
+                    }
+                ]
+            }
+        },
+        "Street": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAO128#002"
+                    }
+                ]
+            }
+        },
+        "Zipcode": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAO129#002"
+                    }
+                ]
+            }
+        },
+        "CityTown": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAO132#002"
+                    }
+                ]
+            }
+        },
+        "NationalCode": {
+            "semanticId": {
+                "type": 1,
+                "keys": [
+                    {
+                        "type": 18,
+                        "value": "[IRDI] 0173-1#02-AAO134#002"
+                    }
+                ]
+            }
+        }
+    },
+    "ConceptDescriptions": [{}]
+}

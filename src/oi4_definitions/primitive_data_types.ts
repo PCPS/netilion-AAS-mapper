@@ -1,6 +1,3 @@
-import { logger } from '../services/logger';
-import { xs } from './xs_data_types';
-
 export interface langString {
     language: string;
     text: string;
@@ -24,7 +21,7 @@ export class BlobType {
     set buffer(buffer: Buffer | string) {
         this._buffer = Buffer.from(buffer);
     }
-    public toString(): string {
+    public toJSON() {
         return this._buffer.toString('base64');
     }
 }
@@ -38,6 +35,21 @@ export type QualifierType = string;
 export type ValueDataType = any;
 
 export type ElementCategory = 'CONSTANT' | 'PARAMETER' | 'VARIABLE';
+
+export type ConceptDescriptionCategory =
+    | 'APPLICATION_CLASS'
+    | 'CAPABILITY'
+    | 'COLLECTION'
+    | 'DOCUMENT'
+    | 'ENTITY'
+    | 'EVENT'
+    | 'FUNCTION'
+    | 'PROPERTY'
+    | 'VALUE'
+    | 'RANGE'
+    | 'QUALIFIER_TYPE'
+    | 'REFERENCE'
+    | 'RELATIONSHIP';
 
 export type ModelingKind = 'Template' | 'Instance';
 
@@ -150,3 +162,28 @@ export type Direction = 'input' | 'output';
 export type StateOfEvent = 'on' | 'off';
 
 export type EntityType = 'CoManagedEntity' | ' SelfManagedEntity';
+
+export abstract class DataSpecificationContent {}
+
+export type DataTypeIEC61360 =
+    | 'DATE'
+    | 'STRING'
+    | 'STRING_TRANSLATABLE'
+    | 'INTEGER_MEASURE'
+    | 'INTEGER_COUNT'
+    | 'INTEGER_CURRENCY'
+    | 'REAL_MEASURE'
+    | 'REAL_COUNT'
+    | 'REAL_CURRENCY'
+    | 'BOOLEAN'
+    | 'IRI'
+    | 'IRDI'
+    | 'RATIONAL'
+    | 'RATIONAL_MEASURE'
+    | 'TIME'
+    | 'TIMESTAMP'
+    | 'HTML'
+    | 'BLOB'
+    | 'FILE';
+
+export type LevelType = 'Min' | 'Max' | 'Nom' | 'Typ';

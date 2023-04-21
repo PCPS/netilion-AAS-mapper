@@ -8,9 +8,9 @@ export function netilionAssetToNameplateInput(opt: {
     assetSoftwares?: any;
     manufacturer: any;
 }) {
-    let firmwareVersion: LangStringSet | undefined;
+    let FirmwareVersion: LangStringSet | undefined;
     if (opt.assetSoftwares.softwares.length) {
-        firmwareVersion = [
+        FirmwareVersion = [
             {
                 language: 'en',
                 text: opt.assetSoftwares.softwares.find((element: any) => {
@@ -19,23 +19,23 @@ export function netilionAssetToNameplateInput(opt: {
             }
         ];
     }
-    let type: LangStringSet | undefined;
-    let orderCode: LangStringSet | undefined;
+    let ManufacturerProductType: LangStringSet | undefined;
+    let OrderCodeOfManufacturer: LangStringSet | undefined;
     if (opt.assetSpecs['eh.pcps.tmp.ordercode']?.value) {
-        type = [
+        ManufacturerProductType = [
             {
                 language: 'en',
                 text: 'N/A'
             }
         ]; //is this right
-        orderCode = [
+        OrderCodeOfManufacturer = [
             {
                 language: 'en',
                 text: opt.assetSpecs['eh.pcps.tmp.ordercode'].value
             }
         ]; //should it be the same as type??
     }
-    let manufacturingDate: xs.date | undefined;
+    let DateOfManufacture: xs.date | undefined;
     if (opt.asset.production_date) {
         let date = opt.asset.production_date.split('-');
         let is_valid_date = date.every((item: any) => {
@@ -47,35 +47,38 @@ export function netilionAssetToNameplateInput(opt: {
                 date.push('01');
             }
             let dateString = date.reduce((a: string, b: string) => a + '-' + b);
-            manufacturingDate = new xs.date(dateString);
+            DateOfManufacture = new xs.date(dateString);
         }
     }
     const nameplate_input = {
-        id: opt.asset.id,
-        uri: 'endress.com/' + opt.product.product_code,
-        manufacturer: [{ language: 'en', text: opt.manufacturer.name }],
-        shortDesignation: [{ language: 'en', text: opt.product.name }],
-        contactInformation: {
-            nationalCode: [{ language: 'en', text: 'de' }],
-            cityTown: [{ language: 'de', text: 'Weil am Rhein' }],
-            street: [{ language: 'de', text: 'Colmarer Straße 6' }],
-            zipcode: [{ language: 'en', text: '79576' }]
+        URIOfTheProduct: 'endress.com/' + opt.product.product_code,
+        ManufacturerName: [{ language: 'en', text: opt.manufacturer.name }],
+        ManufacturerProductDesignation: [
+            { language: 'en', text: opt.product.name }
+        ],
+        ContactInformation: {
+            NationalCode: [{ language: 'en', text: 'de' }],
+            CityTown: [{ language: 'de', text: 'Weil am Rhein' }],
+            Street: [{ language: 'de', text: 'Colmarer Straße 6' }],
+            Zipcode: [{ language: 'en', text: '79576' }]
         },
-        root: [{ language: 'en', text: opt.product.product_code }],
-        family: undefined,
-        type, //is this right
-        orderCode, //should it be the same as type??
-        articleNumber: undefined,
-        serialNumber: opt.asset.serial_number,
-        constructionYear: 'N/A', //fix
-        manufacturingDate,
-        hardwareVersion: undefined,
-        firmwareVersion,
-        softwareVersion: undefined,
-        countryOfOrigin: 'N/A', //fix
-        companyLogo: undefined, //fix
-        markings: undefined, //fix
-        assetSpecificProperties: undefined //fix
+        ManufacturerProductRoot: [
+            { language: 'en', text: opt.product.product_code }
+        ],
+        ManufacturerProductFamily: undefined,
+        ManufacturerProductType, //is this right
+        OrderCodeOfManufacturer, //should it be the same as type??
+        ProductArticleNumberOfManufacturer: undefined,
+        SerialNumber: opt.asset.serial_number,
+        YearOfConstruction: 'N/A', //fix
+        DateOfManufacture,
+        HardwareVersion: undefined,
+        FirmwareVersion: FirmwareVersion,
+        SoftwareVersion: undefined,
+        CountryOfOrigin: 'N/A', //fix
+        CompanyLogo: undefined, //fix
+        Markings: undefined, //fix
+        AssetSpecificProperties: undefined //fix
     };
     return nameplate_input;
 }

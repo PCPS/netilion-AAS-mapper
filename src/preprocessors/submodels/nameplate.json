@@ -1,0 +1,563 @@
+{
+    "Namplate": {
+        "modelType": "Submodel",
+        "count": "!",
+        "submodelElements": {
+            "URIOfTheProduct": {
+                "modelType": "Property",
+                "count": "!",
+                "valueType": "xs:string"
+            },
+            "ManufacturerName": {
+                "modelType": "MultiLanguageProperty",
+                "count": "!"
+            },
+            "ManufacturerProductDesignation": {
+                "modelType": "MultiLanguageProperty",
+                "count": "!"
+            },
+            "ContactInformation": {
+                "modelType": "SubmodelElementCollection",
+                "count": "!",
+                "value": {
+                    "Street": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "!"
+                    },
+                    "Zipcode": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "!"
+                    },
+                    "CityTown": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "!"
+                    },
+                    "NationalCode": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "!"
+                    },
+                    "RoleOfContactPerson": {
+                        "modelType": "Property",
+                        "count": "?",
+                        "valueType": "xs:string"
+                    },
+                    "Language": {
+                        "modelType": "Property",
+                        "count": "*",
+                        "valueType": "xs:string"
+                    },
+                    "TimeZone": {
+                        "modelType": "Property",
+                        "count": "?",
+                        "valueType": "xs:string"
+                    },
+                    "Company": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "Department": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "Phone": {
+                        "modelType": "SubmodelElementCollection",
+                        "count": "?",
+                        "value": {
+                            "TelephoneNumber": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "!"
+                            },
+                            "TypeOfTelephone": {
+                                "modelType": "Property",
+                                "count": "?",
+                                "valueType": "xs:string"
+                            },
+                            "AvailableTime": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "?"
+                            }
+                        }
+                    },
+                    "Fax": {
+                        "modelType": "SubmodelElementCollection",
+                        "count": "?",
+                        "value": {
+                            "FaxNumber": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "!"
+                            },
+                            "TypeOfFaxNumber": {
+                                "modelType": "Property",
+                                "count": "?",
+                                "valueType": "xs:string"
+                            }
+                        }
+                    },
+                    "Email": {
+                        "modelType": "SubmodelElementCollection",
+                        "count": "?",
+                        "value": {
+                            "EmailAddress": {
+                                "modelType": "Property",
+                                "count": "!",
+                                "valueType": "xs:string"
+                            },
+                            "PublicKey": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "?"
+                            },
+                            "TypeOfEmailAddress": {
+                                "modelType": "Property",
+                                "count": "?",
+                                "valueType": "xs:string"
+                            },
+                            "TypeOfPublicKey": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "?"
+                            }
+                        }
+                    },
+                    "IPCommunication": {
+                        "modelType": "SubmodelElementCollection",
+                        "count": "*",
+                        "value": {
+                            "AddressOfAdditionalLink": {
+                                "modelType": "Property",
+                                "count": "!",
+                                "valueType": "xs:string"
+                            },
+                            "TypeOfCommunication": {
+                                "modelType": "Property",
+                                "count": "?",
+                                "valueType": "xs:string"
+                            },
+                            "AvailableTime": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "?"
+                            }
+                        }
+                    },
+                    "POBox": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "ZipCodeOfPOBox": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "StateCounty": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "NameOfContact": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "FirstName": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "MiddleName": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "Title": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "AcademicTitle": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "FurtherDetailsOfContact": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "AddressOfAdditionalLink": {
+                        "modelType": "Property",
+                        "count": "?",
+                        "valueType": "xs:string"
+                    }
+                }
+            },
+            "ManufacturerProductRoot": {
+                "modelType": "MultiLanguageProperty",
+                "count": "?"
+            },
+            "ManufacturerProductFamily": {
+                "modelType": "MultiLanguageProperty",
+                "count": "?"
+            },
+            "ManufacturerProductType": {
+                "modelType": "MultiLanguageProperty",
+                "count": "?"
+            },
+            "OrderCodeOfManufacturer": {
+                "modelType": "MultiLanguageProperty",
+                "count": "?"
+            },
+            "ProductArticleNumberOfManufacturer": {
+                "modelType": "MultiLanguageProperty",
+                "count": "?"
+            },
+            "SerialNumber": {
+                "modelType": "Property",
+                "count": "?",
+                "valueType": "xs:string"
+            },
+            "YearOfConstruction": {
+                "modelType": "Property",
+                "count": "!",
+                "valueType": "xs:string"
+            },
+            "DateOfManufacture": {
+                "modelType": "Property",
+                "count": "?",
+                "valueType": "xs:date"
+            },
+            "HardwareVersion": {
+                "modelType": "MultiLanguageProperty",
+                "count": "?"
+            },
+            "FirmwareVersion": {
+                "modelType": "MultiLanguageProperty",
+                "count": "?"
+            },
+            "SoftwareVersion": {
+                "modelType": "MultiLanguageProperty",
+                "count": "?"
+            },
+            "CountryOfOrigin": {
+                "modelType": "Property",
+                "count": "?",
+                "valueType": "xs:string"
+            },
+            "CompanyLogo": {
+                "modelType": "File",
+                "count": "?"
+            },
+            "Markings": {
+                "modelType": "SubmodelElementCollection",
+                "count": "?",
+                "value": {
+                    "Marking": {
+                        "modelType": "SubmodelElementCollection",
+                        "count": "+",
+                        "value": {
+                            "MarkingName": {
+                                "modelType": "Property",
+                                "count": "!",
+                                "valueType": "xs:string"
+                            },
+                            "DesignationOfCertificateOrApproval": {
+                                "modelType": "Property",
+                                "count": "?",
+                                "valueType": "xs:string"
+                            },
+                            "IssueDate": {
+                                "modelType": "Property",
+                                "count": "?",
+                                "valueType": "xs:date"
+                            },
+                            "ExpiryDate": {
+                                "modelType": "Property",
+                                "count": "?",
+                                "valueType": "xs:date"
+                            },
+                            "MarkingFile": {
+                                "modelType": "File",
+                                "count": "!"
+                            },
+                            "MarkingAdditionalText": {
+                                "modelType": "Property",
+                                "count": "*",
+                                "valueType": "xs:string"
+                            },
+                            "ExplosionSafties": {
+                                "modelType": "SubmodelElementCollection",
+                                "count": "?",
+                                "value": {
+                                    "ExplosionSafty": {
+                                        "modelType": "SubmodelElementCollection",
+                                        "count": "+",
+                                        "value": {
+                                            "DesignationOfCertificateOrApproval": {
+                                                "modelType": "Property",
+                                                "count": "?",
+                                                "valueType": "xs:string"
+                                            },
+                                            "TypeOfApproval": {
+                                                "modelType": "MultiLanguageProperty",
+                                                "count": "?"
+                                            },
+                                            "AppeovalAgencyTestingAgency": {
+                                                "modelType": "MultiLanguageProperty",
+                                                "count": "?"
+                                            },
+                                            "TypeOfProtection": {
+                                                "modelType": "Property",
+                                                "count": "?",
+                                                "valueType": "xs:string"
+                                            },
+                                            "RatedInsulationVoltage": {
+                                                "modelType": "Property",
+                                                "count": "?",
+                                                "valueType": "xs:decimal"
+                                            },
+                                            "InstructionControlDrawing": {
+                                                "modelType": "ReferenceElement",
+                                                "count": "?"
+                                            },
+                                            "SpecificConditionsForUse": {
+                                                "modelType": "Property",
+                                                "count": "?",
+                                                "valueType": "xs:string"
+                                            },
+                                            "IncompleteDevice": {
+                                                "modelType": "Property",
+                                                "count": "?",
+                                                "valueType": "xs:string"
+                                            },
+                                            "AmbientConditions": {
+                                                "modelType": "SubmodelElementCollection",
+                                                "count": "?",
+                                                "value": {
+                                                    "DeviceCategory": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    },
+                                                    "EquipmentProtectionLevel": {
+                                                        "modelType": "MultiLanguageProperty",
+                                                        "count": "?"
+                                                    },
+                                                    "RegionalSpecificMarking": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    },
+                                                    "TypeOfProtection": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    },
+                                                    "ExplosionGroup": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    },
+                                                    "MinimumAmbientTemperature": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:decimal"
+                                                    },
+                                                    "MaxAmbientTemperature": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:decimal"
+                                                    },
+                                                    "MaxSurfaceTemperatureForDustProof": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:decimal"
+                                                    },
+                                                    "TemperatureClass": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    }
+                                                }
+                                            },
+                                            "ProcessConditions": {
+                                                "modelType": "SubmodelElementCollection",
+                                                "count": "?",
+                                                "value": {
+                                                    "DeviceCategory": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    },
+                                                    "EquipmentProtectionLevel": {
+                                                        "modelType": "MultiLanguageProperty",
+                                                        "count": "?"
+                                                    },
+                                                    "RegionalSpecificMarking": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    },
+                                                    "TypeOfProtection": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    },
+                                                    "ExplosionGroup": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    },
+                                                    "LowerLimitingValueOfProcessTemperature": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:decimal"
+                                                    },
+                                                    "UpperLimitingValueOfProcessTemperature": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:decimal"
+                                                    },
+                                                    "MaxSurfaceTemperatureForDustProof": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:decimal"
+                                                    },
+                                                    "TemperatureClass": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    }
+                                                }
+                                            },
+                                            "ExternalElectricalCircuit": {
+                                                "modelType": "SubmodelElementCollection",
+                                                "count": "*",
+                                                "value": {
+                                                    "DesignationOfElectricalTerminal": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    },
+                                                    "TypeOfProtection": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    },
+                                                    "EquipmentProtectionLevel": {
+                                                        "modelType": "MultiLanguageProperty",
+                                                        "count": "?"
+                                                    },
+                                                    "ExplosionGroup": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    },
+                                                    "Characteristics": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    },
+                                                    "Fisco": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    },
+                                                    "TwoWISE": {
+                                                        "modelType": "Property",
+                                                        "count": "?",
+                                                        "valueType": "xs:string"
+                                                    },
+                                                    "SafetyRelatedPropertiesForPassiveBehaviour": {
+                                                        "modelType": "SubmodelElementCollection",
+                                                        "count": "?",
+                                                        "value": {
+                                                            "MaxInputPower": {
+                                                                "modelType": "Property",
+                                                                "count": "?",
+                                                                "valueType": "xs:decimal"
+                                                            },
+                                                            "MaxInputVoltage": {
+                                                                "modelType": "Property",
+                                                                "count": "?",
+                                                                "valueType": "xs:decimal"
+                                                            },
+                                                            "MaxInputCurrent": {
+                                                                "modelType": "Property",
+                                                                "count": "?",
+                                                                "valueType": "xs:decimal"
+                                                            },
+                                                            "MaxInternalCapacitance": {
+                                                                "modelType": "Property",
+                                                                "count": "?",
+                                                                "valueType": "xs:decimal"
+                                                            },
+                                                            "MaxInternalInductance": {
+                                                                "modelType": "Property",
+                                                                "count": "?",
+                                                                "valueType": "xs:decimal"
+                                                            }
+                                                        }
+                                                    },
+                                                    "SafetyRelatedPropertiesForActiveBehaviour": {
+                                                        "modelType": "SubmodelElementCollection",
+                                                        "count": "?",
+                                                        "value": {
+                                                            "MaxOutputPower": {
+                                                                "modelType": "Property",
+                                                                "count": "?",
+                                                                "valueType": "xs:decimal"
+                                                            },
+                                                            "MaxOutputVoltage": {
+                                                                "modelType": "Property",
+                                                                "count": "?",
+                                                                "valueType": "xs:decimal"
+                                                            },
+                                                            "MaxOutputCurrent": {
+                                                                "modelType": "Property",
+                                                                "count": "?",
+                                                                "valueType": "xs:decimal"
+                                                            },
+                                                            "MaxExternalCapacitance": {
+                                                                "modelType": "Property",
+                                                                "count": "?",
+                                                                "valueType": "xs:decimal"
+                                                            },
+                                                            "MaxExternalInductance": {
+                                                                "modelType": "Property",
+                                                                "count": "?",
+                                                                "valueType": "xs:decimal"
+                                                            },
+                                                            "MaxExternalInductanceResistanceRatio": {
+                                                                "modelType": "Property",
+                                                                "count": "?",
+                                                                "valueType": "xs:decimal"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "AssetSpecificProperties": {
+                "modelType": "SubmodelElementCollection",
+                "count": "?",
+                "value": {
+                    "GuidelineSpecificProperties": {
+                        "modelType": "SubmodelElementCollection",
+                        "count": "+",
+                        "value": {
+                            "GuidelineForConformityDeclaration": {
+                                "modelType": "Property",
+                                "count": "!",
+                                "valueType": "xs:string"
+                            },
+                            "{arbitrary}": {
+                                "modelType": "Property",
+                                "count": "+"
+                            }
+                        }
+                    },
+                    "{arbitrary}": {
+                        "modelType": "Property",
+                        "count": "+"
+                    }
+                }
+            }
+        }
+    }
+}
