@@ -1,0 +1,136 @@
+{
+    "HandoverDocumentation": {
+        "modelType": "Submodel",
+        "count": "+",
+        "submodelElements": {
+            "Document": {
+                "modelType": "SubmodelElementCollection",
+                "count": "*",
+                "value": {
+                    "DocumentId": {
+                        "modelType": "SubmodelElementCollection",
+                        "count": "+",
+                        "value": {
+                            "DocumentDomainId": {
+                                "modelType": "Property",
+                                "count": "!",
+                                "valueType": "xs:string"
+                            },
+                            "ValueId": {
+                                "modelType": "Property",
+                                "count": "!",
+                                "valueType": "xs:string"
+                            },
+                            "IsPrimary": {
+                                "modelType": "Property",
+                                "count": "?",
+                                "valueType": "xs:boolean"
+                            }
+                        }
+                    },
+                    "DocumentClassification": {
+                        "modelType": "SubmodelElementCollection",
+                        "count": "+",
+                        "value": {
+                            "ClassId": {
+                                "modelType": "Property",
+                                "count": "!",
+                                "valueType": "xs:string"
+                            },
+                            "ClassName": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "!"
+                            },
+                            "ClassificationSystem": {
+                                "modelType": "Property",
+                                "count": "!",
+                                "valueType": "xs:string"
+                            }
+                        }
+                    },
+                    "DocumentVersion": {
+                        "modelType": "SubmodelElementCollection",
+                        "count": "*",
+                        "value": {
+                            "Language": {
+                                "modelType": "Property",
+                                "count": "+",
+                                "valueType": "xs:string"
+                            },
+                            "DocumentVersionId": {
+                                "modelType": "Property",
+                                "count": "!",
+                                "valueType": "xs:string"
+                            },
+                            "Title": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "!"
+                            },
+                            "SubTitle": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "?"
+                            },
+                            "Summary": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "!"
+                            },
+                            "KeyWords": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "!"
+                            },
+                            "StatusSetDate": {
+                                "modelType": "Property",
+                                "count": "!",
+                                "valueType": "xs:date"
+                            },
+                            "StatusValue": {
+                                "modelType": "Property",
+                                "count": "!",
+                                "valueType": "xs:string"
+                            },
+                            "OrganizationName": {
+                                "modelType": "Property",
+                                "count": "!",
+                                "valueType": "xs:string"
+                            },
+                            "OrganizationOfficialName": {
+                                "modelType": "Property",
+                                "count": "!",
+                                "valueType": "xs:string"
+                            },
+                            "DigitalFile": {
+                                "modelType": "File",
+                                "count": "+"
+                            },
+                            "PreviewFile": {
+                                "modelType": "File",
+                                "count": "?"
+                            },
+                            "ReferesTo": {
+                                "modelType": "ReferenceElement",
+                                "count": "*"
+                            },
+                            "BasedOn": {
+                                "modelType": "ReferenceElement",
+                                "count": "*"
+                            },
+                            "TranslationOf": {
+                                "modelType": "ReferenceElement",
+                                "count": "*"
+                            }
+                        }
+                    },
+                    "DocumentedEntity": {
+                        "modelType": "ReferenceElement",
+                        "count": "*"
+                    }
+                }
+            },
+            "Entity": {
+                "modelType": "Entity",
+                "count": "*",
+                "alias": "entity"
+            }
+        }
+    }
+}

@@ -8,5 +8,6 @@ router.get('/nameplates', controller.getAllEHNameplates);
 router.get('/nameplates/:id', controller.getEHNameplate);
 router.get('/aas', controller.getAllEHAAS);
 router.get('/aas/:id', controller.getEHAAS);
+router.get('/handover_documentations/:id', controller.getEHHandoverDocuments);
 
 export = router;

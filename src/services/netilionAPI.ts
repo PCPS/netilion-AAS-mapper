@@ -105,43 +105,65 @@ export class NetelionClient {
         );
     }
 
-    public getAllAssets<T = any, R = AxiosResponse<T>>(): Promise<R> {
-        return this.api.get(`/assets`);
+    public getAllAssets<T = any, R = AxiosResponse<T>>(
+        page: number = 1
+    ): Promise<R> {
+        return this.api.get('/assets?page=' + page);
     }
 
     public getAsset<T = any, R = AxiosResponse<T>>(
         asset_id: string
     ): Promise<R> {
-        return this.api.get(`/assets/` + asset_id);
+        return this.api.get('/assets/' + asset_id);
     }
 
     public getAssetSpecs<T = any, R = AxiosResponse<T>>(
         asset_id: string
     ): Promise<R> {
-        return this.api.get(`/assets/` + asset_id + '/specifications');
+        return this.api.get('/assets/' + asset_id + '/specifications');
     }
 
     public getAssetSoftwares<T = any, R = AxiosResponse<T>>(
-        asset_id: string
+        asset_id: string,
+        page: number = 1
     ): Promise<R> {
-        return this.api.get(`/assets/` + asset_id + '/softwares');
+        return this.api.get('/assets/' + asset_id + '/softwares?page=' + page);
     }
 
     public getProduct<T = any, R = AxiosResponse<T>>(
         product_id: string
     ): Promise<R> {
-        return this.api.get(`/products/` + product_id);
+        return this.api.get('/products/' + product_id);
     }
 
     public getProductCategories<T = any, R = AxiosResponse<T>>(
-        product_id: string
+        product_id: string,
+        page: number = 1
     ): Promise<R> {
-        return this.api.get(`/products/` + product_id + '/categories');
+        return this.api.get(
+            '/products/' + product_id + '/categories?page=' + page
+        );
     }
 
     public getManufacturer<T = any, R = AxiosResponse<T>>(
         manufacturer_id: string
     ): Promise<R> {
-        return this.api.get(`/companies/` + manufacturer_id);
+        return this.api.get('/companies/' + manufacturer_id);
+    }
+
+    public getAssetDocs<T = any, R = AxiosResponse<T>>(
+        asset_id: string,
+        page: number = 1
+    ): Promise<R> {
+        return this.api.get('/assets/' + asset_id + '/documents?page=' + page);
+    }
+
+    public getProductDocs<T = any, R = AxiosResponse<T>>(
+        product_id: string,
+        page: number = 1
+    ): Promise<R> {
+        return this.api.get(
+            '/products/' + product_id + '/documents?page=' + page
+        );
     }
 }

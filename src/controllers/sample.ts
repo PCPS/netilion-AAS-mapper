@@ -28,8 +28,7 @@ async function NetilionAssetToNameplate(asset: any): Promise<Submodel> {
         );
     }
     try {
-        assetSoftwares = (await netilionClient.getAssetSoftwares(asset.id))
-            .data;
+        assetSoftwares = await getEHAssetSoftwares(asset.id);
     } catch (error: any) {
         logger.error(
             `failed to get asset software [id: ` +
@@ -78,35 +77,140 @@ async function NetilionAssetToNameplate(asset: any): Promise<Submodel> {
     );
     return nameplate;
 }
-async function NetilionAssetToAAS(
-    asset: any
-): Promise<AssetAdministrationShell> {
-    let product;
-    let category;
+
+async function getAllEHAssets(): Promise<Array<any>> {
+    let assets: Array<any> = [];
     try {
-        product = (await netilionClient.getProduct(asset.product.id)).data;
+        {
+            let page_number = 1;
+            let page = (await netilionClient.getAllAssets()).data;
+            while (await page.pagination.next) {
+                page_number++;
+                assets.push(await page.assets);
+                page = (await netilionClient.getAllAssets(page_number)).data;
+            }
+            assets.push(await page.assets);
+        }
     } catch (error: any) {
-        logger.error(
-            `failed to get product [id: ` +
-                asset.product.id +
-                `] from netilion: ${error}`
-        );
+        logger.error(`failed to get assets from netilion: ${error}`);
     }
+    const ASSETS = (await Promise.all(assets)).reduce((a, b) => {
+        a = a.concat(b);
+        return a;
+    });
+    return ASSETS;
+}
+
+async function getEHAssetSoftwares(asset_id: string): Promise<Array<any>> {
+    let softwares: Array<any> = [];
     try {
-        const cats = (
-            await netilionClient.getProductCategories(asset.product.id)
-        ).data;
-        if (cats && cats.categories.length) {
-            category = cats.categories.reduce((a: any, b: any) => {
-                return a + '[' + b.name + ']';
-            }, '');
+        {
+            let page_number = 1;
+            let page = (await netilionClient.getAssetSoftwares(asset_id)).data;
+            while (await page.pagination.next) {
+                page_number++;
+                softwares.push(await page.softwares);
+                page = (
+                    await netilionClient.getAssetSoftwares(
+                        asset_id,
+                        page_number
+                    )
+                ).data;
+            }
+            softwares.push(await page.softwares);
         }
     } catch (error: any) {
         logger.error(
-            `failed to get product [id: ` +
-                asset.product.id +
-                `] from netilion: ${error}`
+            `failed to get softwares for asset ${asset_id} from netilion: ${error}`
         );
+    }
+    const SOFTWARES = (await Promise.all(softwares)).reduce((a, b) => {
+        a = a.concat(b);
+        return a;
+    });
+    return SOFTWARES;
+}
+
+async function getEHProductCategories(product_id: string): Promise<Array<any>> {
+    let categories: Array<any> = [];
+    try {
+        {
+            let page_number = 1;
+            let page = (await netilionClient.getProductCategories(product_id))
+                .data;
+            while (await page.pagination.next) {
+                page_number++;
+                categories.push(await page.categories);
+                page = (
+                    await netilionClient.getProductCategories(
+                        product_id,
+                        page_number
+                    )
+                ).data;
+            }
+            categories.push(await page.categories);
+        }
+    } catch (error: any) {
+        logger.error(
+            `failed to get categories for product ${product_id} from netilion: ${error}`
+        );
+    }
+    const CATEGORIES = (await Promise.all(categories)).reduce((a, b) => {
+        a = a.concat(b);
+        return a;
+    });
+    return CATEGORIES;
+}
+
+async function getEHProductDocumnets(product_id: string): Promise<Array<any>> {
+    let docs: Array<any> = [];
+    {
+        let page_number = 1;
+        let page = (await netilionClient.getProductDocs(product_id)).data;
+        while (await page.pagination.next) {
+            page_number++;
+            docs.push(await page.documents);
+            page = (
+                await netilionClient.getProductDocs(product_id, page_number)
+            ).data;
+        }
+        docs.push(await page.documents);
+    }
+    const DOCS = (await Promise.all(docs)).reduce((a, b) => {
+        a = a.concat(b);
+        return a;
+    });
+    return DOCS;
+}
+
+async function getEHAssetDocumnets(asset_id: string): Promise<Array<any>> {
+    let docs: Array<any> = [];
+    {
+        let page_number = 1;
+        let page = (await netilionClient.getAssetDocs(asset_id)).data;
+        while (await page.pagination.next) {
+            page_number++;
+            docs.push(await page.documents);
+            page = (await netilionClient.getAssetDocs(asset_id, page_number))
+                .data;
+        }
+        docs.push(await page.documents);
+    }
+    const DOCS = (await Promise.all(docs)).reduce((a, b) => {
+        a = a.concat(b);
+        return a;
+    });
+    return DOCS;
+}
+
+async function NetilionAssetToAAS(
+    asset: any
+): Promise<AssetAdministrationShell> {
+    let category;
+    const cats = await getEHProductCategories(asset.product.id);
+    if (cats.length) {
+        category =
+            '[' + cats.map((e: { name: any }) => e.name).join(', ') + ']';
     }
     const AAS = new AssetAdministrationShell({
         category,
@@ -168,13 +272,7 @@ const getAllEHNameplates = async (
     res: Response,
     next: NextFunction
 ) => {
-    let response: any = {};
-    try {
-        response = (await netilionClient.getAllAssets()).data;
-    } catch (error: any) {
-        logger.error(`failed to get assets from netilion: ${error}`);
-    }
-    const assets = response.assets;
+    const assets = await getAllEHAssets();
     let nameplates = await Promise.all(
         assets.map(async (asset: any) => {
             return await NetilionAssetToNameplate(asset);
@@ -213,13 +311,7 @@ const getEHNameplate = async (
 };
 
 const getAllEHAAS = async (req: Request, res: Response, next: NextFunction) => {
-    let response: any = {};
-    try {
-        response = (await netilionClient.getAllAssets()).data;
-    } catch (error: any) {
-        logger.error(`failed to get assets from netilion: ${error}`);
-    }
-    const assets = response.assets;
+    const assets = await getAllEHAssets();
     let asset_adminstration_shells = await Promise.all(
         assets.map(async (asset: any) => {
             return await NetilionAssetToAAS(asset);
@@ -253,10 +345,38 @@ const getEHAAS = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
+const getEHHandoverDocuments = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    let asset;
+    try {
+        asset = (await netilionClient.getAsset(req.params.id)).data;
+    } catch (error: any) {
+        logger.error(
+            `failed to get asset [id: ` +
+                req.params.id +
+                `] from netilion: ${error}`
+        );
+    }
+    const docs = (await getEHAssetDocumnets(asset.id)).concat(
+        await getEHProductDocumnets(asset.product.id)
+    );
+    if (docs) {
+        return res.status(200).json({
+            message: docs
+        });
+    } else {
+        return res.status(404);
+    }
+};
+
 export default {
     sampleHealthCheck,
     getAllEHNameplates,
     getEHNameplate,
     getAllEHAAS,
-    getEHAAS
+    getEHAAS,
+    getEHHandoverDocuments
 };

@@ -1,17 +1,19 @@
-import { Reference, Submodel } from '../aas_components';
+import { Reference, SpecificAssetId, Submodel } from '../aas_components';
 import {
     ContentType,
     DataTypeDefXsd,
     LangStringSet,
     PathType,
-    ValueDataType
+    ValueDataType,
+    EntityType
 } from '../primitive_data_types';
 import {
     SubmodelElementCollection,
     Property,
     MultiLanguageProperty,
     ReferenceElement,
-    File
+    File,
+    Entity
 } from '../submodel_elements';
 import { xs } from '../xs_data_types';
 import { SubmodelElement } from '../aas_components';
@@ -1076,7 +1078,7 @@ function Generate_SMC_ContactInformation(
         StateCounty?: LangStringSet;
         NameOfContact?: LangStringSet;
         FirstName?: LangStringSet;
-        MiddleName?: LangStringSet;
+        MiddleNames?: LangStringSet;
         Title?: LangStringSet;
         AcademicTitle?: LangStringSet;
         FurtherDetailsOfContact?: LangStringSet;
@@ -1213,13 +1215,13 @@ function Generate_SMC_ContactInformation(
         });
         submodelElements.push(FirstName);
     }
-    if (opt.MiddleName) {
-        const MiddleName = new MultiLanguageProperty({
-            idShort: 'MiddleName',
-            semanticId: GetSemanticId('MiddleName'),
-            value: opt.MiddleName
+    if (opt.MiddleNames) {
+        const MiddleNames = new MultiLanguageProperty({
+            idShort: 'MiddleNames',
+            semanticId: GetSemanticId('MiddleNames'),
+            value: opt.MiddleNames
         });
-        submodelElements.push(MiddleName);
+        submodelElements.push(MiddleNames);
     }
     if (opt.Title) {
         const Title = new MultiLanguageProperty({
@@ -1425,7 +1427,7 @@ export function Generate_SM_Nameplate(
             StateCounty?: LangStringSet;
             NameOfContact?: LangStringSet;
             FirstName?: LangStringSet;
-            MiddleName?: LangStringSet;
+            MiddleNames?: LangStringSet;
             Title?: LangStringSet;
             AcademicTitle?: LangStringSet;
             FurtherDetailsOfContact?: LangStringSet;
@@ -1528,8 +1530,10 @@ export function Generate_SM_Nameplate(
             }>;
         };
     },
-    id: string
+    id: string,
+    idShort_postfix?: string
 ): Submodel {
+    let postfix = idShort_postfix || '';
     let submodelElements: Array<SubmodelElement> = [];
     const URIOfTheProduct = new Property({
         idShort: 'URIOfTheProduct',
@@ -1673,7 +1677,7 @@ export function Generate_SM_Nameplate(
     }
     const result = new Submodel({
         id: id,
-        idShort: 'Nameplate',
+        idShort: 'Nameplate' + postfix,
         semanticId: GetSemanticId('Nameplate'),
         submodelElements: submodelElements
     });

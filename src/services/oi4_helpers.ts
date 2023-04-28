@@ -2,7 +2,7 @@ import {
     DataSpecificationIEC61360,
     Reference
 } from '../oi4_definitions/aas_components';
-import model_semantics from '../oi4_definitions/model_semantics.json';
+import model_semantics from '../dictionaries/model_semantics.json';
 import {
     KeyTypes,
     ReferenceTypes

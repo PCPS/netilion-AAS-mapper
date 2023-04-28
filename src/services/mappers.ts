@@ -9,11 +9,11 @@ export function netilionAssetToNameplateInput(opt: {
     manufacturer: any;
 }) {
     let FirmwareVersion: LangStringSet | undefined;
-    if (opt.assetSoftwares.softwares.length) {
+    if (opt.assetSoftwares && opt.assetSoftwares.length) {
         FirmwareVersion = [
             {
                 language: 'en',
-                text: opt.assetSoftwares.softwares.find((element: any) => {
+                text: opt.assetSoftwares.find((element: any) => {
                     return element.software_type.id === 1;
                 }).version_number
             }
