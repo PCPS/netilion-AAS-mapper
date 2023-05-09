@@ -4,6 +4,8 @@ export interface langString {
 }
 
 export interface LangStringSet extends Array<langString> {}
+export type MultiLanguageTextType = LangStringSet;
+export type MultiLanguageNameType = LangStringSet;
 
 export interface ContentType {
     mediaType: string;
@@ -26,11 +28,21 @@ export class BlobType {
     }
 }
 
+export type NameType = string;
+
+export type LableType = string;
+
+export type VersionType = string;
+
+export type RevisionType = string;
+
+export type MessageTopicType = string;
+
 export type Identifier = string;
 
 export type PathType = string;
 
-export type QualifierType = string;
+export type QualifierType = NameType;
 
 export type ValueDataType = any;
 
@@ -51,65 +63,55 @@ export type ConceptDescriptionCategory =
     | 'REFERENCE'
     | 'RELATIONSHIP';
 
-export type ModelingKind = 'Template' | 'Instance';
+export type ModellingKind = 'Template' | 'Instance';
 
 export type QualifierKind =
     | 'ValueQualifier'
     | 'ConceptQualifier'
     | 'TemplateQualifier';
 
-export type decimalBuildInTypes =
-    | 'xs:integer'
-    | 'xs:long'
-    | 'xs:int'
-    | 'xs:short'
-    | 'xs:byte'
-    | 'xs:nonNegativeInteger'
-    | 'xs:positiveInteger'
-    | 'xs:unsignedLong'
-    | 'xs:unsignedInt'
-    | 'xs:unsignedShort'
-    | 'xs:unsignedByte'
-    | 'xs:nonPositiveInteger'
-    | 'xs:negativeInteger';
-
-export type durationBuildInTypes =
-    | 'xs:daytimeDuration'
-    | 'xs:yearMonthDuration';
-
-export type PrimitiveTypes =
+export type DataTypeDefXsd =
     | 'xs:anyURI'
     | 'xs:base64Binary'
     | 'xs:boolean'
+    | 'xs:byte'
     | 'xs:date'
     | 'xs:dateTime'
-    | 'xs:dateTimeStamp'
     | 'xs:decimal'
     | 'xs:double'
     | 'xs:duration'
-    | 'xs:float'
     | 'xs:gDay'
     | 'xs:gMonth'
     | 'xs:gMonthDay'
     | 'xs:gYear'
     | 'xs:gYearMonth'
+    | 'xs:float'
     | 'xs:hexBinary'
+    | 'xs:int'
+    | 'xs:integer'
+    | 'xs:long'
+    | 'xs:negativeInteger'
+    | 'xs:nonNegativeInteger'
+    | 'xs:nonPositiveInteger'
+    | 'xs:positiveInteger'
+    | 'xs:short'
     | 'xs:string'
-    | 'xs:time';
+    | 'xs:time'
+    | 'xs:unsignedByte'
+    | 'xs:unsignedInt'
+    | 'xs:unsignedLong'
+    | 'xs:unsignedShort';
 
-export type DataTypeDefXsd =
-    | decimalBuildInTypes
-    | durationBuildInTypes
-    | PrimitiveTypes;
+export type DataTypeDefRdf = 'rdf:langString';
 
-export type AssetKind = 'Type' | 'Instance';
+export type AssetKind = 'Type' | 'Instance' | 'NotApplicable';
 
 export interface Resource {
     path: PathType;
     contentType?: ContentType;
 }
 
-export type ReferenceTypes = 'GlobalReference' | 'ModelReference';
+export type ReferenceTypes = 'ExternalReference' | 'ModelReference';
 
 export type AasSubmodelElements =
     | 'AnnotatedRelationshipElement'
@@ -154,7 +156,7 @@ export type KeyTypes = FragmentKeys | AasReferables | GloballyIdentifiables;
 
 export interface Key {
     type: KeyTypes;
-    value: string;
+    value: Identifier;
 }
 
 export type Direction = 'input' | 'output';

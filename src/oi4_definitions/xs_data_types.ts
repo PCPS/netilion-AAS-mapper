@@ -67,6 +67,61 @@ function get_xs_date(str: string): Date | undefined {
     }
 }
 
+function get_xs_duration(str: string):
+    | {
+          sign: 1 | -1;
+          year: number;
+          month: number;
+          day: number;
+          hour: number;
+          minute: number;
+          second: number;
+          ms: number;
+      }
+    | undefined {
+    const format =
+        /^-?P((\d+)Y)?((\d+)M)?((\d+)D)?(T((\d+)H)?((\d+)M)?((\d+)(.(\d+))?S)?)?$/;
+    const p = str.match(format);
+    if (p) {
+        let year = 0;
+        let month = 0;
+        let day = 0;
+        let hour = 0;
+        let minute = 0;
+        let second = 0;
+        let ms = 0;
+        let sign: 1 | -1 = 1;
+        if (p[0][0] === '-') {
+            sign = -1;
+        }
+        if (p[2] !== undefined) {
+            year = Number(p[2]);
+        }
+        if (p[4] !== undefined) {
+            month = Number(p[4]);
+        }
+        if (p[6] !== undefined) {
+            day = Number(p[6]);
+        }
+        if (p[9] !== undefined) {
+            hour = Number(p[9]);
+        }
+        if (p[11] !== undefined) {
+            minute = Number(p[11]);
+        }
+        if (p[13] !== undefined) {
+            second = Number(p[13]);
+        }
+        if (p[15] !== undefined) {
+            ms = Number(p[15]);
+        }
+        return { sign, year, month, day, hour, minute, second, ms };
+    } else {
+        logger.error('Invalid xs:duration string < ' + str + ' >');
+        return;
+    }
+}
+
 export namespace xs {
     export class dateTime {
         private _date: Date;
@@ -165,6 +220,125 @@ export namespace xs {
             if (this._valid) {
                 const dateTime = this._date.toISOString();
                 return dateTime.substring(0, dateTime.indexOf('T'));
+            } else {
+                return 'N/A';
+            }
+        }
+    }
+    export class duration {
+        private sign: 1 | -1 = 1;
+        private year: number = 0;
+        private month: number = 0;
+        private day: number = 0;
+        private hour: number = 0;
+        private minute: number = 0;
+        private second: number = 0;
+        private ms: number = 0;
+        private _original_input: string;
+        private _valid: boolean = false;
+        public constructor(str: string) {
+            const d = get_xs_duration(str);
+            if (d) {
+                this.sign = d.sign;
+                this.year = d.year;
+                this.month = d.month;
+                this.day = d.day;
+                this.hour = d.hour;
+                this.minute = d.minute;
+                this.second = d.second;
+                this.ms = d.ms;
+                this._valid = true;
+            } else {
+                this.sign = 1;
+                this.year = 0;
+                this.month = 0;
+                this.day = 0;
+                this.hour = 0;
+                this.minute = 0;
+                this.second = 0;
+                this.ms = 0;
+                this._valid = false;
+            }
+            this._original_input = str;
+        }
+        public elapse(d: Date): Date {
+            let elapsed = new Date(
+                Date.UTC(
+                    d.getFullYear() + this.year * this.sign,
+                    d.getMonth() + this.month * this.sign,
+                    d.getDay() + this.day * this.sign,
+                    d.getHours() + this.hour * this.sign,
+                    d.getMinutes() + this.minute * this.sign,
+                    d.getSeconds() + this.second * this.sign,
+                    d.getMilliseconds() + this.ms * this.sign
+                )
+            );
+            return elapsed;
+        }
+        get value(): string {
+            let val: string = 'P';
+            if (this.sign == -1) {
+                val = '-' + val;
+            }
+            if (this.year) {
+                val += this.year + 'Y';
+            }
+            if (this.month) {
+                val += this.month + 'M';
+            }
+            if (this.day) {
+                val += this.day + 'D';
+            }
+            if (this.hour || this.minute || this.second) {
+                val += 'T';
+                if (this.hour) {
+                    val += this.hour + 'H';
+                }
+                if (this.minute) {
+                    val += this.minute + 'M';
+                }
+                if (this.second || this.ms) {
+                    val += this.second;
+                    if (this.ms) {
+                        val += '.' + this.ms;
+                    }
+                    val += 'S';
+                }
+            }
+            return val;
+        }
+        set value(str: string) {
+            const d = get_xs_duration(str);
+            if (d) {
+                this.sign = d.sign;
+                this.year = d.year;
+                this.month = d.month;
+                this.day = d.day;
+                this.hour = d.hour;
+                this.minute = d.minute;
+                this.second = d.second;
+                this.ms = d.ms;
+                this._valid = true;
+            } else {
+                this.sign = 1;
+                this.year = 0;
+                this.month = 0;
+                this.day = 0;
+                this.hour = 0;
+                this.minute = 0;
+                this.second = 0;
+                this.ms = 0;
+                this._valid = false;
+            }
+            this._original_input = str;
+        }
+        get input_string(): string {
+            return this._original_input;
+        }
+
+        toJSON() {
+            if (this._valid) {
+                return this.value;
             } else {
                 return 'N/A';
             }

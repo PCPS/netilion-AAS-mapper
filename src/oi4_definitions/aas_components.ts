@@ -4,16 +4,23 @@ import {
     QualifierType,
     ValueDataType,
     ElementCategory,
-    ModelingKind,
+    ModellingKind,
     QualifierKind,
     DataTypeDefXsd,
+    DataTypeDefRdf,
     AssetKind,
     Resource,
     Key,
     ReferenceTypes,
     DataSpecificationContent,
     DataTypeIEC61360,
-    LevelType
+    LevelType,
+    MultiLanguageTextType,
+    NameType,
+    MultiLanguageNameType,
+    LableType,
+    VersionType,
+    RevisionType
 } from './primitive_data_types';
 import { Mixin } from 'ts-mixer';
 import { logger } from '../services/logger';
@@ -69,15 +76,15 @@ export abstract class HasSemantics {
 }
 
 export class Extension extends HasSemantics {
-    public name: string;
-    public valueType?: DataTypeDefXsd;
+    public name: NameType;
+    public valueType?: DataTypeDefXsd | DataTypeDefRdf;
     public value?: ValueDataType;
     public refersTo?: Referable;
     public constructor(opt: {
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
-        name: string;
-        valueType?: DataTypeDefXsd;
+        name: NameType;
+        valueType?: DataTypeDefXsd | DataTypeDefRdf;
         value?: any;
         refersTo?: Referable; //can be local object or URI/ID. if local object, assign. if URI/ID, create local object and assign
     }) {
@@ -118,24 +125,21 @@ export abstract class HasExtension {
 
 export abstract class Referable extends HasExtension {
     public category?: ElementCategory | string;
-    public idShort?: string;
-    public displayName?: LangStringSet;
-    public descriptoin?: LangStringSet;
-    public checksum?: string = '';
+    public idShort?: NameType;
+    public displayName?: MultiLanguageNameType;
+    public descriptoin?: MultiLanguageTextType;
     public constructor(opt?: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
-        idShort?: string;
-        displayName?: LangStringSet;
-        description?: LangStringSet;
-        checksum?: string;
+        category?: ElementCategory | NameType;
+        idShort?: NameType;
+        displayName?: MultiLanguageNameType;
+        description?: MultiLanguageTextType;
     }) {
         super(opt);
         this.category = opt?.category;
         this.idShort = opt?.idShort;
         this.displayName = opt?.displayName;
         this.descriptoin = opt?.description;
-        this.checksum = opt?.checksum;
     }
 }
 
@@ -154,12 +158,12 @@ export abstract class HasDataSpecification {
     }
 }
 
-export interface ValuereferencePair {
+export interface ValueReferencePair {
     value: string;
     valueId: Reference;
 }
 
-export type ValueList = Array<ValuereferencePair>;
+export type ValueList = Array<ValueReferencePair>;
 
 export class DataSpecificationIEC61360 extends DataSpecificationContent {
     public preferredName: LangStringSet;
@@ -259,7 +263,7 @@ export class DataSpecification {
         administration?: AdministrativeInformation;
         id: Identifier;
         dataSpecificationContent: DataSpecificationContent;
-        description: LangStringSet;
+        description: MultiLanguageTextType;
     }) {
         this.administration = opt.administration;
         this.id = opt.id;
@@ -271,16 +275,22 @@ export class DataSpecification {
 export class EmbeddedDataSpecification {}
 
 export class AdministrativeInformation extends HasDataSpecification {
-    public revision?: string;
-    public version?: string;
+    public version?: VersionType;
+    public revision?: RevisionType;
+    public creator?: Reference;
+    public templateId?: Identifier;
     public constructor(opt?: {
         dataSpecifications?: Array<Reference>;
-        revision?: string;
-        version?: string;
+        version?: VersionType;
+        revision?: RevisionType;
+        creator?: Reference;
+        templateId?: Identifier;
     }) {
         super(opt);
-        this.revision = opt?.revision;
         this.version = opt?.version;
+        this.revision = opt?.revision;
+        this.creator = opt?.creator;
+        this.templateId = opt?.templateId;
     }
 }
 
@@ -290,10 +300,9 @@ export abstract class Identifiable extends Referable {
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
         id: string;
         administration?: AdministrativeInformation;
     }) {
@@ -304,18 +313,18 @@ export abstract class Identifiable extends Referable {
 }
 
 export abstract class HasKind {
-    public kind: ModelingKind = 'Instance';
-    public constructor(opt?: { kind?: ModelingKind }) {
+    public kind: ModellingKind = 'Instance';
+    public constructor(opt?: { kind?: ModellingKind }) {
         if (opt && opt.kind) {
             this.kind = opt.kind;
         }
     }
 }
 
-export abstract class Qualifier extends HasSemantics {
+export class Qualifier extends HasSemantics {
     public kind: QualifierKind = 'ConceptQualifier';
     public type: QualifierType;
-    public valueType: DataTypeDefXsd;
+    public valueType: DataTypeDefXsd | DataTypeDefRdf;
     public value?: ValueDataType;
     public valueId?: Reference;
     public constructor(opt: {
@@ -323,7 +332,7 @@ export abstract class Qualifier extends HasSemantics {
         supplementalSemanticIds?: Array<Reference>;
         kind?: QualifierKind;
         type: QualifierType;
-        valueType: DataTypeDefXsd;
+        valueType: DataTypeDefXsd | DataTypeDefRdf;
         value?: ValueDataType;
         valueId?: Reference;
     }) {
@@ -355,7 +364,6 @@ export abstract class Qualifiable {
 
 export abstract class SubmodelElement extends Mixin(
     Referable,
-    HasKind,
     HasSemantics,
     Qualifiable,
     HasDataSpecification
@@ -363,11 +371,9 @@ export abstract class SubmodelElement extends Mixin(
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
@@ -390,13 +396,12 @@ export class Submodel extends Mixin(
     public constructor(opt?: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
         id: string;
         administration?: AdministrativeInformation;
-        kind?: ModelingKind;
+        kind?: ModellingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
@@ -417,15 +422,15 @@ export class Submodel extends Mixin(
 }
 
 export class SpecificAssetId extends HasSemantics {
-    public name: string;
-    public value: string;
-    public externalSubjectId: Reference;
+    public name: LableType;
+    public value: Identifier;
+    public externalSubjectId?: Reference;
     public constructor(opt: {
         semanticId?: Reference;
         supplementalSemanticId?: Array<Reference>;
-        name: string;
-        value: string;
-        externalSubjectId: Reference;
+        name: LableType;
+        value: Identifier;
+        externalSubjectId?: Reference;
     }) {
         super(opt);
         this.name = opt.name;
@@ -436,13 +441,15 @@ export class SpecificAssetId extends HasSemantics {
 
 export class AssetInformation {
     public assetKind: AssetKind;
-    public globalAssetId?: Reference;
+    public globalAssetId?: Identifier;
     public specificAssetIds?: Array<SpecificAssetId>;
+    public assetType?: Identifier;
     public defaultThumbnail?: Resource;
     public constructor(opt: {
         assetKind: AssetKind;
-        globalAssetId?: Reference;
+        globalAssetId?: Identifier;
         specificAssetIds?: Array<SpecificAssetId>;
+        assetType?: Identifier;
         defaultThumbnail?: Resource;
     }) {
         this.assetKind = opt.assetKind;
@@ -456,6 +463,7 @@ export class AssetInformation {
             }
             this.specificAssetIds = specificAssetIds;
         }
+        this.assetType = opt.assetType;
         this.defaultThumbnail = opt.defaultThumbnail;
     }
 }
@@ -472,10 +480,9 @@ export class AssetAdministrationShell extends Mixin(
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
         id: string;
         administration?: AdministrativeInformation;
         dataSpecifications?: Array<Reference>;
@@ -506,10 +513,9 @@ export class ConceptDescription extends Mixin(
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
         id: string;
         administration?: AdministrativeInformation;
         dataSpecifications?: Array<Reference>;

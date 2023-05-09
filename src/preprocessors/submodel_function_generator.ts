@@ -229,7 +229,7 @@ function GetOptProps(opt: Model, opt_count?: CountType): string {
                 '{\n' +
                 '    statements?: Array<SubmodelElement>,\n' +
                 '    entityType: EntityType,\n' +
-                '    globalAssetId?: Reference,\n' +
+                '    globalAssetId?: Identifier,\n' +
                 '    specificAssetId?: SpecificAssetId\n' +
                 '}';
             break;

@@ -9,7 +9,6 @@ import {
     Direction,
     ElementCategory,
     LangStringSet,
-    ModelingKind,
     StateOfEvent,
     BlobType,
     ContentType,
@@ -17,7 +16,11 @@ import {
     PathType,
     DataTypeDefXsd,
     ValueDataType,
-    AasSubmodelElements
+    AasSubmodelElements,
+    Identifier,
+    MessageTopicType,
+    MultiLanguageTextType,
+    NameType
 } from './primitive_data_types';
 import { xs } from './xs_data_types';
 export class RelationshipElement extends SubmodelElement {
@@ -28,11 +31,9 @@ export class RelationshipElement extends SubmodelElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
@@ -50,11 +51,9 @@ export abstract class DataElement extends SubmodelElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
@@ -71,11 +70,9 @@ export class AnnotatedRelationshipElement extends RelationshipElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
@@ -99,11 +96,9 @@ export abstract class EventElement extends SubmodelElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
@@ -119,19 +114,17 @@ export class BasicEventElement extends EventElement {
     public observed: Reference;
     public direction: Direction;
     public state: StateOfEvent;
-    public messageTopic?: string;
+    public messageTopic?: MessageTopicType;
     public messageBroker?: Reference;
     public lastUpdate?: xs.dateTime;
-    public minInterval?: xs.dateTime; //Date object for interval value seems
-    public maxInterval?: xs.dateTime; //Unnecessary and unfit. change if problems occure
+    public minInterval?: xs.duration;
+    public maxInterval?: xs.duration;
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
@@ -139,11 +132,11 @@ export class BasicEventElement extends EventElement {
         observed: Reference;
         direction: Direction;
         state: StateOfEvent;
-        messageTopic?: string;
+        messageTopic?: MessageTopicType;
         messageBroker?: Reference;
         lastUpdate?: xs.dateTime;
-        minInterval?: xs.dateTime;
-        maxInterval?: xs.dateTime;
+        minInterval?: xs.duration;
+        maxInterval?: xs.duration;
     }) {
         super(opt);
         this.observed = opt.observed;
@@ -154,9 +147,9 @@ export class BasicEventElement extends EventElement {
         if (opt.lastUpdate)
             this.lastUpdate = new xs.dateTime(opt.lastUpdate?.value);
         if (opt.minInterval)
-            this.minInterval = new xs.dateTime(opt.minInterval?.input_string);
+            this.minInterval = new xs.duration(opt.minInterval?.input_string);
         if (opt.maxInterval)
-            this.maxInterval = new xs.dateTime(opt.maxInterval?.input_string);
+            this.maxInterval = new xs.duration(opt.maxInterval?.input_string);
     }
 }
 
@@ -168,11 +161,9 @@ export class Blob extends DataElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
@@ -192,11 +183,9 @@ export class Capability extends SubmodelElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
@@ -211,24 +200,22 @@ export class Entity extends SubmodelElement {
 
     public statements?: Array<SubmodelElement>;
     public entityType: EntityType;
-    public globalAssetId?: Reference;
+    public globalAssetId?: Identifier;
     public specificAssetId?: SpecificAssetId;
 
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
         dataSpecifications?: Array<Reference>;
         statements?: Array<SubmodelElement>;
         entityType: EntityType;
-        globalAssetId?: Reference;
+        globalAssetId?: Identifier;
         specificAssetId?: SpecificAssetId;
     }) {
         super(opt);
@@ -253,11 +240,9 @@ export class File extends DataElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
@@ -279,16 +264,14 @@ export class MultiLanguageProperty extends DataElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
         dataSpecifications?: Array<Reference>;
-        value?: LangStringSet;
+        value?: MultiLanguageTextType;
         valueId?: Reference;
     }) {
         super(opt);
@@ -315,11 +298,9 @@ export class Operation extends SubmodelElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
@@ -362,11 +343,9 @@ export class Property extends DataElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
@@ -391,11 +370,9 @@ export class Range extends DataElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
@@ -418,11 +395,9 @@ export class ReferenceElement extends DataElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
@@ -441,11 +416,9 @@ export class SubmodelElementCollection extends SubmodelElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;
@@ -474,11 +447,9 @@ export class SubmodelElementList extends SubmodelElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
         category?: ElementCategory | string;
-        idShort?: string;
+        idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
-        checksum?: string;
-        kind?: ModelingKind;
         semanticId?: Reference;
         supplementalSemanticIds?: Array<Reference>;
         qualifiers?: Array<Qualifier>;

@@ -31,7 +31,7 @@ export function GetSemanticId(idShort: string): Reference {
         });
         return new Reference({ type, keys });
     } else {
-        return new Reference({ type: 'GlobalReference', keys: [] });
+        return new Reference({ type: 'ExternalReference', keys: [] });
     }
 }
 

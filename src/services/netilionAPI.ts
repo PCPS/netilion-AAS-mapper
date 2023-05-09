@@ -105,6 +105,14 @@ export class NetelionClient {
         );
     }
 
+    public getVDICategories<T = any, R = AxiosResponse<T>>(
+        page: number = 1
+    ): Promise<R> {
+        return this.api.get(
+            '/document/categories?page=' + page + '&standard_id=1'
+        );
+    }
+
     public getAllAssets<T = any, R = AxiosResponse<T>>(
         page: number = 1
     ): Promise<R> {
@@ -160,10 +168,23 @@ export class NetelionClient {
 
     public getProductDocs<T = any, R = AxiosResponse<T>>(
         product_id: string,
-        page: number = 1
+        page: number = 1,
+        category_ids: Array<string> = []
     ): Promise<R> {
-        return this.api.get(
-            '/products/' + product_id + '/documents?page=' + page
-        );
+        if (category_ids.length) {
+            return this.api.get(
+                '/products/' +
+                    product_id +
+                    '/documents?page=' +
+                    page +
+                    '&category_id=' +
+                    category_ids.join('+,') +
+                    '+'
+            );
+        } else {
+            return this.api.get(
+                '/products/' + product_id + '/documents?page=' + page
+            );
+        }
     }
 }

@@ -13,6 +13,37 @@ dotenv.config();
 
 const netilionClient = new NetelionClient();
 
+const sampleHealthCheck = (req: Request, res: Response, next: NextFunction) => {
+    logger.info(`Sample healthcheck route called.`);
+
+    return res.status(200).json({
+        message: 'pong'
+    });
+};
+
+async function getEHVDICategories(): Promise<Array<any>> {
+    let cats: Array<any> = [];
+    try {
+        {
+            let page_number = 1;
+            let page = (await netilionClient.getVDICategories()).data;
+            while (await page.pagination.next) {
+                page_number++;
+                cats.push(await page.categories);
+                page = (await netilionClient.getAllAssets(page_number)).data;
+            }
+            cats.push(await page.categories);
+        }
+    } catch (error: any) {
+        logger.error(`failed to get VDI categories from netilion: ${error}`);
+    }
+    const CATS = (await Promise.all(cats)).reduce((a, b) => {
+        a = a.concat(b);
+        return a;
+    });
+    return CATS;
+}
+
 async function NetilionAssetToNameplate(asset: any): Promise<Submodel> {
     let assetSpecs: any = {};
     let assetSoftwares: any = {};
@@ -162,16 +193,29 @@ async function getEHProductCategories(product_id: string): Promise<Array<any>> {
     return CATEGORIES;
 }
 
-async function getEHProductDocumnets(product_id: string): Promise<Array<any>> {
+async function getEHProductDocumnets(
+    product_id: string,
+    categories?: Array<string>
+): Promise<Array<any>> {
     let docs: Array<any> = [];
     {
         let page_number = 1;
-        let page = (await netilionClient.getProductDocs(product_id)).data;
+        let page = (
+            await netilionClient.getProductDocs(
+                product_id,
+                page_number,
+                categories
+            )
+        ).data;
         while (await page.pagination.next) {
             page_number++;
             docs.push(await page.documents);
             page = (
-                await netilionClient.getProductDocs(product_id, page_number)
+                await netilionClient.getProductDocs(
+                    product_id,
+                    page_number,
+                    categories
+                )
             ).data;
         }
         docs.push(await page.documents);
@@ -226,15 +270,7 @@ async function NetilionAssetToAAS(
             asset.id,
         assetInformation: {
             assetKind: 'Instance',
-            globalAssetId: {
-                type: 'GlobalReference',
-                keys: [
-                    {
-                        type: 'GlobalReference',
-                        value: '[IRI] dsp.endress.com/' + asset.serial_number
-                    }
-                ]
-            }
+            globalAssetId: '[IRI] dsp.endress.com/' + asset.serial_number
         },
         submodels: [
             {
@@ -259,19 +295,11 @@ async function NetilionAssetToAAS(
     return AAS;
 }
 
-const sampleHealthCheck = (req: Request, res: Response, next: NextFunction) => {
-    logger.info(`Sample healthcheck route called.`);
-
-    return res.status(200).json({
-        message: 'pong'
-    });
-};
-
-const getAllEHNameplates = async (
+async function getAllEHNameplates(
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+) {
     const assets = await getAllEHAssets();
     let nameplates = await Promise.all(
         assets.map(async (asset: any) => {
@@ -283,13 +311,9 @@ const getAllEHNameplates = async (
             nameplates
         }
     });
-};
+}
 
-const getEHNameplate = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+async function getEHNameplate(req: Request, res: Response, next: NextFunction) {
     let asset;
     try {
         asset = (await netilionClient.getAsset(req.params.id)).data;
@@ -308,9 +332,9 @@ const getEHNameplate = async (
     } else {
         return res.status(404);
     }
-};
+}
 
-const getAllEHAAS = async (req: Request, res: Response, next: NextFunction) => {
+async function getAllEHAAS(req: Request, res: Response, next: NextFunction) {
     const assets = await getAllEHAssets();
     let asset_adminstration_shells = await Promise.all(
         assets.map(async (asset: any) => {
@@ -322,9 +346,9 @@ const getAllEHAAS = async (req: Request, res: Response, next: NextFunction) => {
             asset_adminstration_shells
         }
     });
-};
+}
 
-const getEHAAS = async (req: Request, res: Response, next: NextFunction) => {
+async function getEHAAS(req: Request, res: Response, next: NextFunction) {
     let asset;
     try {
         asset = (await netilionClient.getAsset(req.params.id)).data;
@@ -343,13 +367,13 @@ const getEHAAS = async (req: Request, res: Response, next: NextFunction) => {
     } else {
         return res.status(404);
     }
-};
+}
 
-const getEHHandoverDocuments = async (
+async function getEHHandoverDocuments(
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+) {
     let asset;
     try {
         asset = (await netilionClient.getAsset(req.params.id)).data;
@@ -360,8 +384,10 @@ const getEHHandoverDocuments = async (
                 `] from netilion: ${error}`
         );
     }
+    const vdi_categories = await getEHVDICategories();
+    const vdi_category_ids = await Promise.all(vdi_categories.map((e) => e.id));
     const docs = (await getEHAssetDocumnets(asset.id)).concat(
-        await getEHProductDocumnets(asset.product.id)
+        await getEHProductDocumnets(asset.product.id, vdi_category_ids)
     );
     if (docs) {
         return res.status(200).json({
@@ -370,7 +396,7 @@ const getEHHandoverDocuments = async (
     } else {
         return res.status(404);
     }
-};
+}
 
 export default {
     sampleHealthCheck,

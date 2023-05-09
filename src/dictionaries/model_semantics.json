@@ -28,7 +28,7 @@
         "FragmentReference"
     ],
 
-    "referenceTypes": ["GlobalReference", "ModelReference"],
+    "referenceTypes": ["ExternalReference", "ModelReference"],
 
     "models": {
         "Nameplate": {
