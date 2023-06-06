@@ -4,14 +4,14 @@ import axios, {
     CreateAxiosDefaults,
     AxiosInstance
 } from 'axios';
-import dotenv from 'dotenv';
+//import dotenv from 'dotenv';
 import { logger } from './logger';
 import {
     AssetAdministrationShell,
     Submodel
 } from '../oi4_definitions/aas_components';
 
-dotenv.config();
+//dotenv.config();
 
 const makeBase64 = (str: string, encodeing: BufferEncoding = 'utf8') => {
     const buffer = Buffer.from(str, encodeing);

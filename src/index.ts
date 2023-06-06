@@ -1,6 +1,6 @@
 import http from 'http';
 import express from 'express';
-import dotenv from 'dotenv';
+//import dotenv from 'dotenv';
 import { logger } from './services/logger';
 import bodyParser from 'body-parser';
 import sampleRoutes from './routes/sample';
@@ -10,7 +10,7 @@ import {
 } from './services/oi4_helpers';
 import auto_update from './services/auto_update';
 
-dotenv.config();
+//dotenv.config();
 
 const router = express();
 
