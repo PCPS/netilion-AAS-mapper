@@ -1,0 +1,172 @@
+{
+    "ContactInformations": {
+        "modelType": "Submodel",
+        "count": "!",
+        "submodelElements": {
+            "ContactInformation": {
+                "modelType": "SubmodelElementCollection",
+                "count": "+",
+                "value": {
+                    "RoleOfContactPerson": {
+                        "modelType": "Property",
+                        "count": "?",
+                        "valueType": "xs:string"
+                    },
+                    "NationalCode": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "!"
+                    },
+                    "Language": {
+                        "modelType": "Property",
+                        "count": "*",
+                        "valueType": "xs:string"
+                    },
+                    "TimeZone": {
+                        "modelType": "Property",
+                        "count": "?",
+                        "valueType": "xs:string"
+                    },
+                    "CityTown": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "!"
+                    },
+                    "Company": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "Department": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "Phone": {
+                        "modelType": "SubmodelElementCollection",
+                        "count": "?",
+                        "value": {
+                            "TelephoneNumber": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "!"
+                            },
+                            "TypeOfTelephone": {
+                                "modelType": "Property",
+                                "count": "?",
+                                "valueType": "xs:string"
+                            },
+                            "AvailableTime": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "?"
+                            }
+                        }
+                    },
+                    "Fax": {
+                        "modelType": "SubmodelElementCollection",
+                        "count": "?",
+                        "value": {
+                            "FaxNumber": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "!"
+                            },
+                            "TypeOfFaxNumber": {
+                                "modelType": "Property",
+                                "count": "?",
+                                "valueType": "xs:string"
+                            }
+                        }
+                    },
+                    "Email": {
+                        "modelType": "SubmodelElementCollection",
+                        "count": "?",
+                        "value": {
+                            "EmailAddress": {
+                                "modelType": "Property",
+                                "count": "!",
+                                "valueType": "xs:string"
+                            },
+                            "PublicKey": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "?"
+                            },
+                            "TypeOfEmailAddress": {
+                                "modelType": "Property",
+                                "count": "?",
+                                "valueType": "xs:string"
+                            },
+                            "TypeOfPublicKey": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "?"
+                            }
+                        }
+                    },
+                    "IPCommunication": {
+                        "modelType": "SubmodelElementCollection",
+                        "count": "*",
+                        "value": {
+                            "AddressOfAdditionalLink": {
+                                "modelType": "Property",
+                                "count": "!",
+                                "valueType": "xs:string"
+                            },
+                            "TypeOfCommunication": {
+                                "modelType": "Property",
+                                "count": "?",
+                                "valueType": "xs:string"
+                            },
+                            "AvailableTime": {
+                                "modelType": "MultiLanguageProperty",
+                                "count": "?"
+                            }
+                        }
+                    },
+                    "Street": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "!"
+                    },
+                    "Zipcode": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "!"
+                    },
+                    "POBox": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "ZipCodeOfPOBox": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "StateCounty": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "NameOfContact": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "FirstName": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "MiddleNames": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "Title": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "AcademicTitle": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "FurtherDetailsOfContact": {
+                        "modelType": "MultiLanguageProperty",
+                        "count": "?"
+                    },
+                    "AddressOfAdditionalLink": {
+                        "modelType": "Property",
+                        "count": "?",
+                        "valueType": "xs:string"
+                    }
+                }
+            }
+        }
+    }
+}

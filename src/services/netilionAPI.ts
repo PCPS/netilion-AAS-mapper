@@ -4,15 +4,11 @@ import axios, {
     CreateAxiosDefaults,
     AxiosInstance
 } from 'axios';
-import dotenv, { config } from 'dotenv';
-import { logger } from '../services/logger';
+import dotenv from 'dotenv';
+import { logger } from './logger';
+import { makeBase64 } from './oi4_helpers';
 
 dotenv.config();
-
-const makeBase64 = (str: string, encodeing: BufferEncoding = 'utf8') => {
-    const buffer = Buffer.from(str, encodeing);
-    return buffer.toString('base64');
-};
 
 interface AuthToken {
     authType: 'Basic';
@@ -60,9 +56,6 @@ export class NetelionClient {
             }
         };
         this.api = axios.create(apiConfig);
-    }
-
-    public getAllProducts<T = any, R = AxiosResponse<T>>(): Promise<R> {
         this.api.interceptors.request.use((config) => {
             //TODO: add support for OAUTH
             switch (token.authType) {
@@ -73,6 +66,7 @@ export class NetelionClient {
                     logger.error(
                         `Authorization method ${token.authType} is not supported for interception`
                     );
+                    break;
             }
             logger.info(
                 `request ready with URL[${config.baseURL! + config.url!}]`
@@ -104,6 +98,88 @@ export class NetelionClient {
                 return Promise.reject(error);
             }
         );
-        return this.api.get(`/products`);
+    }
+
+    public getVDICategories<T = any, R = AxiosResponse<T>>(
+        page: number = 1
+    ): Promise<R> {
+        return this.api.get(
+            '/document/categories?page=' + page + '&standard_id=1'
+        );
+    }
+
+    public getAllAssets<T = any, R = AxiosResponse<T>>(
+        page: number = 1
+    ): Promise<R> {
+        return this.api.get('/assets?page=' + page);
+    }
+
+    public getAsset<T = any, R = AxiosResponse<T>>(
+        asset_id: string
+    ): Promise<R> {
+        return this.api.get('/assets/' + asset_id);
+    }
+
+    public getAssetSpecs<T = any, R = AxiosResponse<T>>(
+        asset_id: string
+    ): Promise<R> {
+        return this.api.get('/assets/' + asset_id + '/specifications');
+    }
+
+    public getAssetSoftwares<T = any, R = AxiosResponse<T>>(
+        asset_id: string,
+        page: number = 1
+    ): Promise<R> {
+        return this.api.get('/assets/' + asset_id + '/softwares?page=' + page);
+    }
+
+    public getProduct<T = any, R = AxiosResponse<T>>(
+        product_id: string
+    ): Promise<R> {
+        return this.api.get('/products/' + product_id);
+    }
+
+    public getProductCategories<T = any, R = AxiosResponse<T>>(
+        product_id: string,
+        page: number = 1
+    ): Promise<R> {
+        return this.api.get(
+            '/products/' + product_id + '/categories?page=' + page
+        );
+    }
+
+    public getManufacturer<T = any, R = AxiosResponse<T>>(
+        manufacturer_id: string
+    ): Promise<R> {
+        return this.api.get('/companies/' + manufacturer_id);
+    }
+
+    public getAssetDocs<T = any, R = AxiosResponse<T>>(
+        asset_id: string,
+        page: number = 1
+    ): Promise<R> {
+        return this.api.get('/assets/' + asset_id + '/documents?page=' + page);
+    }
+
+    public getProductDocs<T = any, R = AxiosResponse<T>>(
+        product_id: string,
+        page: number = 1,
+        category_ids: Array<string> = []
+    ): Promise<R> {
+        if (category_ids.length) {
+            return this.api.get(
+                '/products/' +
+                    product_id +
+                    '/documents?page=' +
+                    page +
+                    '&category_id=' +
+                    category_ids.join('+,') +
+                    '+'
+            );
+        } else {
+            return this.api.get(
+                '/products/' + product_id + '/documents?page=' + page
+            );
+        }
     }
 }

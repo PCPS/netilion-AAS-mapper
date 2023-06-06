@@ -1,0 +1,23 @@
+{
+    "ConfigurationAsBuilt": {
+        "modelType": "Submodel",
+        "count": "!",
+        "submodelElements": {
+            "NetilionAssetId": {
+                "modelType": "Property",
+                "count": "!",
+                "valueType": "xs:string"
+            },
+            "MinTemp": {
+                "modelType": "Property",
+                "count": "!",
+                "valueType": "xs:decimal"
+            },
+            "MaxTemp": {
+                "modelType": "Property",
+                "count": "!",
+                "valueType": "xs:decimal"
+            }
+        }
+    }
+}

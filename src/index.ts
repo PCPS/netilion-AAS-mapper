@@ -4,6 +4,11 @@ import dotenv from 'dotenv';
 import { logger } from './services/logger';
 import bodyParser from 'body-parser';
 import sampleRoutes from './routes/sample';
+import {
+    GenerateDescriptionsFromEclass,
+    GenerateEclassFromXml
+} from './services/oi4_helpers';
+import auto_update from './services/auto_update';
 
 dotenv.config();
 
@@ -37,10 +42,10 @@ router.use((req, res, next) => {
     next();
 });
 
-/** Routes */
-router.use('/sample', sampleRoutes);
+// Routes
+router.use('/' + process.env.SERVER_API_VERSION, sampleRoutes);
 
-/** Error Handling */
+// Error Handling
 router.use((req, res, next) => {
     const error = new Error('not found');
     return res.status(404).json({
@@ -48,10 +53,15 @@ router.use((req, res, next) => {
     });
 });
 
-/** Server */
+// Tasks
+auto_update.postAAS();
+auto_update.postSubmodels();
+auto_update.updateConfigurationsAsBuilt();
+
+// Server
 const httpServer = http.createServer(router);
-httpServer.listen(process.env.SERVER_PORT, () =>
+httpServer.listen(process.env.PORT, () =>
     logger.info(
-        `Server running on ${process.env.SERVER_URL}:${process.env.SERVER_PORT}`
+        `Server running on ${process.env.SERVER_URL}:${process.env.PORT}`
     )
 );
