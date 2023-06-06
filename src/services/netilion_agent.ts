@@ -91,8 +91,8 @@ async function NetilionAssetToNameplate(asset: any): Promise<Submodel> {
     const nameplate = Generate_SM_Nameplate(
         nameplate_input,
         process.env.SERVER_URL +
-            ':' +
-            process.env.PORT +
+            // ':' +
+            // process.env.SERVER_PORT +
             '/' +
             process.env.SERVER_API_VERSION +
             '/nameplates/' +
@@ -274,8 +274,8 @@ async function NetilionAssetToAAS(
                 type: 'Submodel',
                 value:
                     process.env.SERVER_URL +
-                    ':' +
-                    process.env.PORT +
+                    // ':' +
+                    // process.env.SERVER_PORT +
                     '/' +
                     process.env.SERVER_API_VERSION +
                     '/nameplates/' +
@@ -319,8 +319,8 @@ async function NetilionAssetToAAS(
         description: asset.description,
         id:
             process.env.SERVER_URL +
-            ':' +
-            process.env.PORT +
+            // ':' +
+            // process.env.SERVER_PORT +
             '/' +
             process.env.SERVER_API_VERSION +
             '/aas/' +
@@ -353,8 +353,8 @@ async function NetilionAssetToConfigurationAsBuilt(
                 MaxTemp
             },
             process.env.SERVER_URL +
-                ':' +
-                process.env.PORT +
+                // ':' +
+                // process.env.SERVER_PORT +
                 '/' +
                 process.env.SERVER_API_VERSION +
                 '/configurations_as_built/' +
@@ -383,8 +383,8 @@ async function NetilionAssetToConfigurationAsDocumented(
                 MaxTemp
             },
             process.env.SERVER_URL +
-                ':' +
-                process.env.PORT +
+                // ':' +
+                // process.env.SERVER_PORT +
                 '/' +
                 process.env.SERVER_API_VERSION +
                 '/configurations_as_documented/' +
