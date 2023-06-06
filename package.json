@@ -9,7 +9,8 @@
         "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
         "start:dev": "nodemon",
         "start": "node build/index.js",
-        "pre": "ts-node src/preprocessors/*.ts"
+        "postinstall": "rimraf ./build/ && tsc",
+        "preinstall": "ts-node src/preprocessors/*.ts"
     },
     "author": "Aria Ranjbar, Endress+Hauser Digital Solutiobs (DE), Freiburg",
     "license": "ISC",
