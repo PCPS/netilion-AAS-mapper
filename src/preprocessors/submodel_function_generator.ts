@@ -8,6 +8,8 @@ import path from 'path';
 import nameplate from './submodels/nameplate.json';
 import contact_information from './submodels/contact_information.json';
 import handover_documentation from './submodels/handover_documentation.json';
+import configuration_as_built from './submodels/as_built.json';
+import configuration_as_documented from './submodels/as_documented.json';
 
 //TODO: Optimise imports in CreateGenerator()
 
@@ -651,7 +653,7 @@ function CreateGenerator(json_submodel: { [key: string]: Model }): void {
         const model_name = model.alias || item;
         let imports: string =
             "import { Reference, SpecificAssetId, Submodel } from '../aas_components';\n" +
-            "import { ContentType, DataTypeDefXsd, LangStringSet, PathType, ValueDataType, EntityType } from '../primitive_data_types';\n" +
+            "import { ContentType, DataTypeDefXsd, LangStringSet, PathType, ValueDataType, EntityType, Identifier } from '../primitive_data_types';\n" +
             "import { SubmodelElementCollection, Property, MultiLanguageProperty, ReferenceElement, File, Entity } from '../submodel_elements';\n" +
             "import { xs } from '../xs_data_types';\n" +
             "import { SubmodelElement } from '../aas_components';\n" +
@@ -682,3 +684,5 @@ function CreateGenerator(json_submodel: { [key: string]: Model }): void {
 CreateGenerator(nameplate as { [key: string]: Model });
 CreateGenerator(contact_information as { [key: string]: Model });
 CreateGenerator(handover_documentation as { [key: string]: Model });
+CreateGenerator(configuration_as_built as { [key: string]: Model });
+CreateGenerator(configuration_as_documented as { [key: string]: Model });

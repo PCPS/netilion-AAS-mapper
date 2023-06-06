@@ -4,16 +4,11 @@ import axios, {
     CreateAxiosDefaults,
     AxiosInstance
 } from 'axios';
-import dotenv, { config } from 'dotenv';
+import dotenv from 'dotenv';
 import { logger } from './logger';
-import { response } from 'express';
+import { makeBase64 } from './oi4_helpers';
 
 dotenv.config();
-
-const makeBase64 = (str: string, encodeing: BufferEncoding = 'utf8') => {
-    const buffer = Buffer.from(str, encodeing);
-    return buffer.toString('base64');
-};
 
 interface AuthToken {
     authType: 'Basic';

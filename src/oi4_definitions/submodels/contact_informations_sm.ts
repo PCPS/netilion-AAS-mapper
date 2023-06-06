@@ -5,7 +5,8 @@ import {
     LangStringSet,
     PathType,
     ValueDataType,
-    EntityType
+    EntityType,
+    Identifier
 } from '../primitive_data_types';
 import {
     SubmodelElementCollection,

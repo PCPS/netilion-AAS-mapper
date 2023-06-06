@@ -136,3 +136,13 @@ export function GenerateDescriptionsFromEclass() {
 //     dataSpecs.
 //     let embeddedDataSpecs = dataSpecs.map((item: Reference) => {return {dataSpecificationContent: new DataSpecificationIEC61360(), dataSpecification: item}})
 // }
+
+export function makeBase64(str: string, encodeing: BufferEncoding = 'utf8') {
+    const buffer = Buffer.from(str, encodeing);
+    return buffer.toString('base64');
+}
+
+export function decodeBase64(str: string, encodeTo: BufferEncoding = 'utf8') {
+    const buffer = Buffer.from(str, 'base64');
+    return buffer.toString(encodeTo);
+}

@@ -8,6 +8,7 @@ import {
     GenerateDescriptionsFromEclass,
     GenerateEclassFromXml
 } from './services/oi4_helpers';
+import auto_update from './services/auto_update';
 
 dotenv.config();
 
@@ -52,10 +53,15 @@ router.use((req, res, next) => {
     });
 });
 
+// Tasks
+auto_update.postAAS();
+auto_update.postSubmodels();
+auto_update.updateConfigurationsAsBuilt();
+
 // Server
 const httpServer = http.createServer(router);
-httpServer.listen(process.env.SERVER_PORT, () =>
+httpServer.listen(process.env.PORT, () =>
     logger.info(
-        `Server running on ${process.env.SERVER_URL}:${process.env.SERVER_PORT}`
+        `Server running on ${process.env.SERVER_URL}:${process.env.PORT}`
     )
 );
