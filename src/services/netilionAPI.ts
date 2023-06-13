@@ -4,11 +4,14 @@ import axios, {
     CreateAxiosDefaults,
     AxiosInstance
 } from 'axios';
-if (process.env.NODE_ENV !== 'production') {
-    import('dotenv').then((dotenv) => dotenv.config());
-}
 import { logger } from './logger';
 import { makeBase64 } from './oi4_helpers';
+
+if (process.env.NODE_ENV !== 'production') {
+    const dotenv = require('dotenv');
+    // Use dev dependency
+    dotenv.config();
+}
 
 interface AuthToken {
     authType: 'Basic';
