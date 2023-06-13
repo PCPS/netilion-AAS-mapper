@@ -4,11 +4,11 @@ import axios, {
     CreateAxiosDefaults,
     AxiosInstance
 } from 'axios';
-//import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 import { logger } from './logger';
 import { makeBase64 } from './oi4_helpers';
 
-//dotenv.config();
+dotenv?.config();
 
 interface AuthToken {
     authType: 'Basic';
@@ -32,7 +32,11 @@ const makeToken = () => {
             );
             break;
         default:
-            logger.error('AUTHTYPE not found or not recognized');
+            logger.error(
+                'AUTHTYPE [' +
+                    process.env.NETILION_AUTH_TYPE +
+                    '] not found or not recognized'
+            );
             break;
     }
     return token;
