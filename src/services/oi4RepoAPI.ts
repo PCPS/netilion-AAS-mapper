@@ -11,7 +11,7 @@ import {
     Submodel
 } from '../oi4_definitions/aas_components';
 
-dotenv.config();
+dotenv?.config();
 
 const makeBase64 = (str: string, encodeing: BufferEncoding = 'utf8') => {
     const buffer = Buffer.from(str, encodeing);

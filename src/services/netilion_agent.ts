@@ -117,7 +117,10 @@ async function getAllEHAssets(): Promise<Array<any> | undefined> {
     } catch (error: any) {
         logger.error(`failed to get assets from netilion: ${error}`);
     }
-    if (assets) {
+    if (assets && assets.length) {
+        console.log('!!!!!!!!!!!!!!');
+        console.log(assets);
+        console.log('!!!!!!!!!!!!!!');
         const ASSETS = (await Promise.all(assets)).reduce((a, b) => {
             a = a.concat(b);
             return a;

@@ -10,7 +10,7 @@ import {
 } from './services/oi4_helpers';
 import auto_update from './services/auto_update';
 
-dotenv.config();
+dotenv?.config();
 
 const router = express();
 
