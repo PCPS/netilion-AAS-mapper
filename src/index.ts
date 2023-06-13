@@ -1,6 +1,8 @@
 import http from 'http';
 import express from 'express';
-import dotenv from 'dotenv';
+if (process.env.NODE_ENV !== 'production') {
+    import('dotenv').then((dotenv) => dotenv.config());
+}
 import { logger } from './services/logger';
 import bodyParser from 'body-parser';
 import sampleRoutes from './routes/sample';
@@ -9,8 +11,6 @@ import {
     GenerateEclassFromXml
 } from './services/oi4_helpers';
 import auto_update from './services/auto_update';
-
-dotenv?.config();
 
 const router = express();
 

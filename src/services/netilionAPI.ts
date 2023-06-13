@@ -4,11 +4,11 @@ import axios, {
     CreateAxiosDefaults,
     AxiosInstance
 } from 'axios';
-import dotenv from 'dotenv';
+if (process.env.NODE_ENV !== 'production') {
+    import('dotenv').then((dotenv) => dotenv.config());
+}
 import { logger } from './logger';
 import { makeBase64 } from './oi4_helpers';
-
-dotenv?.config();
 
 interface AuthToken {
     authType: 'Basic';

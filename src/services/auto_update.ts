@@ -1,10 +1,10 @@
 import { logger } from './logger';
 import oi4 from '../services/oi4_repo_agent';
-import dotenv from 'dotenv';
+if (process.env.NODE_ENV !== 'production') {
+    import('dotenv').then((dotenv) => dotenv.config());
+}
 import { Submodel, SubmodelElement } from '../oi4_definitions/aas_components';
 import { Property } from '../oi4_definitions/submodel_elements';
-
-dotenv?.config();
 
 function postAAS() {
     setTimeout(async () => {
