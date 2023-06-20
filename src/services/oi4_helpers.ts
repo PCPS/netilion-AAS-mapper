@@ -11,6 +11,9 @@ import fs from 'fs';
 import path from 'path';
 import convert from 'xml-js';
 
+// convert from index number to a zero-padded number in string format.
+// used as postfix to idShort of recurrent submodel elements
+// example: (1) => '01', (5, 3) => '005', (24, 3) => '024',
 export function number_to_padded_string(i: number, width?: number) {
     let w = width || 2;
     const zeros = '0'.repeat(w);
@@ -18,6 +21,7 @@ export function number_to_padded_string(i: number, width?: number) {
     return conc.slice(conc.length - zeros.length);
 }
 
+// retrieve semantic ID of an element via its idShort from a list of semantic IDs from a JSON file.
 export function GetSemanticId(idShort: string): Reference {
     const models = model_semantics.models as { [key: string]: any };
     const referenceTypes = model_semantics.referenceTypes as ReferenceTypes[];
@@ -35,6 +39,9 @@ export function GetSemanticId(idShort: string): Reference {
     }
 }
 
+// Serilize Object 'obj' to desired output format using Objects 'modifyKeys' and 'appendKeys'.
+// modifyKeys and appendKeys are mappings from keys to functions on obj.
+// modifyKeys only contains keys found in obj and appendKeys only contains unique keys that do not exist in obj
 export function Serialize(
     obj: { [key: string]: any },
     modifyKeys: any,
@@ -56,6 +63,7 @@ export function Serialize(
     });
 }
 
+//create eclass dictiononary in JSON format from xml file
 export function GenerateEclassFromXml() {
     let xml = fs.readFileSync(
         path.join(__dirname, '../dictionary/ECLASS12_0_ADVANCED_EN_SG_27.xml'),
@@ -69,6 +77,7 @@ export function GenerateEclassFromXml() {
     fs.writeFileSync(path.join(__dirname, '../dictionary/ECLASS.json'), eclass);
 }
 
+//create ConceptDescription elements from eclass JSON dictionary
 export function GenerateDescriptionsFromEclass() {
     let eclass = JSON.parse(
         fs.readFileSync(
@@ -131,17 +140,21 @@ export function GenerateDescriptionsFromEclass() {
 
     console.log(dataSpecContents);
 }
+
+// Create embedded data specification elements from data specification references
 // export function GetEmbeddedDataSpec(obj: { [key: string]: any }): any {
 //     let dataSpecs = obj.dataSpecifications;
 //     dataSpecs.
 //     let embeddedDataSpecs = dataSpecs.map((item: Reference) => {return {dataSpecificationContent: new DataSpecificationIEC61360(), dataSpecification: item}})
 // }
 
+// Encode string to Base64 (by default from utf8)
 export function makeBase64(str: string, encodeing: BufferEncoding = 'utf8') {
     const buffer = Buffer.from(str, encodeing);
     return buffer.toString('base64');
 }
 
+// Decode string from Base64 (by default to utf8)
 export function decodeBase64(str: string, encodeTo: BufferEncoding = 'utf8') {
     const buffer = Buffer.from(str, 'base64');
     return buffer.toString(encodeTo);

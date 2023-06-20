@@ -1,6 +1,7 @@
 import { LangStringSet } from '../oi4_definitions/primitive_data_types';
 import { xs } from '../oi4_definitions/xs_data_types';
 
+// Maps asset object retrieved from netilion to sufficeint input of the Namplate submodel generator function
 export function netilionAssetToNameplateInput(opt: {
     asset: any;
     assetSpecs?: any;

@@ -4,6 +4,7 @@ import oi4_repo_controller from '../controllers/oi4_repo_controller';
 
 const router = Router();
 
+// Netilion
 router.get('/nameplates', netilion_controller.getAllEHNameplates);
 router.get('/nameplates/:id', netilion_controller.getEHNameplate);
 router.get(
@@ -28,6 +29,8 @@ router.get('/aas/:id', netilion_controller.getEHAAS);
 //     '/handover_documentations/:id',
 //     netilion_controller.getEHHandoverDocuments
 // );
+
+// OI4 Repo
 router.get('/get_aas', oi4_repo_controller.getAllAASFromOI4);
 router.get('/get_aas/:id', oi4_repo_controller.getAASFromOI4);
 router.get('/post_aas', oi4_repo_controller.postAllEHAASToOI4);

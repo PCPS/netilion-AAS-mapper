@@ -11,7 +11,13 @@ import { Property } from '../oi4_definitions/submodel_elements';
 
 const oi4Client = new OI4Client();
 
-async function postAllEHAASToOI4() {
+interface agent_op_result {
+    status: number;
+    json: any;
+}
+
+// Post all AssetAdministrationSells created from Netilion assets to OI4 Repo
+async function postAllEHAASToOI4(): Promise<agent_op_result> {
     const shells = await netilion.allEHAAS();
 
     if (shells) {
@@ -64,7 +70,8 @@ async function postAllEHAASToOI4() {
     }
 }
 
-async function updateEHAASInOI4(asset_id: string) {
+// update all AssetAdministrationShells in OI4 repo using Netilion assets
+async function updateEHAASInOI4(asset_id: string): Promise<agent_op_result> {
     const shell = await netilion.EHAAS(asset_id);
 
     if (shell) {
@@ -99,7 +106,8 @@ async function updateEHAASInOI4(asset_id: string) {
     }
 }
 
-async function postAllEHNameplatesToOI4() {
+// Post all Nameplate submodels created from Netilion assets to OI4 Repo
+async function postAllEHNameplatesToOI4(): Promise<agent_op_result> {
     const nameplates = await netilion.allEHNameplates();
 
     if (nameplates) {
@@ -154,7 +162,10 @@ async function postAllEHNameplatesToOI4() {
     }
 }
 
-async function updateEHNameplatesInOI4(asset_id: string) {
+// update all Nameplate submodels in OI4 repo using Netilion assets
+async function updateEHNameplatesInOI4(
+    asset_id: string
+): Promise<agent_op_result> {
     const nameplate = await netilion.EHNameplate(asset_id);
 
     if (nameplate) {
@@ -186,7 +197,8 @@ async function updateEHNameplatesInOI4(asset_id: string) {
     }
 }
 
-async function postAllEHConfigurationsAsBuiltToOI4() {
+// Post all ConfigurationAsBuilt submodels created from Netilion assets to OI4 Repo
+async function postAllEHConfigurationsAsBuiltToOI4(): Promise<agent_op_result> {
     const configurations_as_built = await netilion.allEHConfigurationsAsBuilt();
 
     if (configurations_as_built) {
@@ -249,7 +261,10 @@ async function postAllEHConfigurationsAsBuiltToOI4() {
     }
 }
 
-async function updateEHConfigurationsAsBuiltInOI4(asset_id: string) {
+// update specific ConfigurationAsBuilt submodel in OI4 repo using Netilion asset
+async function updateEHConfigurationsAsBuiltInOI4(
+    asset_id: string
+): Promise<agent_op_result> {
     const configuration_as_built = await netilion.EHConfigurationAsBuilt(
         asset_id
     );
@@ -285,7 +300,8 @@ async function updateEHConfigurationsAsBuiltInOI4(asset_id: string) {
     }
 }
 
-async function updateAllEHConfigurationsAsBuiltInOI4() {
+// update all ConfigurationAsBuilt submodels in OI4 repo using Netilion assets
+async function updateAllEHConfigurationsAsBuiltInOI4(): Promise<agent_op_result> {
     const submodels = (await getAllSubmodelsFromOI4()).json.submodels;
     if (submodels && submodels.length) {
         const configurations_as_built = submodels.filter((item: Submodel) => {
@@ -380,9 +396,8 @@ async function updateAllEHConfigurationsAsBuiltInOI4() {
     }
 }
 
-///////////////
-
-async function postAllEHConfigurationsAsDocumentedToOI4() {
+// Post all ConfigurationAsDocumented submodels created from Netilion assets to OI4 Repo
+async function postAllEHConfigurationsAsDocumentedToOI4(): Promise<agent_op_result> {
     const configurations_as_documented =
         await netilion.allEHConfigurationsAsDocumented();
 
@@ -448,7 +463,10 @@ async function postAllEHConfigurationsAsDocumentedToOI4() {
     }
 }
 
-async function updateEHConfigurationsAsDocumentedInOI4(asset_id: string) {
+// update specific ConfigurationAsDocumented submodel in OI4 repo using Netilion asset
+async function updateEHConfigurationsAsDocumentedInOI4(
+    asset_id: string
+): Promise<agent_op_result> {
     const configuration_as_documented =
         await netilion.EHConfigurationAsDocumented(asset_id);
 
@@ -483,7 +501,8 @@ async function updateEHConfigurationsAsDocumentedInOI4(asset_id: string) {
     }
 }
 
-async function updateAllEHConfigurationsAsDocumentedInOI4() {
+// update all ConfigurationAsDocumented submodels in OI4 repo using Netilion assets
+async function updateAllEHConfigurationsAsDocumentedInOI4(): Promise<agent_op_result> {
     const submodels = (await getAllSubmodelsFromOI4()).json.submodels;
     if (submodels && submodels.length) {
         const configurations_as_documented = submodels.filter(
@@ -584,9 +603,8 @@ async function updateAllEHConfigurationsAsDocumentedInOI4() {
     }
 }
 
-///////////////
-
-async function getAllAASFromOI4() {
+// Retrieve all AssetAdministrationShells from ÖI4 Repo
+async function getAllAASFromOI4(): Promise<agent_op_result> {
     try {
         const resp = await oi4Client.getAllShells();
         const shells = await resp.data;
@@ -609,7 +627,8 @@ async function getAllAASFromOI4() {
     }
 }
 
-async function getAASFromOI4(aas_id: string) {
+// Retrieve specific AssetAdministrationShell from ÖI4 Repo using Base64 encoded id.
+async function getAASFromOI4(aas_id: string): Promise<agent_op_result> {
     try {
         const resp = await oi4Client.getShell(aas_id);
         const shell = await resp.data;
@@ -633,7 +652,8 @@ async function getAASFromOI4(aas_id: string) {
     }
 }
 
-async function getAllSubmodelsFromOI4() {
+// Retrieve all submodels from ÖI4 Repo
+async function getAllSubmodelsFromOI4(): Promise<agent_op_result> {
     try {
         const resp = await oi4Client.getAllSubmodels();
         const submodels = await resp.data;
@@ -655,7 +675,10 @@ async function getAllSubmodelsFromOI4() {
     }
 }
 
-async function getSubmodelFromOI4(submodel_id: string) {
+// Retrieve specific submodel from ÖI4 Repo using Base64 encoded id.
+async function getSubmodelFromOI4(
+    submodel_id: string
+): Promise<agent_op_result> {
     try {
         const resp = await oi4Client.getShell(submodel_id);
         const submodel = await resp.data;

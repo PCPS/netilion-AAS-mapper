@@ -64,8 +64,6 @@ async function updateAllEHConfigurationsAsBuiltInOI4(
     res.status(result.status).json(result.json);
 }
 
-//////////////////
-
 async function postAllEHConfigurationsAsDocumentedToOI4(
     req: Request,
     res: Response,
@@ -94,8 +92,6 @@ async function updateAllEHConfigurationsAsDocumentedInOI4(
     const result = await oi4.updateAllEHConfigurationsAsDocumentedInOI4();
     res.status(result.status).json(result.json);
 }
-
-//////////////////
 
 async function getAllAASFromOI4(
     req: Request,

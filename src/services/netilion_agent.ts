@@ -13,7 +13,8 @@ import { Generate_SM_ConfigurationAsDocumented } from '../oi4_definitions/submod
 
 const netilionClient = new NetelionClient();
 
-async function getEHVDICategories(): Promise<Array<any>> {
+// Retrieve all document category IDs corresponding to the VDI standard within netilion
+async function EHVDICategories(): Promise<Array<any>> {
     let cats: Array<any> = [];
     try {
         {
@@ -36,6 +37,7 @@ async function getEHVDICategories(): Promise<Array<any>> {
     return CATS;
 }
 
+// Turn asset object from Netilion to Nameplate submodel
 async function NetilionAssetToNameplate(asset: any): Promise<Submodel> {
     let assetSpecs: any = {};
     let assetSoftwares: any = {};
@@ -51,7 +53,7 @@ async function NetilionAssetToNameplate(asset: any): Promise<Submodel> {
         );
     }
     try {
-        assetSoftwares = await getEHAssetSoftwares(asset.id);
+        assetSoftwares = await EHAssetSoftwares(asset.id);
     } catch (error: any) {
         logger.error(
             `failed to get asset software [id: ` +
@@ -101,7 +103,8 @@ async function NetilionAssetToNameplate(asset: any): Promise<Submodel> {
     return nameplate;
 }
 
-async function getAllEHAssets(): Promise<Array<any> | undefined> {
+// Retrieve all assets in user's Netilion account
+async function AllEHAssets(): Promise<Array<any> | undefined> {
     let assets: Array<any> = [];
     try {
         {
@@ -131,7 +134,8 @@ async function getAllEHAssets(): Promise<Array<any> | undefined> {
     }
 }
 
-async function getEHAssetSoftwares(asset_id: string): Promise<Array<any>> {
+// Retrieve software information for an asset in user's Netilion account
+async function EHAssetSoftwares(asset_id: string): Promise<Array<any>> {
     let softwares: Array<any> = [];
     try {
         {
@@ -161,7 +165,8 @@ async function getEHAssetSoftwares(asset_id: string): Promise<Array<any>> {
     return SOFTWARES;
 }
 
-async function getEHProductCategories(product_id: string): Promise<Array<any>> {
+// Retrieve categories for a Netilion product
+async function EHProductCategories(product_id: string): Promise<Array<any>> {
     let categories: Array<any> = [];
     try {
         {
@@ -192,7 +197,7 @@ async function getEHProductCategories(product_id: string): Promise<Array<any>> {
     return CATEGORIES;
 }
 
-async function getEHAssetSpecifications(assset_id: string): Promise<any> {
+async function EHAssetSpecifications(assset_id: string): Promise<any> {
     let specs: any;
     try {
         specs = await (await netilionClient.getAssetSpecs(assset_id)).data;
@@ -207,7 +212,8 @@ async function getEHAssetSpecifications(assset_id: string): Promise<any> {
     return specs;
 }
 
-async function getEHProductDocumnets(
+// Retrieve all docuemnts for a Netilion product
+async function EHProductDocumnets(
     product_id: string,
     categories?: Array<string>
 ): Promise<Array<any>> {
@@ -241,7 +247,8 @@ async function getEHProductDocumnets(
     return DOCS;
 }
 
-async function getEHAssetDocumnets(asset_id: string): Promise<Array<any>> {
+// Retrieve all docuemnts for an asset in user's Netilion account
+async function EHAssetDocumnets(asset_id: string): Promise<Array<any>> {
     let docs: Array<any> = [];
     {
         let page_number = 1;
@@ -261,11 +268,12 @@ async function getEHAssetDocumnets(asset_id: string): Promise<Array<any>> {
     return DOCS;
 }
 
+// Turn asset object from Netilion to AssetAdministrationShell
 async function NetilionAssetToAAS(
     asset: any
 ): Promise<AssetAdministrationShell> {
     let category;
-    const cats = await getEHProductCategories(asset.product.id);
+    const cats = await EHProductCategories(asset.product.id);
     const submodel_refs: Array<Reference> = [];
     submodel_refs.push({
         type: 'ModelReference',
@@ -334,10 +342,11 @@ async function NetilionAssetToAAS(
     return AAS;
 }
 
+// Turn asset object from Netilion to ConfigurationAsBuilt submodel
 async function NetilionAssetToConfigurationAsBuilt(
     asset: any
 ): Promise<Submodel | undefined> {
-    const specs = await getEHAssetSpecifications(asset.id);
+    const specs = await EHAssetSpecifications(asset.id);
     let MinTemp: number;
     let MaxTemp: number;
     if (
@@ -364,10 +373,11 @@ async function NetilionAssetToConfigurationAsBuilt(
     }
 }
 
+// Turn asset object from Netilion to ConfigurationAsDocumented submodel
 async function NetilionAssetToConfigurationAsDocumented(
     asset: any
 ): Promise<Submodel | undefined> {
-    const specs = await getEHAssetSpecifications(asset.id);
+    const specs = await EHAssetSpecifications(asset.id);
     let MinTemp: number;
     let MaxTemp: number;
     if (
@@ -394,8 +404,9 @@ async function NetilionAssetToConfigurationAsDocumented(
     }
 }
 
+// Create Nameplate submodels from all assets in user's Netilion account
 async function allEHNameplates() {
-    const assets = await getAllEHAssets();
+    const assets = await AllEHAssets();
     if (assets) {
         let nameplates = await Promise.all(
             assets.map(async (asset: any) => {
@@ -408,6 +419,7 @@ async function allEHNameplates() {
     }
 }
 
+// Create Nameplate submodel for specific asset in user's Netilion account
 async function EHNameplate(asset_id: string) {
     let asset;
     try {
@@ -425,8 +437,9 @@ async function EHNameplate(asset_id: string) {
     }
 }
 
+// Create ConfigurationAsBuilt submodels from all assets in user's Netilion account
 async function allEHConfigurationsAsBuilt() {
-    const assets = await getAllEHAssets();
+    const assets = await AllEHAssets();
     if (assets) {
         let configurations_as_built = (
             await Promise.all(
@@ -443,6 +456,7 @@ async function allEHConfigurationsAsBuilt() {
     }
 }
 
+// Create ConfigurationAsBuilt submodel for specific asset in user's Netilion account
 async function EHConfigurationAsBuilt(asset_id: string) {
     let asset;
     try {
@@ -460,8 +474,9 @@ async function EHConfigurationAsBuilt(asset_id: string) {
     }
 }
 
+// Create ConfigurationAsDocumented submodels from all assets in user's Netilion account
 async function allEHConfigurationsAsDocumented() {
-    const assets = await getAllEHAssets();
+    const assets = await AllEHAssets();
     if (assets) {
         let configurations_as_documented = (
             await Promise.all(
@@ -480,6 +495,7 @@ async function allEHConfigurationsAsDocumented() {
     }
 }
 
+// Create ConfigurationAsDocumented submodel for specific asset in user's Netilion account
 async function EHConfigurationAsDocumented(asset_id: string) {
     let asset;
     try {
@@ -497,8 +513,9 @@ async function EHConfigurationAsDocumented(asset_id: string) {
     }
 }
 
+// Create AssetAdministrationShells from all assets in user's Netilion account
 async function allEHAAS() {
-    const assets = await getAllEHAssets();
+    const assets = await AllEHAssets();
     if (assets) {
         let asset_adminstration_shells = await Promise.all(
             assets.map(async (asset: any) => {
@@ -511,6 +528,7 @@ async function allEHAAS() {
     }
 }
 
+// Create AssetAdministrationShells from specific asset in user's Netilion account
 async function EHAAS(asset_id: string) {
     let asset;
     try {
@@ -529,12 +547,12 @@ async function EHAAS(asset_id: string) {
 }
 
 export default {
-    getEHVDICategories,
-    getAllEHAssets,
-    getEHAssetSoftwares,
-    getEHProductCategories,
-    getEHProductDocumnets,
-    getEHAssetDocumnets,
+    getEHVDICategories: EHVDICategories,
+    getAllEHAssets: AllEHAssets,
+    getEHAssetSoftwares: EHAssetSoftwares,
+    getEHProductCategories: EHProductCategories,
+    getEHProductDocumnets: EHProductDocumnets,
+    getEHAssetDocumnets: EHAssetDocumnets,
     NetilionAssetToNameplate,
     EHNameplate,
     NetilionAssetToConfigurationAsBuilt,

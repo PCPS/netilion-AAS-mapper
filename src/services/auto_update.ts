@@ -9,6 +9,7 @@ if (process.env.NODE_ENV !== 'production') {
     dotenv.config();
 }
 
+// Post all AssetAdministrationShells made from netilion assets to the OI4 Repo
 function postAAS() {
     setTimeout(async () => {
         logger.info('Sending AAS from Netilion to OI4');
@@ -17,6 +18,7 @@ function postAAS() {
     }, Number(process.env.AAS_POST_PERIOD) || 5 * 60 * 1000);
 }
 
+// Post all submodels made from netilion assets to the OI4 Repo
 function postSubmodels() {
     setTimeout(async () => {
         logger.info('Sending Nameplates from Netilion to OI4');
@@ -27,6 +29,7 @@ function postSubmodels() {
     }, Number(process.env.SM_POST_PERIOD) || 5 * 60 * 1000);
 }
 
+// Update all ConfigurationAsBuilt submodels in OI4 Repo from netilion asset information
 function updateConfigurationsAsBuilt() {
     setTimeout(async () => {
         logger.info('Sending ConfigurationAsBuilt from Netilion to OI4');
