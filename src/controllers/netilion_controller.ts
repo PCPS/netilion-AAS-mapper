@@ -19,7 +19,7 @@ async function getAllEHNameplates(
 }
 
 async function getEHNameplate(req: Request, res: Response, next: NextFunction) {
-    let nameplate = await netilion.EHNameplate(req.params.id);
+    let nameplate = await netilion.EHNameplate(Number(req.params.id));
     if (nameplate) {
         return res.status(200).json(nameplate);
     } else {
@@ -75,7 +75,7 @@ async function getEHConfigurationAsBuilt(
     res: Response,
     next: NextFunction
 ) {
-    const cap = await netilion.EHConfigurationAsBuilt(req.params.id);
+    const cap = await netilion.EHConfigurationAsBuilt(Number(req.params.id));
     if (cap) {
         return res.status(200).json(cap);
     } else {
@@ -111,7 +111,9 @@ async function getEHConfigurationAsDocumented(
     res: Response,
     next: NextFunction
 ) {
-    const cap = await netilion.EHConfigurationAsDocumented(req.params.id);
+    const cap = await netilion.EHConfigurationAsDocumented(
+        Number(req.params.id)
+    );
     if (cap) {
         return res.status(200).json(cap);
     } else {

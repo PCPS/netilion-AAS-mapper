@@ -1,22 +1,10 @@
-import { Reference, SpecificAssetId, Submodel } from '../aas_components';
-import {
-    ContentType,
-    DataTypeDefXsd,
-    LangStringSet,
-    PathType,
-    ValueDataType,
-    EntityType,
-    Identifier
-} from '../primitive_data_types';
+import { Submodel } from '../aas_components';
+import { LangStringSet } from '../primitive_data_types';
 import {
     SubmodelElementCollection,
     Property,
-    MultiLanguageProperty,
-    ReferenceElement,
-    File,
-    Entity
+    MultiLanguageProperty
 } from '../submodel_elements';
-import { xs } from '../xs_data_types';
 import { SubmodelElement } from '../aas_components';
 import { GetSemanticId } from '../../services/oi4_helpers';
 import { number_to_padded_string } from '../../services/oi4_helpers';
@@ -29,8 +17,8 @@ function Generate_SMC_Phone(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     const TelephoneNumber = new MultiLanguageProperty({
         idShort: 'TelephoneNumber',
         semanticId: GetSemanticId('TelephoneNumber'),
@@ -68,8 +56,8 @@ function Generate_SMC_Fax(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     const FaxNumber = new MultiLanguageProperty({
         idShort: 'FaxNumber',
         semanticId: GetSemanticId('FaxNumber'),
@@ -101,8 +89,8 @@ function Generate_SMC_Email(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     const EmailAddress = new Property({
         idShort: 'EmailAddress',
         semanticId: GetSemanticId('EmailAddress'),
@@ -150,8 +138,8 @@ function Generate_SMC_IPCommunication(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     const AddressOfAdditionalLink = new Property({
         idShort: 'AddressOfAdditionalLink',
         semanticId: GetSemanticId('AddressOfAdditionalLink'),
@@ -227,8 +215,8 @@ function Generate_SMC_ContactInformation(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     if (opt.RoleOfContactPerson) {
         const RoleOfContactPerson = new Property({
             idShort: 'RoleOfContactPerson',
@@ -451,8 +439,8 @@ export function Generate_SM_ContactInformations(
     id: string,
     idShort_postfix?: string
 ): Submodel {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     opt.ContactInformation.forEach((item, i) => {
         const ContactInformation = Generate_SMC_ContactInformation(item);
         submodelElements.push(ContactInformation);

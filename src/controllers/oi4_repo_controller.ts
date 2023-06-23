@@ -33,7 +33,7 @@ async function updateEHNameplatesInOI4(
     res: Response,
     next: NextFunction
 ) {
-    const result = await oi4.updateEHNameplatesInOI4(req.params.id);
+    const result = await oi4.updateEHNameplatesInOI4(Number(req.params.id));
     res.status(result.status).json(result.json);
 }
 
@@ -51,7 +51,9 @@ async function updateEHConfigurationsAsBuiltInOI4(
     res: Response,
     next: NextFunction
 ) {
-    const result = await oi4.updateEHConfigurationsAsBuiltInOI4(req.params.id);
+    const result = await oi4.updateEHConfigurationsAsBuiltInOI4(
+        Number(req.params.id)
+    );
     res.status(result.status).json(result.json);
 }
 
@@ -79,7 +81,7 @@ async function updateEHConfigurationsAsDocumentedInOI4(
     next: NextFunction
 ) {
     const result = await oi4.updateEHConfigurationsAsDocumentedInOI4(
-        req.params.id
+        Number(req.params.id)
     );
     res.status(result.status).json(result.json);
 }

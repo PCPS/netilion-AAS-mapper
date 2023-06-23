@@ -1,25 +1,7 @@
-import { Reference, SpecificAssetId, Submodel } from '../aas_components';
-import {
-    ContentType,
-    DataTypeDefXsd,
-    LangStringSet,
-    PathType,
-    ValueDataType,
-    EntityType,
-    Identifier
-} from '../primitive_data_types';
-import {
-    SubmodelElementCollection,
-    Property,
-    MultiLanguageProperty,
-    ReferenceElement,
-    File,
-    Entity
-} from '../submodel_elements';
-import { xs } from '../xs_data_types';
+import { Submodel } from '../aas_components';
+import { Property } from '../submodel_elements';
 import { SubmodelElement } from '../aas_components';
 import { GetSemanticId } from '../../services/oi4_helpers';
-import { number_to_padded_string } from '../../services/oi4_helpers';
 
 export function Generate_SM_ConfigurationAsDocumented(
     opt: {
@@ -30,8 +12,8 @@ export function Generate_SM_ConfigurationAsDocumented(
     id: string,
     idShort_postfix?: string
 ): Submodel {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     const NetilionAssetId = new Property({
         idShort: 'NetilionAssetId',
         semanticId: GetSemanticId('NetilionAssetId'),

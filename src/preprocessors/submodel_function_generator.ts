@@ -532,7 +532,7 @@ function GenerateFunction(
             break;
     }
     extra_parameters += 'idShort_postfix?: string';
-    function_body += "let postfix = idShort_postfix || '';\n";
+    function_body += "const postfix = idShort_postfix || '';\n";
     let smcs = Object.keys(smes)
         .filter((key: string) => {
             return (
@@ -570,7 +570,7 @@ function GenerateFunction(
         ' ): ' +
         model.modelType +
         ' {\n';
-    function_body += 'let submodelElements: Array<SubmodelElement> = [];\n';
+    function_body += 'const submodelElements: Array<SubmodelElement> = [];\n';
     Object.keys(smes).forEach((key: string) => {
         let sme = smes[key];
         let assignment: string = '';

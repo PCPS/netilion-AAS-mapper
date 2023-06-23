@@ -1,10 +1,8 @@
 import { Reference, SpecificAssetId, Submodel } from '../aas_components';
 import {
     ContentType,
-    DataTypeDefXsd,
     LangStringSet,
     PathType,
-    ValueDataType,
     EntityType,
     Identifier
 } from '../primitive_data_types';
@@ -29,8 +27,8 @@ function Generate_SMC_DocumentId(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     const DocumentDomainId = new Property({
         idShort: 'DocumentDomainId',
         semanticId: GetSemanticId('DocumentDomainId'),
@@ -69,8 +67,8 @@ function Generate_SMC_DocumentClassification(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     const ClassId = new Property({
         idShort: 'ClassId',
         semanticId: GetSemanticId('ClassId'),
@@ -118,8 +116,8 @@ function Generate_SMC_DocumentVersion(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     opt.Language.forEach((item, i) => {
         const Language = new Property({
             idShort: 'Language{' + number_to_padded_string(i, 3) + '}',
@@ -278,8 +276,8 @@ function Generate_SMC_Document(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     opt.DocumentId.forEach((item, i) => {
         const DocumentId = Generate_SMC_DocumentId(item);
         submodelElements.push(DocumentId);
@@ -358,8 +356,8 @@ export function Generate_SM_HandoverDocumentation(
     id: string,
     idShort_postfix?: string
 ): Submodel {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     if (opt.Document) {
         opt.Document.forEach((item, i) => {
             const Document = Generate_SMC_Document(item);

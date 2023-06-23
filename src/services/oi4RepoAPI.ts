@@ -22,7 +22,6 @@ const makeBase64 = (str: string, encodeing: BufferEncoding = 'utf8') => {
 };
 
 export class OI4Client {
-    //TODO: add support for OAUTH
     private api: AxiosInstance;
     private aas_repo: string;
     private sm_repo: string;

@@ -10,6 +10,7 @@ import { netilionAssetToNameplateInput } from './mappers';
 import { NetelionClient } from './netilionAPI';
 import { Generate_SM_ConfigurationAsBuilt } from '../oi4_definitions/submodels/configuration_as_built_sm';
 import { Generate_SM_ConfigurationAsDocumented } from '../oi4_definitions/submodels/configuration_as_documented_sm';
+import { NetilionAsset } from '../interfaces/Netilion';
 
 const netilionClient = new NetelionClient();
 
@@ -38,13 +39,16 @@ async function EHVDICategories(): Promise<Array<any>> {
 }
 
 // Turn asset object from Netilion to Nameplate submodel
-async function NetilionAssetToNameplate(asset: any): Promise<Submodel> {
+async function NetilionAssetToNameplate(
+    asset: NetilionAsset
+): Promise<Submodel> {
     let assetSpecs: any = {};
     let assetSoftwares: any = {};
     let product: any = {};
     let manufacturer: any = {};
     try {
-        assetSpecs = (await netilionClient.getAssetSpecs(asset.id)).data;
+        assetSpecs = (await netilionClient.getAssetSpecs(asset.id.toString()))
+            .data;
     } catch (error: any) {
         logger.error(
             `failed to get asset specifications [id: ` +
@@ -62,7 +66,8 @@ async function NetilionAssetToNameplate(asset: any): Promise<Submodel> {
         );
     }
     try {
-        product = (await netilionClient.getProduct(asset.product.id)).data;
+        product = (await netilionClient.getProduct(asset.product.id.toString()))
+            .data;
     } catch (error: any) {
         logger.error(
             `failed to get product [id: ` +
@@ -121,9 +126,6 @@ async function AllEHAssets(): Promise<Array<any> | undefined> {
         logger.error(`failed to get assets from netilion: ${error}`);
     }
     if (assets && assets.length) {
-        console.log('!!!!!!!!!!!!!!');
-        console.log(assets);
-        console.log('!!!!!!!!!!!!!!');
         const ASSETS = (await Promise.all(assets)).reduce((a, b) => {
             a = a.concat(b);
             return a;
@@ -135,18 +137,20 @@ async function AllEHAssets(): Promise<Array<any> | undefined> {
 }
 
 // Retrieve software information for an asset in user's Netilion account
-async function EHAssetSoftwares(asset_id: string): Promise<Array<any>> {
-    let softwares: Array<any> = [];
+async function EHAssetSoftwares(asset_id: number): Promise<Array<any>> {
+    const str_asset_id = asset_id.toString();
+    const softwares: Array<any> = [];
     try {
         {
             let page_number = 1;
-            let page = (await netilionClient.getAssetSoftwares(asset_id)).data;
+            let page = (await netilionClient.getAssetSoftwares(str_asset_id))
+                .data;
             while (await page.pagination.next) {
                 page_number++;
                 softwares.push(await page.softwares);
                 page = (
                     await netilionClient.getAssetSoftwares(
-                        asset_id,
+                        str_asset_id,
                         page_number
                     )
                 ).data;
@@ -155,7 +159,7 @@ async function EHAssetSoftwares(asset_id: string): Promise<Array<any>> {
         }
     } catch (error: any) {
         logger.error(
-            `failed to get softwares for asset ${asset_id} from netilion: ${error}`
+            `failed to get softwares for asset ${str_asset_id} from netilion: ${error}`
         );
     }
     const SOFTWARES = (await Promise.all(softwares)).reduce((a, b) => {
@@ -166,19 +170,21 @@ async function EHAssetSoftwares(asset_id: string): Promise<Array<any>> {
 }
 
 // Retrieve categories for a Netilion product
-async function EHProductCategories(product_id: string): Promise<Array<any>> {
-    let categories: Array<any> = [];
+async function EHProductCategories(product_id: number): Promise<Array<any>> {
+    const str_product_id = product_id.toString();
+    const categories: Array<any> = [];
     try {
         {
             let page_number = 1;
-            let page = (await netilionClient.getProductCategories(product_id))
-                .data;
+            let page = (
+                await netilionClient.getProductCategories(str_product_id)
+            ).data;
             while (await page.pagination.next) {
                 page_number++;
                 categories.push(await page.categories);
                 page = (
                     await netilionClient.getProductCategories(
-                        product_id,
+                        str_product_id,
                         page_number
                     )
                 ).data;
@@ -187,7 +193,7 @@ async function EHProductCategories(product_id: string): Promise<Array<any>> {
         }
     } catch (error: any) {
         logger.error(
-            `failed to get categories for product ${product_id} from netilion: ${error}`
+            `failed to get categories for product ${str_product_id} from netilion: ${error}`
         );
     }
     const CATEGORIES = (await Promise.all(categories)).reduce((a, b) => {
@@ -197,16 +203,17 @@ async function EHProductCategories(product_id: string): Promise<Array<any>> {
     return CATEGORIES;
 }
 
-async function EHAssetSpecifications(assset_id: string): Promise<any> {
+async function EHAssetSpecifications(assset_id: number): Promise<any> {
+    const str_asset_id = assset_id.toString();
     let specs: any;
     try {
-        specs = await (await netilionClient.getAssetSpecs(assset_id)).data;
+        specs = await (await netilionClient.getAssetSpecs(str_asset_id)).data;
         if (specs === undefined) {
             specs = {};
         }
     } catch (error: any) {
         logger.error(
-            `failed to get specifications for asset ${assset_id} from netilion: ${error}`
+            `failed to get specifications for asset ${str_asset_id} from netilion: ${error}`
         );
     }
     return specs;
@@ -214,15 +221,16 @@ async function EHAssetSpecifications(assset_id: string): Promise<any> {
 
 // Retrieve all docuemnts for a Netilion product
 async function EHProductDocumnets(
-    product_id: string,
+    product_id: number,
     categories?: Array<string>
 ): Promise<Array<any>> {
+    const str_product_id = product_id.toString();
     let docs: Array<any> = [];
     {
         let page_number = 1;
         let page = (
             await netilionClient.getProductDocs(
-                product_id,
+                str_product_id,
                 page_number,
                 categories
             )
@@ -232,7 +240,7 @@ async function EHProductDocumnets(
             docs.push(await page.documents);
             page = (
                 await netilionClient.getProductDocs(
-                    product_id,
+                    str_product_id,
                     page_number,
                     categories
                 )
@@ -248,16 +256,18 @@ async function EHProductDocumnets(
 }
 
 // Retrieve all docuemnts for an asset in user's Netilion account
-async function EHAssetDocumnets(asset_id: string): Promise<Array<any>> {
+async function EHAssetDocumnets(asset_id: number): Promise<Array<any>> {
     let docs: Array<any> = [];
     {
+        const str_asset_id = asset_id.toString();
         let page_number = 1;
-        let page = (await netilionClient.getAssetDocs(asset_id)).data;
+        let page = (await netilionClient.getAssetDocs(str_asset_id)).data;
         while (await page.pagination.next) {
             page_number++;
             docs.push(await page.documents);
-            page = (await netilionClient.getAssetDocs(asset_id, page_number))
-                .data;
+            page = (
+                await netilionClient.getAssetDocs(str_asset_id, page_number)
+            ).data;
         }
         docs.push(await page.documents);
     }
@@ -270,7 +280,7 @@ async function EHAssetDocumnets(asset_id: string): Promise<Array<any>> {
 
 // Turn asset object from Netilion to AssetAdministrationShell
 async function NetilionAssetToAAS(
-    asset: any
+    asset: NetilionAsset
 ): Promise<AssetAdministrationShell> {
     let category;
     const cats = await EHProductCategories(asset.product.id);
@@ -323,8 +333,13 @@ async function NetilionAssetToAAS(
     }
     const AAS = new AssetAdministrationShell({
         category,
-        idShort: asset.id,
-        description: asset.description,
+        idShort: asset.id.toString(),
+        description: [
+            {
+                language: 'en',
+                text: asset.description
+            }
+        ],
         id:
             process.env.SERVER_URL +
             // ':' +
@@ -344,7 +359,7 @@ async function NetilionAssetToAAS(
 
 // Turn asset object from Netilion to ConfigurationAsBuilt submodel
 async function NetilionAssetToConfigurationAsBuilt(
-    asset: any
+    asset: NetilionAsset
 ): Promise<Submodel | undefined> {
     const specs = await EHAssetSpecifications(asset.id);
     let MinTemp: number;
@@ -375,7 +390,7 @@ async function NetilionAssetToConfigurationAsBuilt(
 
 // Turn asset object from Netilion to ConfigurationAsDocumented submodel
 async function NetilionAssetToConfigurationAsDocumented(
-    asset: any
+    asset: NetilionAsset
 ): Promise<Submodel | undefined> {
     const specs = await EHAssetSpecifications(asset.id);
     let MinTemp: number;
@@ -409,7 +424,7 @@ async function allEHNameplates() {
     const assets = await AllEHAssets();
     if (assets) {
         let nameplates = await Promise.all(
-            assets.map(async (asset: any) => {
+            assets.map(async (asset: NetilionAsset) => {
                 return await NetilionAssetToNameplate(asset);
             })
         );
@@ -420,13 +435,16 @@ async function allEHNameplates() {
 }
 
 // Create Nameplate submodel for specific asset in user's Netilion account
-async function EHNameplate(asset_id: string) {
+async function EHNameplate(asset_id: number) {
+    const str_asset_id = asset_id.toString();
     let asset;
     try {
-        asset = (await netilionClient.getAsset(asset_id)).data;
+        asset = (await netilionClient.getAsset(str_asset_id)).data;
     } catch (error: any) {
         logger.error(
-            `failed to get asset [id: ` + asset_id + `] from netilion: ${error}`
+            `failed to get asset [id: ` +
+                str_asset_id +
+                `] from netilion: ${error}`
         );
     }
     if (asset) {
@@ -443,7 +461,7 @@ async function allEHConfigurationsAsBuilt() {
     if (assets) {
         let configurations_as_built = (
             await Promise.all(
-                assets.map(async (asset: any) => {
+                assets.map(async (asset: NetilionAsset) => {
                     return await NetilionAssetToConfigurationAsBuilt(asset);
                 })
             )
@@ -457,13 +475,16 @@ async function allEHConfigurationsAsBuilt() {
 }
 
 // Create ConfigurationAsBuilt submodel for specific asset in user's Netilion account
-async function EHConfigurationAsBuilt(asset_id: string) {
+async function EHConfigurationAsBuilt(asset_id: number) {
+    const str_aasset_id = asset_id.toString();
     let asset;
     try {
-        asset = (await netilionClient.getAsset(asset_id)).data;
+        asset = (await netilionClient.getAsset(str_aasset_id)).data;
     } catch (error: any) {
         logger.error(
-            `failed to get asset [id: ` + asset_id + `] from netilion: ${error}`
+            `failed to get asset [id: ` +
+                str_aasset_id +
+                `] from netilion: ${error}`
         );
     }
     if (asset) {
@@ -480,7 +501,7 @@ async function allEHConfigurationsAsDocumented() {
     if (assets) {
         let configurations_as_documented = (
             await Promise.all(
-                assets.map(async (asset: any) => {
+                assets.map(async (asset: NetilionAsset) => {
                     return await NetilionAssetToConfigurationAsDocumented(
                         asset
                     );
@@ -496,13 +517,16 @@ async function allEHConfigurationsAsDocumented() {
 }
 
 // Create ConfigurationAsDocumented submodel for specific asset in user's Netilion account
-async function EHConfigurationAsDocumented(asset_id: string) {
+async function EHConfigurationAsDocumented(asset_id: number) {
+    const str_asset_id = asset_id.toString();
     let asset;
     try {
-        asset = (await netilionClient.getAsset(asset_id)).data;
+        asset = (await netilionClient.getAsset(str_asset_id)).data;
     } catch (error: any) {
         logger.error(
-            `failed to get asset [id: ` + asset_id + `] from netilion: ${error}`
+            `failed to get asset [id: ` +
+                str_asset_id +
+                `] from netilion: ${error}`
         );
     }
     if (asset) {
@@ -518,7 +542,7 @@ async function allEHAAS() {
     const assets = await AllEHAssets();
     if (assets) {
         let asset_adminstration_shells = await Promise.all(
-            assets.map(async (asset: any) => {
+            assets.map(async (asset: NetilionAsset) => {
                 return await NetilionAssetToAAS(asset);
             })
         );

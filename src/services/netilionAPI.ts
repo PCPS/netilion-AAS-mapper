@@ -13,42 +13,126 @@ if (process.env.NODE_ENV !== 'production') {
     dotenv.config();
 }
 
-interface AuthToken {
-    authType: 'Basic';
-    value: string;
+interface OAUTH_PASSWORD {
+    client_id: string;
+    client_secret: string;
+    grant_type: 'password';
+    username: string;
+    password: string;
 }
 
-const makeToken = () => {
-    //TODO: add OAUTH authentication
-    let token: AuthToken = { authType: 'Basic', value: '' };
-    switch (process.env.NETILION_AUTH_TYPE) {
-        case 'Basic':
-            token.authType = 'Basic';
-            token.value = makeBase64(
-                process.env.NETILION_USERNAME +
-                    ':' +
-                    process.env.NETILION_PASSWORD
-            );
-            logger.info(
-                `Basic token generatad form usr: ${process.env.NETILION_USERNAME}, \
-                    pwd: ${process.env.NETILION_PASSWORD} with value [ ${token.value} ]`
-            );
-            break;
-        default:
-            logger.error(
-                'AUTHTYPE [' +
-                    process.env.NETILION_AUTH_TYPE +
-                    '] not found or not recognized'
-            );
-            break;
-    }
-    return token;
-};
+interface OAUTH_REFRESH {
+    client_id: string;
+    client_secret: string;
+    grant_type: 'refresh_token';
+    refresh_token: string;
+}
 
-const token = makeToken();
+interface OAUTH_RESPONSE {
+    access_token: string;
+    token_type: 'Bearer';
+    expires_in: number;
+    refresh_token: string;
+    created_at: number;
+}
+
+class AuthToken {
+    authType: 'Bearer' | 'Basic';
+    value: string;
+    public constructor() {
+        switch (process.env.NETILION_AUTH_TYPE) {
+            case 'Basic':
+                this.authType = 'Basic';
+                this.value = makeBase64(
+                    process.env.NETILION_USERNAME +
+                        ':' +
+                        process.env.NETILION_PASSWORD
+                );
+                logger.info(
+                    `Basic token generatad form usr: ${process.env.NETILION_USERNAME}, \
+                    pwd: ${process.env.NETILION_PASSWORD} with value [ ${this.value} ]`
+                );
+                break;
+            case 'Bearer':
+                this.authType = 'Bearer';
+                this.value = '';
+                this.requestOAuth2({
+                    client_id:
+                        process.env.NETILION_API_KEY ||
+                        'ERROR_NETILION_API_KEY_UNDEFINED',
+                    client_secret:
+                        process.env.NETILION_SECRET ||
+                        'ERROR_NETILION_SECRET_UNDEFINED',
+                    grant_type: 'password',
+                    username:
+                        process.env.NETILION_USERNAME ||
+                        'ERROR_NETILION_USERNAME_UNDEFINED',
+                    password:
+                        process.env.NETILION_PASSWORD ||
+                        'ERROR_NETILION_PASSWORD_UNDEFINED'
+                });
+                break;
+            default:
+                this.authType = 'Basic';
+                this.value = 'ERROR_NETILION_AUTH_TYPE_UNDEFINED';
+                logger.error(
+                    'AUTHTYPE [' +
+                        process.env.NETILION_AUTH_TYPE +
+                        '] not found or not recognized'
+                );
+                break;
+        }
+    }
+    private async requestOAuth2(body: OAUTH_PASSWORD | OAUTH_REFRESH) {
+        if (process.env.NETILION_AUTH_SERVER !== undefined) {
+            try {
+                const resp = await axios.post(
+                    process.env.NETILION_AUTH_SERVER,
+                    body,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Accept: 'application/json'
+                        }
+                    }
+                );
+                const data: OAUTH_RESPONSE = await resp.data;
+                this.value = data.access_token;
+                console.log('AUTH VALUE RETIEVED: ' + data);
+                console.log(data);
+                const time_to_next_req =
+                    data.expires_in * 1000 -
+                    (Date.now() - data.created_at * 1000 + 2000);
+                setTimeout(() => {
+                    this.requestOAuth2({
+                        client_id: body.client_id,
+                        client_secret: body.client_secret,
+                        grant_type: 'refresh_token',
+                        refresh_token: data.refresh_token
+                    });
+                }, time_to_next_req);
+            } catch (error: any) {
+                if (error.status) {
+                    logger.error(
+                        'Authentication error ' + error.status + ': ' + error
+                    );
+                } else {
+                    logger.error(
+                        'Unknown error while Authenticating: ' + error
+                    );
+                    console.log(JSON.stringify(error));
+                }
+            }
+        } else
+            logger.error(
+                'NETILION_AUTH_SERVER not defined. Reverting to default "https://api.netilion.endress.com/oauth/token"'
+            );
+    }
+}
+
+const token = new AuthToken();
 
 export class NetelionClient {
-    //TODO: add support for OAUTH
     private api: AxiosInstance;
     public constructor() {
         const apiConfig: CreateAxiosDefaults = {
@@ -64,17 +148,7 @@ export class NetelionClient {
         };
         this.api = axios.create(apiConfig);
         this.api.interceptors.request.use((config) => {
-            //TODO: add support for OAUTH
-            switch (token.authType) {
-                case 'Basic':
-                    config.headers.Authorization = 'Basic ' + token.value;
-                    break;
-                default:
-                    logger.error(
-                        `Authorization method ${token.authType} is not supported for interception`
-                    );
-                    break;
-            }
+            config.headers.Authorization = token.authType + ' ' + token.value;
             logger.info(
                 `request ready with URL[${config.baseURL! + config.url!}]`
             );

@@ -1,20 +1,17 @@
-import { Reference, SpecificAssetId, Submodel } from '../aas_components';
+import { Reference, Submodel } from '../aas_components';
 import {
     ContentType,
     DataTypeDefXsd,
     LangStringSet,
     PathType,
-    ValueDataType,
-    EntityType,
-    Identifier
+    ValueDataType
 } from '../primitive_data_types';
 import {
     SubmodelElementCollection,
     Property,
     MultiLanguageProperty,
     ReferenceElement,
-    File,
-    Entity
+    File
 } from '../submodel_elements';
 import { xs } from '../xs_data_types';
 import { SubmodelElement } from '../aas_components';
@@ -29,8 +26,8 @@ function Generate_SMC_Phone(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     const TelephoneNumber = new MultiLanguageProperty({
         idShort: 'TelephoneNumber',
         semanticId: GetSemanticId('TelephoneNumber'),
@@ -68,8 +65,8 @@ function Generate_SMC_Fax(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     const FaxNumber = new MultiLanguageProperty({
         idShort: 'FaxNumber',
         semanticId: GetSemanticId('FaxNumber'),
@@ -101,8 +98,8 @@ function Generate_SMC_Email(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     const EmailAddress = new Property({
         idShort: 'EmailAddress',
         semanticId: GetSemanticId('EmailAddress'),
@@ -150,8 +147,8 @@ function Generate_SMC_IPCommunication(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     const AddressOfAdditionalLink = new Property({
         idShort: 'AddressOfAdditionalLink',
         semanticId: GetSemanticId('AddressOfAdditionalLink'),
@@ -193,8 +190,8 @@ function Generate_SMC_SafetyRelatedPropertiesForPassiveBehaviour(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     if (opt.MaxInputPower) {
         const MaxInputPower = new Property({
             idShort: 'MaxInputPower',
@@ -258,8 +255,8 @@ function Generate_SMC_SafetyRelatedPropertiesForActiveBehaviour(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     if (opt.MaxOutputPower) {
         const MaxOutputPower = new Property({
             idShort: 'MaxOutputPower',
@@ -335,8 +332,8 @@ function Generate_SMC_AmbientConditions(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     if (opt.DeviceCategory) {
         const DeviceCategory = new Property({
             idShort: 'DeviceCategory',
@@ -438,8 +435,8 @@ function Generate_SMC_ProcessConditions(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     if (opt.DeviceCategory) {
         const DeviceCategory = new Property({
             idShort: 'DeviceCategory',
@@ -554,8 +551,8 @@ function Generate_SMC_ExternalElectricalCircuit(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     if (opt.DesignationOfElectricalTerminal) {
         const DesignationOfElectricalTerminal = new Property({
             idShort: 'DesignationOfElectricalTerminal',
@@ -698,8 +695,8 @@ function Generate_SMC_ExplosionSafty(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     if (opt.DesignationOfCertificateOrApproval) {
         const DesignationOfCertificateOrApproval = new Property({
             idShort: 'DesignationOfCertificateOrApproval',
@@ -856,8 +853,8 @@ function Generate_SMC_ExplosionSafties(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     opt.ExplosionSafty.forEach((item, i) => {
         const ExplosionSafty = Generate_SMC_ExplosionSafty(item);
         submodelElements.push(ExplosionSafty);
@@ -938,8 +935,8 @@ function Generate_SMC_Marking(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     const MarkingName = new Property({
         idShort: 'MarkingName',
         semanticId: GetSemanticId('MarkingName'),
@@ -1019,8 +1016,8 @@ function Generate_SMC_GuidelineSpecificProperties(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     const GuidelineForConformityDeclaration = new Property({
         idShort: 'GuidelineForConformityDeclaration',
         semanticId: GetSemanticId('GuidelineForConformityDeclaration'),
@@ -1087,8 +1084,8 @@ function Generate_SMC_ContactInformation(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     const Street = new MultiLanguageProperty({
         idShort: 'Street',
         semanticId: GetSemanticId('Street'),
@@ -1335,8 +1332,8 @@ function Generate_SMC_Markings(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     opt.Marking.forEach((item, i) => {
         const Marking = Generate_SMC_Marking(item);
         submodelElements.push(Marking);
@@ -1366,8 +1363,8 @@ function Generate_SMC_AssetSpecificProperties(
     },
     idShort_postfix?: string
 ): SubmodelElementCollection {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     opt.GuidelineSpecificProperties.forEach((item, i) => {
         const GuidelineSpecificProperties =
             Generate_SMC_GuidelineSpecificProperties(item);
@@ -1534,8 +1531,8 @@ export function Generate_SM_Nameplate(
     id: string,
     idShort_postfix?: string
 ): Submodel {
-    let postfix = idShort_postfix || '';
-    let submodelElements: Array<SubmodelElement> = [];
+    const postfix = idShort_postfix || '';
+    const submodelElements: Array<SubmodelElement> = [];
     const URIOfTheProduct = new Property({
         idShort: 'URIOfTheProduct',
         semanticId: GetSemanticId('URIOfTheProduct'),

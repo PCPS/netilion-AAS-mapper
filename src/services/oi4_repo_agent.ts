@@ -164,7 +164,7 @@ async function postAllEHNameplatesToOI4(): Promise<agent_op_result> {
 
 // update all Nameplate submodels in OI4 repo using Netilion assets
 async function updateEHNameplatesInOI4(
-    asset_id: string
+    asset_id: number
 ): Promise<agent_op_result> {
     const nameplate = await netilion.EHNameplate(asset_id);
 
@@ -263,7 +263,7 @@ async function postAllEHConfigurationsAsBuiltToOI4(): Promise<agent_op_result> {
 
 // update specific ConfigurationAsBuilt submodel in OI4 repo using Netilion asset
 async function updateEHConfigurationsAsBuiltInOI4(
-    asset_id: string
+    asset_id: number
 ): Promise<agent_op_result> {
     const configuration_as_built = await netilion.EHConfigurationAsBuilt(
         asset_id
@@ -465,7 +465,7 @@ async function postAllEHConfigurationsAsDocumentedToOI4(): Promise<agent_op_resu
 
 // update specific ConfigurationAsDocumented submodel in OI4 repo using Netilion asset
 async function updateEHConfigurationsAsDocumentedInOI4(
-    asset_id: string
+    asset_id: number
 ): Promise<agent_op_result> {
     const configuration_as_documented =
         await netilion.EHConfigurationAsDocumented(asset_id);
