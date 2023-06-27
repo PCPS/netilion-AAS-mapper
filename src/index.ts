@@ -57,9 +57,9 @@ router.use((req, res, next) => {
 });
 
 // Tasks
-//auto_update.postAAS();
-//auto_update.postSubmodels();
-//auto_update.updateConfigurationsAsBuilt();
+auto_update.postAAS();
+auto_update.postSubmodels();
+auto_update.updateConfigurationsAsBuilt();
 
 // Server
 const httpServer = http.createServer(router);

@@ -120,13 +120,9 @@ class AuthToken {
                     logger.error(
                         'Unknown error while Authenticating: ' + error
                     );
-                    console.log(JSON.stringify(error));
                 }
             }
-        } else
-            logger.error(
-                'NETILION_AUTH_SERVER not defined. Reverting to default "https://api.netilion.endress.com/oauth/token"'
-            );
+        } else logger.error('NETILION_AUTH_SERVER not defined.');
     }
 }
 
