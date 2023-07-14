@@ -1,92 +1,137 @@
 {
     "Nameplate": {
+        "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate",
+        "semanticIdType": "IRI",
         "modelType": "Submodel",
         "count": "!",
         "submodelElements": {
             "URIOfTheProduct": {
+                "semanticId": "0173-1#02-AAY811#001",
+                "semanticIdType": "IRDI",
                 "modelType": "Property",
                 "count": "!",
                 "valueType": "xs:string"
             },
             "ManufacturerName": {
+                "semanticId": "0173-1#02-AAO677#002",
+                "semanticIdType": "IRDI",
                 "modelType": "MultiLanguageProperty",
                 "count": "!"
             },
             "ManufacturerProductDesignation": {
+                "semanticId": "0173-1#02-AAW338#001",
+                "semanticIdType": "IRDI",
                 "modelType": "MultiLanguageProperty",
                 "count": "!"
             },
             "ContactInformation": {
+                "semanticId": "https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation",
+                "semanticIdType": "IRI",
+                "isCaseOf": "[IRDI] 0173-1#02-AAQ837#005",
                 "modelType": "SubmodelElementCollection",
                 "count": "!",
                 "value": {
                     "Street": {
+                        "semanticId": "0173-1#02-AAO128#002",
+                        "semanticIdType": "IRDI",
                         "modelType": "MultiLanguageProperty",
                         "count": "!"
                     },
                     "Zipcode": {
+                        "semanticId": "0173-1#02-AAO129#002",
+                        "semanticIdType": "IRDI",
                         "modelType": "MultiLanguageProperty",
                         "count": "!"
                     },
                     "CityTown": {
+                        "semanticId": "0173-1#02-AAO132#002",
+                        "semanticIdType": "IRDI",
                         "modelType": "MultiLanguageProperty",
                         "count": "!"
                     },
                     "NationalCode": {
+                        "semanticId": "0173-1#02-AAO134#002",
+                        "semanticIdType": "IRDI",
                         "modelType": "MultiLanguageProperty",
                         "count": "!"
                     },
                     "RoleOfContactPerson": {
+                        "semanticId": "0173-1#02-AAO204#003",
+                        "semanticIdType": "IRDI",
                         "modelType": "Property",
                         "count": "?",
                         "valueType": "xs:string"
                     },
                     "Language": {
+                        "semanticId": "https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/Language",
+                        "semanticIdType": "IRI",
+                        "isCaseOf": "[IRDI] 0173-1#02-AAO895#003",
                         "modelType": "Property",
                         "count": "*",
                         "valueType": "xs:string"
                     },
                     "TimeZone": {
+                        "semanticId": "https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/",
+                        "semanticIdType": "IRI",
                         "modelType": "Property",
                         "count": "?",
                         "valueType": "xs:string"
                     },
                     "Company": {
+                        "semanticId": "0173-1#02-AAW001#001",
+                        "semanticIdType": "IRDI",
                         "modelType": "MultiLanguageProperty",
                         "count": "?"
                     },
                     "Department": {
+                        "semanticId": "0173-1#02-AAO127#003",
+                        "semanticIdType": "IRDI",
                         "modelType": "MultiLanguageProperty",
                         "count": "?"
                     },
                     "Phone": {
+                        "semanticId": "https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/Phone",
+                        "semanticIdType": "IRI",
+                        "isCaseOf": "[IRDI] 0173-1#02-AAQ833#005",
                         "modelType": "SubmodelElementCollection",
                         "count": "?",
                         "value": {
                             "TelephoneNumber": {
+                                "semanticId": "0173-1#02-AAO136#002",
+                                "semanticIdType": "IRDI",
                                 "modelType": "MultiLanguageProperty",
                                 "count": "!"
                             },
                             "TypeOfTelephone": {
+                                "semanticId": "0173-1#02-AAO137#003",
+                                "semanticIdType": "IRDI",
                                 "modelType": "Property",
                                 "count": "?",
                                 "valueType": "xs:string"
                             },
                             "AvailableTime": {
+                                "semanticId": "https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/AvailableTime/",
+                                "semanticIdType": "IRI",
                                 "modelType": "MultiLanguageProperty",
                                 "count": "?"
                             }
                         }
                     },
                     "Fax": {
+                        "semanticId": "0173-1#02-AAQ834#005",
+                        "semanticIdType": "IRDI",
                         "modelType": "SubmodelElementCollection",
                         "count": "?",
                         "value": {
                             "FaxNumber": {
+                                "semanticId": "0173-1#02-AAO195#002",
+                                "semanticIdType": "IRDI",
                                 "modelType": "MultiLanguageProperty",
                                 "count": "!"
                             },
                             "TypeOfFaxNumber": {
+                                "semanticId": "0173-1#02-AAO196#003",
+                                "semanticIdType": "IRDI",
                                 "modelType": "Property",
                                 "count": "?",
                                 "valueType": "xs:string"
@@ -94,86 +139,124 @@
                         }
                     },
                     "Email": {
+                        "semanticId": "0173-1#02-AAQ836#005",
+                        "semanticIdType": "IRDI",
                         "modelType": "SubmodelElementCollection",
                         "count": "?",
                         "value": {
                             "EmailAddress": {
+                                "semanticId": "0173-1#02-AAO198#002",
+                                "semanticIdType": "IRDI",
                                 "modelType": "Property",
                                 "count": "!",
                                 "valueType": "xs:string"
                             },
                             "PublicKey": {
+                                "semanticId": "0173-1#02-AAO200#002",
+                                "semanticIdType": "IRDI",
                                 "modelType": "MultiLanguageProperty",
                                 "count": "?"
                             },
                             "TypeOfEmailAddress": {
+                                "semanticId": "0173-1#02-AAO199#003",
+                                "semanticIdType": "IRDI",
                                 "modelType": "Property",
                                 "count": "?",
                                 "valueType": "xs:string"
                             },
                             "TypeOfPublicKey": {
+                                "semanticId": "0173-1#02-AAO201#002",
+                                "semanticIdType": "IRDI",
                                 "modelType": "MultiLanguageProperty",
                                 "count": "?"
                             }
                         }
                     },
                     "IPCommunication": {
+                        "semanticId": "https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/IPCommunication",
+                        "semanticIdType": "IRI",
                         "modelType": "SubmodelElementCollection",
                         "count": "*",
                         "value": {
                             "AddressOfAdditionalLink": {
+                                "semanticId": "0173-1#02-AAQ326#002",
+                                "semanticIdType": "IRDI",
                                 "modelType": "Property",
                                 "count": "!",
                                 "valueType": "xs:string"
                             },
                             "TypeOfCommunication": {
+                                "semanticId": "https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/IPCommunication/TypeOfCommunication",
+                                "semanticIdType": "IRI",
                                 "modelType": "Property",
                                 "count": "?",
                                 "valueType": "xs:string"
                             },
                             "AvailableTime": {
+                                "semanticId": "https://admin- shell.io/zvei/nameplate/1/0/ContactInformations/ ContactInformation/AvailableTime/",
+                                "semanticIdType": "IRI",
                                 "modelType": "MultiLanguageProperty",
                                 "count": "?"
                             }
                         }
                     },
                     "POBox": {
+                        "semanticId": "0173-1#02-AAO130#002",
+                        "semanticIdType": "IRDI",
                         "modelType": "MultiLanguageProperty",
                         "count": "?"
                     },
                     "ZipCodeOfPOBox": {
+                        "semanticId": "0173-1#02-AAO131#002",
+                        "semanticIdType": "IRDI",
                         "modelType": "MultiLanguageProperty",
                         "count": "?"
                     },
                     "StateCounty": {
+                        "semanticId": "0173-1#02-AAO133#002",
+                        "semanticIdType": "IRDI",
                         "modelType": "MultiLanguageProperty",
                         "count": "?"
                     },
                     "NameOfContact": {
+                        "semanticId": "0173-1#02-AAO205#002",
+                        "semanticIdType": "IRDI",
                         "modelType": "MultiLanguageProperty",
                         "count": "?"
                     },
                     "FirstName": {
+                        "semanticId": "0173-1#02-AAO206#002",
+                        "semanticIdType": "IRDI",
                         "modelType": "MultiLanguageProperty",
                         "count": "?"
                     },
                     "MiddleNames": {
+                        "semanticId": "0173-1#02-AAO207#002",
+                        "semanticIdType": "IRDI",
                         "modelType": "MultiLanguageProperty",
                         "count": "?"
                     },
                     "Title": {
+                        "semanticId": "0173-1#02-AAO208#003",
+                        "semanticIdType": "IRDI",
                         "modelType": "MultiLanguageProperty",
                         "count": "?"
                     },
                     "AcademicTitle": {
+                        "semanticId": "0173-1#02-AAO209#003",
+                        "semanticIdType": "IRDI",
                         "modelType": "MultiLanguageProperty",
                         "count": "?"
                     },
                     "FurtherDetailsOfContact": {
+                        "semanticId": "0173-1#02-AAO210#002",
+                        "semanticIdType": "IRDI",
                         "modelType": "MultiLanguageProperty",
                         "count": "?"
                     },
                     "AddressOfAdditionalLink": {
+                        "semanticId": "0173-1#02-AAQ326#002",
+                        "semanticIdType": "IRDI",
                         "modelType": "Property",
                         "count": "?",
                         "valueType": "xs:string"
@@ -181,187 +264,269 @@
                 }
             },
             "ManufacturerProductRoot": {
+                "semanticId": "0173-1#02-AAU732#001",
+                "semanticIdType": "IRDI",
                 "modelType": "MultiLanguageProperty",
                 "count": "?"
             },
             "ManufacturerProductFamily": {
+                "semanticId": "0173-1#02-AAU731#001",
+                "semanticIdType": "IRDI",
                 "modelType": "MultiLanguageProperty",
                 "count": "?"
             },
             "ManufacturerProductType": {
+                "semanticId": "0173-1#02-AAO057#002",
+                "semanticIdType": "IRDI",
                 "modelType": "MultiLanguageProperty",
                 "count": "?"
             },
             "OrderCodeOfManufacturer": {
+                "semanticId": "0173-1#02-AAO227#002",
+                "semanticIdType": "IRDI",
                 "modelType": "MultiLanguageProperty",
                 "count": "?"
             },
             "ProductArticleNumberOfManufacturer": {
+                "semanticId": "0173-1#02-AAO676#003",
+                "semanticIdType": "IRDI",
                 "modelType": "MultiLanguageProperty",
                 "count": "?"
             },
             "SerialNumber": {
+                "semanticId": "0173-1#02-AAM556#002",
+                "semanticIdType": "IRDI",
                 "modelType": "Property",
                 "count": "?",
                 "valueType": "xs:string"
             },
             "YearOfConstruction": {
+                "semanticId": "0173-1#02-AAP906#001",
+                "semanticIdType": "IRDI",
                 "modelType": "Property",
                 "count": "!",
                 "valueType": "xs:string"
             },
             "DateOfManufacture": {
+                "semanticId": "0173-1#02-AAR972#002",
+                "semanticIdType": "IRDI",
                 "modelType": "Property",
                 "count": "?",
                 "valueType": "xs:date"
             },
             "HardwareVersion": {
+                "semanticId": "0173-1#02-AAN270#002",
+                "semanticIdType": "IRDI",
                 "modelType": "MultiLanguageProperty",
                 "count": "?"
             },
             "FirmwareVersion": {
+                "semanticId": "0173-1#02-AAM985#002",
+                "semanticIdType": "IRDI",
                 "modelType": "MultiLanguageProperty",
                 "count": "?"
             },
             "SoftwareVersion": {
+                "semanticId": "0173-1#02-AAM737#002",
+                "semanticIdType": "IRDI",
                 "modelType": "MultiLanguageProperty",
                 "count": "?"
             },
             "CountryOfOrigin": {
+                "semanticId": "0173-1#02-AAO259#004",
+                "semanticIdType": "IRDI",
                 "modelType": "Property",
                 "count": "?",
                 "valueType": "xs:string"
             },
             "CompanyLogo": {
+                "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/CompanyLogo",
+                "semanticIdType": "IRI",
                 "modelType": "File",
                 "count": "?"
             },
             "Markings": {
+                "semanticId": "0173-1#01-AGZ673#001",
+                "semanticIdType": "IRDI",
                 "modelType": "SubmodelElementCollection",
                 "count": "?",
                 "value": {
                     "Marking": {
+                        "semanticId": "0173-1#01-AHD206#001",
+                        "semanticIdType": "IRDI",
                         "modelType": "SubmodelElementCollection",
                         "count": "+",
                         "value": {
                             "MarkingName": {
+                                "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/MarkingName",
+                                "semanticIdType": "IRI",
                                 "modelType": "Property",
                                 "count": "!",
                                 "valueType": "xs:string"
                             },
                             "DesignationOfCertificateOrApproval": {
+                                "semanticId": "0112/2///61987#ABH783#001",
+                                "semanticIdType": "IRDI",
                                 "modelType": "Property",
                                 "count": "?",
                                 "valueType": "xs:string"
                             },
                             "IssueDate": {
+                                "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/IssueDate",
+                                "semanticIdType": "IRI",
                                 "modelType": "Property",
                                 "count": "?",
                                 "valueType": "xs:date"
                             },
                             "ExpiryDate": {
+                                "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExpiryDate",
+                                "semanticIdType": "IRI",
                                 "modelType": "Property",
                                 "count": "?",
                                 "valueType": "xs:date"
                             },
                             "MarkingFile": {
+                                "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/MarkingFile",
+                                "semanticIdType": "IRI",
                                 "modelType": "File",
                                 "count": "!"
                             },
                             "MarkingAdditionalText": {
+                                "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/MarkingAdditionalText",
+                                "semanticIdType": "IRDI",
                                 "modelType": "Property",
                                 "count": "*",
                                 "valueType": "xs:string"
                             },
                             "ExplosionSafties": {
+                                "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties",
+                                "semanticIdType": "IRI",
                                 "modelType": "SubmodelElementCollection",
                                 "count": "?",
                                 "value": {
                                     "ExplosionSafty": {
+                                        "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety",
+                                        "semanticIdType": "IRI",
                                         "modelType": "SubmodelElementCollection",
                                         "count": "+",
                                         "value": {
                                             "DesignationOfCertificateOrApproval": {
+                                                "semanticId": "0112/2///61987#ABH783#001",
+                                                "semanticIdType": "IRDI",
                                                 "modelType": "Property",
                                                 "count": "?",
                                                 "valueType": "xs:string"
                                             },
                                             "TypeOfApproval": {
+                                                "semanticId": "0173-1#02-AAM812#003",
+                                                "semanticIdType": "IRDI",
                                                 "modelType": "MultiLanguageProperty",
                                                 "count": "?"
                                             },
                                             "AppeovalAgencyTestingAgency": {
+                                                "semanticId": "0173-1#02-AAM632#001",
+                                                "semanticIdType": "IRDI",
                                                 "modelType": "MultiLanguageProperty",
                                                 "count": "?"
                                             },
                                             "TypeOfProtection": {
+                                                "semanticId": "0173-1#02-AAQ325#003",
+                                                "semanticIdType": "IRDI",
                                                 "modelType": "Property",
                                                 "count": "?",
                                                 "valueType": "xs:string"
                                             },
                                             "RatedInsulationVoltage": {
+                                                "semanticId": "0173-1#02-AAN532#003",
+                                                "semanticIdType": "IRDI",
                                                 "modelType": "Property",
                                                 "count": "?",
                                                 "valueType": "xs:decimal"
                                             },
                                             "InstructionControlDrawing": {
+                                                "semanticId": "0112/2///61987#ABO102#001",
+                                                "semanticIdType": "IRDI",
                                                 "modelType": "ReferenceElement",
                                                 "count": "?"
                                             },
                                             "SpecificConditionsForUse": {
+                                                "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/SpecificConditionsForUse",
+                                                "semanticIdType": "IRI",
                                                 "modelType": "Property",
                                                 "count": "?",
                                                 "valueType": "xs:string"
                                             },
                                             "IncompleteDevice": {
+                                                "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/IncompleteDevice",
+                                                "semanticIdType": "IRI",
                                                 "modelType": "Property",
                                                 "count": "?",
                                                 "valueType": "xs:string"
                                             },
                                             "AmbientConditions": {
+                                                "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/AmbientConditions",
+                                                "semanticIdType": "IRI",
                                                 "modelType": "SubmodelElementCollection",
                                                 "count": "?",
                                                 "value": {
                                                     "DeviceCategory": {
+                                                        "semanticId": "0173-1#02-AAK297#004",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
                                                     },
                                                     "EquipmentProtectionLevel": {
+                                                        "semanticId": "0173-1#02-AAM668#001",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "MultiLanguageProperty",
                                                         "count": "?"
                                                     },
                                                     "RegionalSpecificMarking": {
+                                                        "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/RegionalSpecificMarking",
+                                                        "semanticIdType": "IRI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
                                                     },
                                                     "TypeOfProtection": {
+                                                        "semanticId": "0173-1#02-AAQ325#003",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
                                                     },
                                                     "ExplosionGroup": {
+                                                        "semanticId": "0173-1#02-AAT372#001",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
                                                     },
                                                     "MinimumAmbientTemperature": {
+                                                        "semanticId": "0173-1#02-AAZ952#001",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:decimal"
                                                     },
                                                     "MaxAmbientTemperature": {
+                                                        "semanticId": "0173-1#02-BAA039#010",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:decimal"
                                                     },
                                                     "MaxSurfaceTemperatureForDustProof": {
+                                                        "semanticId": "0173-1#02-AAM666#005",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:decimal"
                                                     },
                                                     "TemperatureClass": {
+                                                        "semanticId": "0173-1#02-AAO371#004",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
@@ -369,49 +534,69 @@
                                                 }
                                             },
                                             "ProcessConditions": {
+                                                "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/ProcessConditions",
+                                                "semanticIdType": "IRI",
                                                 "modelType": "SubmodelElementCollection",
                                                 "count": "?",
                                                 "value": {
                                                     "DeviceCategory": {
+                                                        "semanticId": "0173-1#02-AAK297#004",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
                                                     },
                                                     "EquipmentProtectionLevel": {
+                                                        "semanticId": "0173-1#02-AAM668#001",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "MultiLanguageProperty",
                                                         "count": "?"
                                                     },
                                                     "RegionalSpecificMarking": {
+                                                        "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/RegionalSpecificMarking",
+                                                        "semanticIdType": "IRI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
                                                     },
                                                     "TypeOfProtection": {
+                                                        "semanticId": "0173-1#02-AAQ325#003",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
                                                     },
                                                     "ExplosionGroup": {
+                                                        "semanticId": "0173-1#02-AAT372#001",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
                                                     },
                                                     "LowerLimitingValueOfProcessTemperature": {
+                                                        "semanticId": "0173-1#02-AAN309#004",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:decimal"
                                                     },
                                                     "UpperLimitingValueOfProcessTemperature": {
+                                                        "semanticId": "0173-1#02-AAN307#004",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:decimal"
                                                     },
                                                     "MaxSurfaceTemperatureForDustProof": {
+                                                        "semanticId": "0173-1#02-AAM666#005",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:decimal"
                                                     },
                                                     "TemperatureClass": {
+                                                        "semanticId": "0173-1#02-AAO371#004",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
@@ -419,68 +604,96 @@
                                                 }
                                             },
                                             "ExternalElectricalCircuit": {
+                                                "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/ExternalElectricalCircuit",
+                                                "semanticIdType": "IRI",
                                                 "modelType": "SubmodelElementCollection",
                                                 "count": "*",
                                                 "value": {
                                                     "DesignationOfElectricalTerminal": {
+                                                        "semanticId": "0112/2///61987#ABB147#004",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
                                                     },
                                                     "TypeOfProtection": {
+                                                        "semanticId": "0173-1#02-AAQ325#003",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
                                                     },
                                                     "EquipmentProtectionLevel": {
+                                                        "semanticId": "0173-1#02-AAM668#001",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "MultiLanguageProperty",
                                                         "count": "?"
                                                     },
                                                     "ExplosionGroup": {
+                                                        "semanticId": "0173-1#02-AAT372#001",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
                                                     },
                                                     "Characteristics": {
+                                                        "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/ExternalElectricalCircuitCharacteristics",
+                                                        "semanticIdType": "IRI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
                                                     },
                                                     "Fisco": {
+                                                        "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/ExternalElectricalCircuit/Fisco",
+                                                        "semanticIdType": "IRI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
                                                     },
                                                     "TwoWISE": {
+                                                        "semanticId": "https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/ExternalElectricalCircuit/TwoWISE",
+                                                        "semanticIdType": "IRI",
                                                         "modelType": "Property",
                                                         "count": "?",
                                                         "valueType": "xs:string"
                                                     },
                                                     "SafetyRelatedPropertiesForPassiveBehaviour": {
+                                                        "semanticId": "0173-1#02-AAQ380#006",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "SubmodelElementCollection",
                                                         "count": "?",
                                                         "value": {
                                                             "MaxInputPower": {
+                                                                "semanticId": "0173-1#02-AAQ372#003",
+                                                                "semanticIdType": "IRDI",
                                                                 "modelType": "Property",
                                                                 "count": "?",
                                                                 "valueType": "xs:decimal"
                                                             },
                                                             "MaxInputVoltage": {
+                                                                "semanticId": "0173-1#02-AAM638#003",
+                                                                "semanticIdType": "IRDI",
                                                                 "modelType": "Property",
                                                                 "count": "?",
                                                                 "valueType": "xs:decimal"
                                                             },
                                                             "MaxInputCurrent": {
+                                                                "semanticId": "0173-1#02-AAM642#004",
+                                                                "semanticIdType": "IRDI",
                                                                 "modelType": "Property",
                                                                 "count": "?",
                                                                 "valueType": "xs:decimal"
                                                             },
                                                             "MaxInternalCapacitance": {
+                                                                "semanticId": "0173-1#02-AAM640#004",
+                                                                "semanticIdType": "IRDI",
                                                                 "modelType": "Property",
                                                                 "count": "?",
                                                                 "valueType": "xs:decimal"
                                                             },
                                                             "MaxInternalInductance": {
+                                                                "semanticId": "0173-1#02-AAM639#003",
+                                                                "semanticIdType": "IRDI",
                                                                 "modelType": "Property",
                                                                 "count": "?",
                                                                 "valueType": "xs:decimal"
@@ -488,35 +701,49 @@
                                                         }
                                                     },
                                                     "SafetyRelatedPropertiesForActiveBehaviour": {
+                                                        "semanticId": "0173-1#02-AAQ381#006",
+                                                        "semanticIdType": "IRDI",
                                                         "modelType": "SubmodelElementCollection",
                                                         "count": "?",
                                                         "value": {
                                                             "MaxOutputPower": {
+                                                                "semanticId": "0173-1#02-AAQ371#003",
+                                                                "semanticIdType": "IRDI",
                                                                 "modelType": "Property",
                                                                 "count": "?",
                                                                 "valueType": "xs:decimal"
                                                             },
                                                             "MaxOutputVoltage": {
+                                                                "semanticId": "0173-1#02-AAM635#003",
+                                                                "semanticIdType": "IRDI",
                                                                 "modelType": "Property",
                                                                 "count": "?",
                                                                 "valueType": "xs:decimal"
                                                             },
                                                             "MaxOutputCurrent": {
+                                                                "semanticId": "0173-1#02-AAM641#004",
+                                                                "semanticIdType": "IRDI",
                                                                 "modelType": "Property",
                                                                 "count": "?",
                                                                 "valueType": "xs:decimal"
                                                             },
                                                             "MaxExternalCapacitance": {
+                                                                "semanticId": "0173-1#02-AAM637#004",
+                                                                "semanticIdType": "IRDI",
                                                                 "modelType": "Property",
                                                                 "count": "?",
                                                                 "valueType": "xs:decimal"
                                                             },
                                                             "MaxExternalInductance": {
+                                                                "semanticId": "0173-1#02-AAM636#003",
+                                                                "semanticIdType": "IRDI",
                                                                 "modelType": "Property",
                                                                 "count": "?",
                                                                 "valueType": "xs:decimal"
                                                             },
                                                             "MaxExternalInductanceResistanceRatio": {
+                                                                "semanticId": "0173-1#02-AAM634#003",
+                                                                "semanticIdType": "IRDI",
                                                                 "modelType": "Property",
                                                                 "count": "?",
                                                                 "valueType": "xs:decimal"
@@ -534,14 +761,20 @@
                 }
             },
             "AssetSpecificProperties": {
+                "semanticId": "0173-1#01-AGZ672#001",
+                "semanticIdType": "IRDI",
                 "modelType": "SubmodelElementCollection",
                 "count": "?",
                 "value": {
                     "GuidelineSpecificProperties": {
+                        "semanticId": "0173-1#01-AHD205#001",
+                        "semanticIdType": "IRDI",
                         "modelType": "SubmodelElementCollection",
                         "count": "+",
                         "value": {
                             "GuidelineForConformityDeclaration": {
+                                "semanticId": "0173-1#02-AAO856#002",
+                                "semanticIdType": "IRDI",
                                 "modelType": "Property",
                                 "count": "!",
                                 "valueType": "xs:string"

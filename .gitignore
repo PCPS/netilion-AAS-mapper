@@ -4,3 +4,5 @@ node_modules/
 .env
 build/
 TODO.txt
+src/dictionaries/ECLASS12_0_ADVANCED_EN_SG_27.xml
+src/dictionaries/ECLASS.json

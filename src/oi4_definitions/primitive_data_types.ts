@@ -46,7 +46,7 @@ export type QualifierType = NameType;
 
 export type ValueDataType = any;
 
-export type ElementCategory = 'CONSTANT' | 'PARAMETER' | 'VARIABLE';
+export type ValuedElementCategory = 'CONSTANT' | 'PARAMETER' | 'VARIABLE';
 
 export type ConceptDescriptionCategory =
     | 'APPLICATION_CLASS'
@@ -62,6 +62,8 @@ export type ConceptDescriptionCategory =
     | 'QUALIFIER_TYPE'
     | 'REFERENCE'
     | 'RELATIONSHIP';
+
+export type CategoryType = ConceptDescriptionCategory | ValuedElementCategory;
 
 export type ModellingKind = 'Template' | 'Instance';
 
@@ -188,4 +190,10 @@ export type DataTypeIEC61360 =
     | 'BLOB'
     | 'FILE';
 
-export type LevelType = 'Min' | 'Max' | 'Nom' | 'Typ';
+// export type LevelType = 'Min' | 'Max' | 'Nom' | 'Typ';
+export interface LevelType {
+    Min?: boolean;
+    Max?: boolean;
+    Nom?: boolean;
+    Typ?: boolean;
+}

@@ -10,7 +10,7 @@
         "start:dev": "export NODE_ENV='development' && nodemon",
         "start": "export NODE_ENV='production' && node build/index.js",
         "postinstall": "rimraf ./build/ && tsc",
-        "preinstall": "ts-node src/preprocessors/*.ts"
+        "preinstall": "ts-node src/preprocessors/main.ts"
     },
     "author": "Aria Ranjbar, Endress+Hauser Digital Solutiobs (DE), Freiburg",
     "license": "ISC",

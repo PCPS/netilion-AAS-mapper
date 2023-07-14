@@ -9,7 +9,7 @@ import {
 } from '../oi4_definitions/primitive_data_types';
 import fs from 'fs';
 import path from 'path';
-import convert from 'xml-js';
+import DataSpecificationInput from '../interfaces/DataSpecificationInput';
 
 // convert from index number to a zero-padded number in string format.
 // used as postfix to idShort of recurrent submodel elements
@@ -61,20 +61,6 @@ export function Serialize(
     addProps.forEach((prop) => {
         serialized[prop] = appendKeys[prop](obj);
     });
-}
-
-//create eclass dictiononary in JSON format from xml file
-export function GenerateEclassFromXml() {
-    let xml = fs.readFileSync(
-        path.join(__dirname, '../dictionary/ECLASS12_0_ADVANCED_EN_SG_27.xml'),
-        'utf8'
-    );
-    let eclass = convert.xml2json(xml, {
-        compact: true,
-        spaces: 4,
-        ignoreComment: true
-    });
-    fs.writeFileSync(path.join(__dirname, '../dictionary/ECLASS.json'), eclass);
 }
 
 //create ConceptDescription elements from eclass JSON dictionary

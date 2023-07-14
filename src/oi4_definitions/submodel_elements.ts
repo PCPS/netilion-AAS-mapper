@@ -7,7 +7,7 @@ import {
 } from './aas_components';
 import {
     Direction,
-    ElementCategory,
+    ValuedElementCategory,
     LangStringSet,
     StateOfEvent,
     BlobType,
@@ -30,7 +30,7 @@ export class RelationshipElement extends SubmodelElement {
     public second: Reference;
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -50,7 +50,7 @@ export class RelationshipElement extends SubmodelElement {
 export abstract class DataElement extends SubmodelElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -69,7 +69,7 @@ export class AnnotatedRelationshipElement extends RelationshipElement {
     public annotations?: Array<DataElement>;
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -95,7 +95,7 @@ export class AnnotatedRelationshipElement extends RelationshipElement {
 export abstract class EventElement extends SubmodelElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -121,7 +121,7 @@ export class BasicEventElement extends EventElement {
     public maxInterval?: xs.duration;
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -160,7 +160,7 @@ export class Blob extends DataElement {
     public contentType: ContentType;
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -182,7 +182,7 @@ export class Capability extends SubmodelElement {
 
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -205,7 +205,7 @@ export class Entity extends SubmodelElement {
 
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -239,7 +239,7 @@ export class File extends DataElement {
     public contentType: ContentType;
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -263,7 +263,7 @@ export class MultiLanguageProperty extends DataElement {
     public valueId?: Reference;
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -297,7 +297,7 @@ export class Operation extends SubmodelElement {
     public inoutputVariables?: Array<OperationVariable>;
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -342,7 +342,7 @@ export class Property extends DataElement {
     public valueId?: Reference;
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -369,7 +369,7 @@ export class Range extends DataElement {
     public max?: ValueDataType;
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -394,7 +394,7 @@ export class ReferenceElement extends DataElement {
     public value?: Reference;
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -415,7 +415,7 @@ export class SubmodelElementCollection extends SubmodelElement {
     public value?: Array<SubmodelElement>;
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -446,7 +446,7 @@ export class SubmodelElementList extends SubmodelElement {
     public valueTypeListElement?: DataTypeDefXsd;
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;

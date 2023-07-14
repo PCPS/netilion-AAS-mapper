@@ -3,7 +3,7 @@ import {
     Identifier,
     QualifierType,
     ValueDataType,
-    ElementCategory,
+    ValuedElementCategory,
     ModellingKind,
     QualifierKind,
     DataTypeDefXsd,
@@ -20,7 +20,9 @@ import {
     MultiLanguageNameType,
     LableType,
     VersionType,
-    RevisionType
+    RevisionType,
+    ConceptDescriptionCategory,
+    CategoryType
 } from './primitive_data_types';
 import { Mixin } from 'ts-mixer';
 import { logger } from '../services/logger';
@@ -124,13 +126,13 @@ export abstract class HasExtension {
 }
 
 export abstract class Referable extends HasExtension {
-    public category?: ElementCategory | string;
+    public category?: ValuedElementCategory | string;
     public idShort?: NameType;
     public displayName?: MultiLanguageNameType;
     public descriptoin?: MultiLanguageTextType;
     public constructor(opt?: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | NameType;
+        category?: ValuedElementCategory | NameType;
         idShort?: NameType;
         displayName?: MultiLanguageNameType;
         description?: MultiLanguageTextType;
@@ -177,7 +179,7 @@ export class DataSpecificationIEC61360 extends DataSpecificationContent {
     public valueFormt?: string;
     public valueList?: ValueList;
     public value?: string;
-    public levelType?: Array<LevelType>;
+    public levelType?: LevelType;
     public constructor(opt: {
         preferredName: LangStringSet;
         shortName?: LangStringSet;
@@ -190,7 +192,7 @@ export class DataSpecificationIEC61360 extends DataSpecificationContent {
         valueFormt?: string;
         valueList?: ValueList;
         value?: string;
-        levelType?: Array<LevelType>;
+        levelType?: LevelType;
     }) {
         super();
         this.preferredName = opt.preferredName;
@@ -299,7 +301,7 @@ export abstract class Identifiable extends Referable {
     public administration?: AdministrativeInformation;
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: CategoryType | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -370,7 +372,7 @@ export abstract class SubmodelElement extends Mixin(
 ) {
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -395,7 +397,7 @@ export class Submodel extends Mixin(
     public submodelElements?: Array<SubmodelElement>;
     public constructor(opt?: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -479,7 +481,7 @@ export class AssetAdministrationShell extends Mixin(
     public submodels?: Array<Reference>; //To Submodel
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory | string;
+        category?: ValuedElementCategory | string;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;
@@ -512,7 +514,7 @@ export class ConceptDescription extends Mixin(
     public isCaseOf?: Array<Reference>;
     public constructor(opt: {
         extensions?: Array<Extension>;
-        category?: ElementCategory;
+        category?: ConceptDescriptionCategory;
         idShort?: NameType;
         displayName?: LangStringSet;
         description?: LangStringSet;

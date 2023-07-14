@@ -1,15 +1,17 @@
-import { AasReferables } from '../oi4_definitions/primitive_data_types';
 import fs from 'fs';
 import path from 'path';
 
-//Simplified submodel definition files. To create a new submodel simply
-//  add JSON file to ./submodels/ and import its content below, then call
-//  the CreateGenerator() function on it at the end of this script
-import nameplate from './submodels/nameplate.json';
-import contact_information from './submodels/contact_information.json';
-import handover_documentation from './submodels/handover_documentation.json';
-import configuration_as_built from './submodels/as_built.json';
-import configuration_as_documented from './submodels/as_documented.json';
+import {
+    CountType,
+    EntityModel,
+    FileModel,
+    MlpModel,
+    Model,
+    PropertyModel,
+    ReferenceElementModel,
+    SmModel,
+    SmeModel
+} from '../Interfaces/simplified';
 
 //TODO: Optimise imports in CreateGenerator()
 
@@ -21,42 +23,6 @@ import configuration_as_documented from './submodels/as_documented.json';
 //  + = [1-*]      //
 //  * = [0-*]      //
 /////////////////////
-type CountType = '!' | '?' | '+' | '*';
-type Model =
-    | {
-          alias?: string;
-          modelType: 'Submodel';
-          count: CountType;
-          submodelElements: { [prop: string]: Model };
-      }
-    | {
-          alias?: string;
-          modelType: 'SubmodelElementCollection';
-          count: CountType;
-          value: { [prop: string]: Model };
-      }
-    | {
-          alias?: string;
-          modelType: 'Property';
-          count: CountType;
-          valueType: string;
-      }
-    | {
-          alias?: string;
-          modelType: AasReferables;
-          count: CountType;
-      }
-    | {
-          alias: string;
-          modelType: AasReferables;
-          count: CountType;
-          [prop: string]: string;
-      }
-    | {
-          modelType: AasReferables;
-          count: CountType;
-          [prop: string]: string;
-      };
 
 function GetArbitraryElementName(model: Model): string {
     let suffix = 'ERROR_BAD_TYPE';
@@ -90,7 +56,7 @@ function GetArbitraryElementName(model: Model): string {
 }
 
 function ExpandArbitraryElement(model: Model): string {
-    let element_body = 'idShort: string';
+    let element_body = 'idShort: string\nsemanticId?: Reference';
     let element_name = GetArbitraryElementName(model);
     switch (model.modelType) {
         case 'Property':
@@ -134,11 +100,7 @@ function GetOptProps(opt: Model, opt_count?: CountType): string {
     switch (opt.modelType) {
         case 'Submodel':
             {
-                let m = opt as {
-                    alias?: string;
-                    modelType: 'Submodel';
-                    submodelElements: { [prop: string]: Model };
-                };
+                let m = opt as SmModel;
                 valueType = Object.keys(m.submodelElements).reduce((a, b) => {
                     if (b === '{arbitrary}') {
                         return (
@@ -162,11 +124,7 @@ function GetOptProps(opt: Model, opt_count?: CountType): string {
 
         case 'SubmodelElementCollection':
             {
-                let m = opt as {
-                    alias?: string;
-                    modelType: 'SubmodelElementCollection';
-                    value: { [prop: string]: Model };
-                };
+                let m = opt as SmeModel;
                 valueType = Object.keys(m.value).reduce((a, b) => {
                     if (b === '{arbitrary}') {
                         return a + '\n' + ExpandArbitraryElement(m.value[b]);
@@ -185,12 +143,7 @@ function GetOptProps(opt: Model, opt_count?: CountType): string {
             break;
 
         case 'Property':
-            let m = opt as {
-                alias?: string;
-                modelType: 'Property';
-                count: string;
-                valueType: string;
-            };
+            let m = opt as PropertyModel;
             switch (m.valueType) {
                 case 'xs:string':
                     valueType = 'string';
@@ -272,9 +225,9 @@ function GenerateArbitraryAssignmentBody(sme: Model): string {
         'idShort: opt.' +
         element_name +
         '.idShort,\n' +
-        'semanticId: GetSemanticId(opt.' +
+        'semanticId: opt.' +
         element_name +
-        '.idShort)';
+        '.semanticId';
 
     switch (sme.modelType) {
         case 'Property':
@@ -350,24 +303,28 @@ function GenerateArbitraryAssignmentBody(sme: Model): string {
 
 function GenerateAssignmentBody(sme: Model, idShort: string): string {
     let assignment_body: string = '\n';
-    assignment_body +=
-        "idShort: '" +
-        idShort +
-        "'" +
-        ',\n' +
-        "semanticId: GetSemanticId('" +
-        idShort +
-        "')";
+    assignment_body += "idShort: '" + idShort + "'";
+    if (sme.semanticId && sme.semanticIdType) {
+        assignment_body +=
+            ',\nsemanticId: {\n' +
+            '    type: "ModelReference",\n' +
+            '    keys: [\n' +
+            '              {\n' +
+            '                  type: "ConceptDescription",\n' +
+            '                  value: "[' +
+            sme.semanticIdType +
+            '] ' +
+            sme.semanticId +
+            '"\n' +
+            '              }\n' +
+            '    ]\n' +
+            '}';
+    }
 
     switch (sme.modelType) {
         case 'Property':
             {
-                let m = sme as {
-                    alias?: string;
-                    modelType: 'Property';
-                    count: CountType;
-                    valueType: string;
-                };
+                let m = sme as PropertyModel;
                 assignment_body +=
                     ",\nvalueType: '" +
                     m.valueType +
@@ -379,33 +336,21 @@ function GenerateAssignmentBody(sme: Model, idShort: string): string {
             break;
         case 'MultiLanguageProperty':
             {
-                let m = sme as {
-                    alias?: string;
-                    modelType: 'MultiLanguageProperty';
-                    count: CountType;
-                };
+                let m = sme as MlpModel;
                 assignment_body += ',\nvalue: ' + 'opt.' + (m.alias || idShort);
             }
             break;
 
         case 'ReferenceElement':
             {
-                let m = sme as {
-                    alias?: string;
-                    modelType: 'ReferenceElement';
-                    count: CountType;
-                };
+                let m = sme as ReferenceElementModel;
                 assignment_body += ',\nvalue: ' + 'opt.' + (m.alias || idShort);
             }
             break;
 
         case 'File':
             {
-                let m = sme as {
-                    alias?: string;
-                    modelType: 'File';
-                    count: CountType;
-                };
+                let m = sme as FileModel;
                 assignment_body +=
                     ',\nvalue: ' +
                     'opt.' +
@@ -420,11 +365,7 @@ function GenerateAssignmentBody(sme: Model, idShort: string): string {
 
         case 'Entity':
             {
-                let m = sme as {
-                    alias?: string;
-                    modelType: 'Entity';
-                    count: CountType;
-                };
+                let m = sme as EntityModel;
                 assignment_body +=
                     ',\nstatements: ' +
                     'opt.' +
@@ -448,14 +389,10 @@ function GenerateAssignmentBody(sme: Model, idShort: string): string {
         case 'SubmodelElementCollection':
             {
                 assignment_body = assignment_body.replace(
-                    "idShort: '" + idShort + "'" + ',\n',
-                    "idShort: '" + idShort + "'" + ' + postfix,\n'
+                    "idShort: '" + idShort + "'",
+                    "idShort: '" + idShort + "'" + ' + postfix'
                 );
-                let m = sme as {
-                    alias?: string;
-                    modelType: 'SubmodelElementCollection';
-                    count: CountType;
-                };
+                let m = sme as SmeModel;
                 assignment_body += ',\nvalue: submodelElements';
             }
             break;
@@ -463,13 +400,10 @@ function GenerateAssignmentBody(sme: Model, idShort: string): string {
         case 'Submodel':
             {
                 assignment_body = assignment_body.replace(
-                    "idShort: '" + idShort + "'" + ',\n',
-                    "idShort: '" + idShort + "'" + ' + postfix,\n'
+                    "idShort: '" + idShort + "'",
+                    "idShort: '" + idShort + "'" + ' + postfix'
                 );
-                let m = sme as {
-                    modelType: 'Submodel';
-                    count: CountType;
-                };
+                let m = sme as SmModel;
                 assignment_body =
                     '\nid: id,' +
                     assignment_body +
@@ -504,11 +438,7 @@ function GenerateFunction(
             {
                 main_function += 'export ';
                 model_type_short = 'SM';
-                let m = model as {
-                    modelType: 'Submodel';
-                    count: string;
-                    submodelElements: { [prop: string]: Model };
-                };
+                let m = model as SmModel;
                 smes = m.submodelElements;
                 extra_parameters = 'id: string,\n';
             }
@@ -516,11 +446,7 @@ function GenerateFunction(
         case 'SubmodelElementCollection':
             {
                 model_type_short = 'SMC';
-                let m = model as {
-                    modelType: 'SubmodelElementCollection';
-                    count: string;
-                    value: { [prop: string]: Model };
-                };
+                let m = model as SmeModel;
                 smes = m.value;
             }
             break;
@@ -668,7 +594,7 @@ function CreateGenerator(json_submodel: { [key: string]: Model }): void {
             '\n' +
             functions.main_function;
         const file_path =
-            '../oi4_definitions/submodels/' +
+            '../../oi4_definitions/submodels/' +
             item
                 .split(/(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/g)
                 .join('_')
@@ -681,8 +607,6 @@ function CreateGenerator(json_submodel: { [key: string]: Model }): void {
     });
 }
 
-CreateGenerator(nameplate as { [key: string]: Model });
-CreateGenerator(contact_information as { [key: string]: Model });
-CreateGenerator(handover_documentation as { [key: string]: Model });
-CreateGenerator(configuration_as_built as { [key: string]: Model });
-CreateGenerator(configuration_as_documented as { [key: string]: Model });
+export default {
+    CreateGenerator
+};
