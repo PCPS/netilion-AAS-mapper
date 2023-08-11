@@ -1,3 +1,4 @@
+import https from 'https';
 import axios, {
     AxiosError,
     AxiosResponse,
@@ -23,17 +24,18 @@ const makeBase64 = (str: string, encodeing: BufferEncoding = 'utf8') => {
 
 export class OI4Client {
     private api: AxiosInstance;
-    private aas_repo: string;
-    private sm_repo: string;
     public constructor() {
-        this.aas_repo = process.env.OI4_AAS_REPO_SUBDIR || 'aas-repo';
-        this.sm_repo = process.env.OI4_SM_REPO_SUBDIR || 'sm-repo';
         const apiConfig: CreateAxiosDefaults = {
             baseURL: process.env.OI4_REPO_API_URL,
             headers: {
                 'Content-Type': 'application/json',
-                Accept: 'application/json'
-            }
+                Accept: 'application/json',
+                Authorization: process.env.OI4_REPO_AUTH_TOKEN
+            },
+            // TODO: REMOVE THE FOLLOWING HACK
+            httpsAgent: new https.Agent({
+                rejectUnauthorized: false
+            })
         };
         this.api = axios.create(apiConfig);
         this.api.interceptors.request.use((config) => {
@@ -76,52 +78,46 @@ export class OI4Client {
     public getAllShells<T = any, R = AxiosResponse<T>>(
         page: number = 1
     ): Promise<R> {
-        return this.api.get('/' + this.aas_repo + '/shells');
+        return this.api.get('/shells');
     }
 
     public getShell<T = any, R = AxiosResponse<T>>(aas_id: string): Promise<R> {
-        return this.api.get('/' + this.aas_repo + '/shells/' + aas_id);
+        return this.api.get('/shells/' + aas_id);
     }
 
     public postShell<T = any, R = AxiosResponse<T>>(
         shell: AssetAdministrationShell
     ): Promise<R> {
-        return this.api.post('/' + this.aas_repo + '/shells', shell);
+        return this.api.post('/shells', shell);
     }
 
     public updateShell<T = any, R = AxiosResponse<T>>(
         shell: AssetAdministrationShell
     ): Promise<R> {
-        return this.api.put(
-            '/' + this.aas_repo + '/shells/' + makeBase64(shell.id),
-            shell
-        );
+        return this.api.put('/shells/' + makeBase64(shell.id), shell);
     }
 
     public getAllSubmodels<T = any, R = AxiosResponse<T>>(
         page: number = 1
     ): Promise<R> {
-        return this.api.get('/' + this.sm_repo + '/submodels');
+        return this.api.get('/submodels');
     }
 
     public getSubmodel<T = any, R = AxiosResponse<T>>(
         submodel_id: string
     ): Promise<R> {
-        return this.api.get('/' + this.sm_repo + '/submodels/' + submodel_id);
+        return this.api.get('/submodels/' + submodel_id);
     }
 
     public postSubmodel<T = any, R = AxiosResponse<T>>(
         submodel: Submodel
     ): Promise<R> {
-        return this.api.post('/' + this.sm_repo + '/submodels', submodel);
+        return this.api.post('/submodels', submodel);
     }
 
     public updateSubmodel<T = any, R = AxiosResponse<T>>(
         submodel: Submodel
     ): Promise<R> {
-        return this.api.put(
-            '/' + this.sm_repo + '/submodels/' + makeBase64(submodel.id),
-            submodel
-        );
+        return this.api.put('/submodels/' + makeBase64(submodel.id), submodel);
     }
 }

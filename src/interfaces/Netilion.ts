@@ -1,9 +1,11 @@
+export type NetilionAssetId = number;
+
 export interface NetilionAsset {
     serial_number: 'string';
     description: 'string';
     production_date: 'string';
     last_seen_at: 'string';
-    id: number;
+    id: NetilionAssetId;
     ownership_claimed: boolean;
     created_at: 'string';
     updated_at: 'string';

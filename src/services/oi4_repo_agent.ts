@@ -5,76 +5,169 @@ import {
     SubmodelElement
 } from '../oi4_definitions/aas_components';
 import { decodeBase64 } from './oi4_helpers';
-import netilion from './netilion_agent';
+import source_agent from './netilion_agent';
+import { SubmodelName, AssetId } from './netilion_agent';
 import { OI4Client } from './oi4RepoAPI';
-import { Property } from '../oi4_definitions/submodel_elements';
+import { OAUTH_TOKEN } from '../interfaces/Mapper';
+import { AGENT_OP_RESULT } from '../interfaces/Agent';
 
 const oi4Client = new OI4Client();
 
-interface agent_op_result {
-    status: number;
-    json: any;
-}
+async function handle_multi_post<T extends { id: string | number }>(
+    array_name: string,
+    item_array: Array<T> | undefined,
+    post_function: (item: T) => any,
+    error_message_function: (item: T, error: any) => string,
+    error_404_message: string
+) {
+    if (item_array && item_array.length) {
+        let fail_found: boolean = false;
+        let success_found: boolean = false;
 
-// Post all AssetAdministrationSells created from Netilion assets to OI4 Repo
-async function postAllEHAASToOI4(): Promise<agent_op_result> {
-    const shells = await netilion.allEHAAS();
-
-    if (shells) {
-        const results = shells.map(async (shell: AssetAdministrationShell) => {
+        const results = item_array.map(async (item: T) => {
             try {
-                const resp = await (await oi4Client.postShell(shell)).data;
-                return { status: 'success', shell: resp };
+                const resp = await (await post_function(item)).data;
+                success_found = true;
+                return { status: 'success', item: resp };
             } catch (error: any) {
-                logger.error(
-                    `failed to post shell [${shell.idShort}] to oi4 repo: ${error}`
-                );
-                const resp = error.respone || { status: 500 };
+                logger.error(error_message_function(item, error));
+                const resp = error.response || { status: 500 };
+                fail_found = true;
                 return {
                     status: 'failed',
                     details: {
-                        id: shell.id,
+                        id: item.id,
                         status: resp.status,
-                        error: error.message
+                        error: resp.error_description || error.message
                     }
                 };
             }
         });
 
         const RESPS = await Promise.all(results);
-        let successful: Array<AssetAdministrationShell> = [];
-        let failed: Array<{ id: string; error: string } | undefined> = [];
-        RESPS.forEach((item) => {
-            if (item.status == 'success') {
-                successful.push(item.shell);
+        let successful: Array<T> = [];
+        let failed: Array<{ id: string | number; error: string } | undefined> =
+            [];
+        RESPS.forEach((element) => {
+            if (element.status == 'success') {
+                successful.push(element.item);
             } else {
-                failed.push(item.details);
+                failed.push(element.details);
             }
         });
-
+        const status = success_found
+            ? fail_found
+                ? 207
+                : 200
+            : fail_found
+            ? 400
+            : 500;
         return {
-            status: 200,
-            json: {
-                successful,
-                failed
-            }
+            status,
+            json:
+                status === 207
+                    ? {
+                          successful,
+                          failed
+                      }
+                    : status === 200
+                    ? {
+                          [array_name]: successful
+                      }
+                    : status === 400
+                    ? {
+                          message: 'All failed',
+                          resoponses: failed
+                      }
+                    : {
+                          message: 'Something went wrong.'
+                      }
         };
     } else {
         return {
             status: 404,
             json: {
-                message:
-                    'Failed to retrieve Asset Administration Shells from Netilion.'
+                message: error_404_message
             }
         };
     }
 }
 
-// update all AssetAdministrationShells in OI4 repo using Netilion assets
-async function updateEHAASInOI4(asset_id: string): Promise<agent_op_result> {
-    const shell = await netilion.EHAAS(asset_id);
+// update AssetAdministrationShell in OI4 repo using source assets
+async function post_aas(
+    source_auth: OAUTH_TOKEN,
+    asset_id: AssetId
+): Promise<AGENT_OP_RESULT> {
+    const shell_resp = await source_agent.get_aas(source_auth, asset_id);
+    const shell = shell_resp.json;
+    const shell_status = shell_resp.status;
 
-    if (shell) {
+    if (shell_status === 200) {
+        try {
+            const resp = await (await oi4Client.postShell(shell)).data;
+            return { status: 200, json: resp };
+        } catch (error: any) {
+            logger.error(
+                `failed to post aas [${shell.id}] in oi4 repo: ${error}`
+            );
+            const resp = error.response || { status: 500 };
+            return {
+                status: resp.status,
+                json: {
+                    message:
+                        'Failed to post Asset Administration Shell [' +
+                        shell.id +
+                        '] in OI4 Repo'
+                }
+            };
+        }
+    } else {
+        return {
+            status: shell_status,
+            json: {
+                message:
+                    'Failed to retrieve Asset Administration Shell for Asset [' +
+                    asset_id +
+                    '] from source',
+                error: shell_resp.json
+            }
+        };
+    }
+}
+
+// Post all AssetAdministrationSells created from asset source to OI4 Repo
+async function post_all_aas(
+    source_auth: OAUTH_TOKEN
+): Promise<AGENT_OP_RESULT> {
+    const shells = (await source_agent.get_all_aas(source_auth)).json.shells;
+    return await handle_multi_post(
+        'shells',
+        shells,
+        (shell: AssetAdministrationShell) => {
+            return oi4Client.postShell(shell);
+        },
+        (shell, error) => {
+            return `failed to post shell [${shell.idShort}] to oi4 repo: ${
+                error.response
+                    ? error.response.data.error_description ||
+                      error.response.data.title
+                    : error
+            }`;
+        },
+        'Failed to retrieve Asset Administration Shells from source.'
+    );
+}
+
+// update AssetAdministrationShell in OI4 repo using source assets
+async function update_aas(
+    source_auth: OAUTH_TOKEN,
+    asset_id: AssetId
+): Promise<AGENT_OP_RESULT> {
+    const shell_resp = await source_agent.get_aas(source_auth, asset_id);
+    const shell = shell_resp.json;
+    const shell_status = shell_resp.status;
+
+    if (shell_status === 200) {
         try {
             const resp = await (await oi4Client.updateShell(shell)).data;
             return { status: 200, json: resp };
@@ -95,294 +188,210 @@ async function updateEHAASInOI4(asset_id: string): Promise<agent_op_result> {
         }
     } else {
         return {
-            status: 404,
+            status: shell_status,
             json: {
                 message:
                     'Failed to retrieve Asset Administration Shell for Asset [' +
                     asset_id +
-                    '] from Netilion.'
+                    '] from source.',
+                error: shell_resp.json
             }
         };
     }
 }
 
-// Post all Nameplate submodels created from Netilion assets to OI4 Repo
-async function postAllEHNameplatesToOI4(): Promise<agent_op_result> {
-    const nameplates = await netilion.allEHNameplates();
+// update all AssetAdministrationShells in OI4 repo using source assets
+async function update_all_aas(source_auth: OAUTH_TOKEN) {
+    const old_shells = (await get_all_aas()).json.shells;
 
-    if (nameplates) {
-        const results = nameplates.map(async (nameplate: Submodel) => {
-            try {
-                const resp = await (
-                    await oi4Client.postSubmodel(nameplate)
-                ).data;
-                return { status: 'success', nameplate: resp };
-            } catch (error: any) {
-                logger.error(
-                    `failed to post submodel [${nameplate.id}] to oi4 repo: ${error}`
-                );
-
-                const resp = error.respone || { status: 500 };
-                return {
-                    status: 'failed',
-                    details: {
-                        id: nameplate.id,
-                        status: resp.status,
-                        error: error.message
-                    }
-                };
+    if (old_shells && old_shells.length) {
+        const sourceAssetIds = old_shells.map((item: Submodel) => {
+            return source_agent.aas_id_short_to_source_asset_id(
+                item.idShort || ''
+            );
+        });
+        const shells_mixed = await Promise.all(
+            sourceAssetIds.map(async (id: AssetId) => {
+                const shell_resp = await source_agent.get_aas(source_auth, id);
+                if (shell_resp.status !== 200) {
+                    logger.warn('Asset [' + id + '] no longer in source');
+                    return undefined;
+                }
+                return shell_resp.json;
+            })
+        );
+        const shells = new Array<AssetAdministrationShell>();
+        shells_mixed.forEach((item) => {
+            if (item !== undefined) {
+                shells.push(item);
             }
         });
-
-        const RESPS = await Promise.all(results);
-        let successful: Array<Submodel> = [];
-        let failed: Array<{ id: string; error: string } | undefined> = [];
-        RESPS.forEach((item) => {
-            if (item.status == 'success') {
-                successful.push(item.nameplate);
-            } else {
-                failed.push(item.details);
-            }
-        });
-
-        return {
-            status: 200,
-            json: {
-                successful,
-                failed
-            }
-        };
+        return await handle_multi_post(
+            'shells',
+            shells,
+            (shell: AssetAdministrationShell) => {
+                return oi4Client.updateShell(shell);
+            },
+            (shell, error) => {
+                return `failed to update shell [${
+                    shell.idShort
+                }] in oi4 repo: ${
+                    error.response
+                        ? error.response.data.error_description ||
+                          error.response.data.title
+                        : error
+                }`;
+            },
+            'Failed to retrieve Asset Administration Shells from source.'
+        );
     } else {
         return {
             status: 404,
             json: {
-                message: 'Failed to retrieve Nameplate Submodels from Netilion.'
+                message: 'No AssetAdministrationShells found on OI4 Repo.'
             }
         };
     }
 }
 
-// update all Nameplate submodels in OI4 repo using Netilion assets
-async function updateEHNameplatesInOI4(
-    asset_id: number
-): Promise<agent_op_result> {
-    const nameplate = await netilion.EHNameplate(asset_id);
-
-    if (nameplate) {
+// Post submodel for specific asset created from asset source to OI4 Repo
+async function post_submodel(
+    source_auth: OAUTH_TOKEN,
+    asset_id: AssetId,
+    submodel_name: SubmodelName
+): Promise<AGENT_OP_RESULT> {
+    const submodel_resp = await source_agent.get_submodel(
+        source_auth,
+        asset_id,
+        submodel_name
+    );
+    const submodel = submodel_resp.json;
+    const submodel_status = submodel_resp.status;
+    if (submodel_status === 200) {
         try {
-            const resp = await (await oi4Client.updateSubmodel(nameplate)).data;
-            return { status: 200, json: resp };
+            const resp = await (await oi4Client.postSubmodel(submodel)).data;
+            return {
+                status: resp.status,
+                json: resp
+            };
         } catch (error: any) {
             logger.error(
-                `failed to update submodel [${nameplate.id}] in oi4 repo: ${error}`
+                `failed to post ${submodel_name} submodel for asset ${asset_id} in oi4 repo: ${error}`
             );
             const resp = error.response || { status: 500 };
             return {
                 status: resp.status,
                 json: {
-                    message: `Failed to update Submodel [${nameplate.id}] in OI4 Repo`
+                    message: resp.error_description || error.message
                 }
             };
         }
     } else {
         return {
-            status: 404,
+            status: submodel_status,
             json: {
                 message:
-                    'Failed to retrieve Nameplate Submodel for Asset [' +
+                    'Failed to retrieve ' +
+                    submodel_name +
+                    ' Submodel for Asset [' +
                     asset_id +
-                    '] from Netilion.'
+                    '] from source.',
+                error: submodel_resp.json
             }
         };
     }
 }
 
-// Post all ConfigurationAsBuilt submodels created from Netilion assets to OI4 Repo
-async function postAllEHConfigurationsAsBuiltToOI4(): Promise<agent_op_result> {
-    const configurations_as_built = await netilion.allEHConfigurationsAsBuilt();
-
-    if (configurations_as_built) {
-        const results = configurations_as_built.map(
-            async (configurations_as_built: Submodel) => {
-                try {
-                    const resp = await (
-                        await oi4Client.postSubmodel(configurations_as_built)
-                    ).data;
-                    return {
-                        status: 'success',
-                        configurations_as_built: resp
-                    };
-                } catch (error: any) {
-                    logger.error(
-                        `failed to post submodel [${configurations_as_built.id}] to oi4 repo: ${error}`
-                    );
-
-                    const resp = error.respone || { status: 500 };
-                    return {
-                        status: 'failed',
-                        details: {
-                            id: configurations_as_built.id,
-                            status: resp.status,
-                            error: error.message
-                        }
-                    };
-                }
-            }
-        );
-
-        const RESPS = await Promise.all(results);
-        let successful: Array<Submodel> = [];
-        let failed: Array<
-            { id: string; status: string; error: string } | undefined
-        > = [];
-        RESPS.forEach((item) => {
-            if (item.status == 'success') {
-                successful.push(item.configurations_as_built);
-            } else {
-                failed.push(item.details);
-            }
-        });
-
-        return {
-            status: 200,
-            json: {
-                successful,
-                failed
-            }
-        };
-    } else {
-        return {
-            status: 404,
-            json: {
-                message:
-                    'Failed to retrieve ConfigurationAsBuilt Submodels from Netilion.'
-            }
-        };
-    }
-}
-
-// update specific ConfigurationAsBuilt submodel in OI4 repo using Netilion asset
-async function updateEHConfigurationsAsBuiltInOI4(
-    asset_id: number
-): Promise<agent_op_result> {
-    const configuration_as_built = await netilion.EHConfigurationAsBuilt(
-        asset_id
+// Post submodel for all assets created from asset source to OI4 Repo
+async function post_submodel_for_all_assets(
+    source_auth: OAUTH_TOKEN,
+    submodel_name: SubmodelName
+): Promise<AGENT_OP_RESULT> {
+    const submodels = (
+        await source_agent.get_submodel_for_all_assets(
+            source_auth,
+            submodel_name
+        )
+    ).json.submodels;
+    return await handle_multi_post(
+        'submodels',
+        submodels,
+        (submodel: Submodel) => {
+            return oi4Client.postSubmodel(submodel);
+        },
+        (submodel, error) => {
+            return `failed to post submodel [${submodel.id}] to oi4 repo: ${
+                error.response
+                    ? error.response.data.error_description ||
+                      error.response.data.title
+                    : error
+            }`;
+        },
+        'Failed to retrieve ' + submodel_name + ' Submodels from asset source.'
     );
-
-    if (configuration_as_built) {
-        try {
-            const resp = await (
-                await oi4Client.updateSubmodel(configuration_as_built)
-            ).data;
-            return { status: 200, json: resp };
-        } catch (error: any) {
-            logger.error(
-                `failed to update submodel [${configuration_as_built.id}] in oi4 repo: ${error}`
-            );
-            const resp = error.respone || { status: 500 };
-            return {
-                status: resp.status,
-                json: {
-                    message: `Failed to update Submodel [${configuration_as_built.id}] in OI4 Repo`
-                }
-            };
-        }
-    } else {
-        return {
-            status: 404,
-            json: {
-                message:
-                    'Failed to retrieve ConfigurationAsBuilt Submodel for Asset [' +
-                    asset_id +
-                    '] from Netilion.'
-            }
-        };
-    }
 }
 
-// update all ConfigurationAsBuilt submodels in OI4 repo using Netilion assets
-async function updateAllEHConfigurationsAsBuiltInOI4(): Promise<agent_op_result> {
-    const submodels = (await getAllSubmodelsFromOI4()).json.submodels;
-    if (submodels && submodels.length) {
-        const configurations_as_built = submodels.filter((item: Submodel) => {
-            return item.idShort == 'ConfigurationAsBuilt';
+// update submodel for all assets in OI4 repo using source assets
+async function update_submodel_for_all_assets(
+    source_auth: OAUTH_TOKEN,
+    submodel_name: SubmodelName
+): Promise<AGENT_OP_RESULT> {
+    const all_submodels = (await get_all_submodels()).json.submodels;
+
+    if (all_submodels && all_submodels.length) {
+        const old_submodels = all_submodels.filter((item: Submodel) => {
+            return item.idShort == submodel_name;
         });
-        if (configurations_as_built && configurations_as_built.length) {
-            const netilionAssetIds = configurations_as_built.map(
-                (item: Submodel) => {
-                    return item.submodelElements?.find(
-                        (element: SubmodelElement) => {
-                            return element.idShort == 'NetilionAssetId';
-                        }
+        if (old_submodels && old_submodels.length) {
+            const sourceAssetIds = old_submodels.map((item: Submodel) => {
+                return source_agent.submodel_id_to_source_asset_id(item.id);
+            });
+            const submodels_mixed = await Promise.all(
+                sourceAssetIds.map(async (id: AssetId) => {
+                    const submodel_resp = await source_agent.get_submodel(
+                        source_auth,
+                        id,
+                        submodel_name
                     );
-                }
-            );
-            const results = netilionAssetIds.map(async (item: Property) => {
-                try {
-                    const resp = await updateEHConfigurationsAsBuiltInOI4(
-                        item.value
-                    );
-                    if (resp.status >= 200 && resp.status < 300) {
-                        return {
-                            id: item.value,
-                            status: 'success',
-                            response: resp.json
-                        };
-                    } else {
-                        return {
-                            id: item.value,
-                            status: 'failed',
-                            details: resp.json.message
-                        };
+                    if (submodel_resp.status !== 200) {
+                        logger.warn('Asset [' + id + '] no longer in source');
+                        return undefined;
                     }
-                } catch (error: any) {
-                    logger.error(
-                        `failed to update ConfigurationAs planned submodels in oi4 repo: ${error}`
-                    );
-
-                    const resp = error.respone || { status: 500 };
-                    return {
-                        status: 'failed',
-                        details: {
-                            id: item.value,
-                            status: resp.status,
-                            error: error.message
-                        }
-                    };
+                    return submodel_resp.json;
+                })
+            );
+            const submodels = new Array<Submodel>();
+            submodels_mixed.forEach((item) => {
+                if (item !== undefined) {
+                    submodels.push(item);
                 }
             });
-            const RESPS = await Promise.all(results);
-            let successful: Array<{
-                id: string;
-                configuration_as_built: any;
-            }> = [];
-            let failed: Array<
-                { id: string; status: string; error: string } | undefined
-            > = [];
-            RESPS.forEach((item) => {
-                if (item.status == 'success') {
-                    successful.push({
-                        id: item.id,
-                        configuration_as_built: item.configuration_as_built
-                    });
-                } else {
-                    failed.push(item.details);
-                }
-            });
-
-            return {
-                status: 200,
-                json: {
-                    successful,
-                    failed
-                }
-            };
+            return await handle_multi_post(
+                'submodels',
+                submodels,
+                (submodel: Submodel) => {
+                    return oi4Client.updateSubmodel(submodel);
+                },
+                (submodel, error) => {
+                    return `failed to update submodel [${
+                        submodel.id
+                    }] in oi4 repo: ${
+                        error.response
+                            ? error.response.data.error_description ||
+                              error.response.data.title
+                            : error
+                    }`;
+                },
+                'Failed to retrieve ' +
+                    submodel_name +
+                    ' Submodels from asset source.'
+            );
         } else {
             return {
                 status: 404,
                 json: {
                     message:
-                        'No ConfigurationAsBuilt Submodels found on OI4 Repo.'
+                        'No ' + submodel_name + ' Submodels found on OI4 Repo.'
                 }
             };
         }
@@ -396,218 +405,57 @@ async function updateAllEHConfigurationsAsBuiltInOI4(): Promise<agent_op_result>
     }
 }
 
-// Post all ConfigurationAsDocumented submodels created from Netilion assets to OI4 Repo
-async function postAllEHConfigurationsAsDocumentedToOI4(): Promise<agent_op_result> {
-    const configurations_as_documented =
-        await netilion.allEHConfigurationsAsDocumented();
+// update submodel for specific asset in OI4 repo using source assets
+async function update_submodel(
+    source_auth: OAUTH_TOKEN,
+    asset_id: AssetId,
+    submodel_name: SubmodelName
+): Promise<AGENT_OP_RESULT> {
+    const submodel_resp = await source_agent.get_submodel(
+        source_auth,
+        asset_id,
+        submodel_name
+    );
+    const submodel = submodel_resp.json;
+    const submodel_status = submodel_resp.status;
 
-    if (configurations_as_documented) {
-        const results = configurations_as_documented.map(
-            async (configurations_as_documented: Submodel) => {
-                try {
-                    const resp = await (
-                        await oi4Client.postSubmodel(
-                            configurations_as_documented
-                        )
-                    ).data;
-                    return {
-                        status: 'success',
-                        configurations_as_documented: resp
-                    };
-                } catch (error: any) {
-                    logger.error(
-                        `failed to post submodel [${configurations_as_documented.id}] to oi4 repo: ${error}`
-                    );
-
-                    const resp = error.respone || { status: 500 };
-                    return {
-                        status: 'failed',
-                        details: {
-                            id: configurations_as_documented.id,
-                            status: resp.status,
-                            error: error.message
-                        }
-                    };
-                }
-            }
-        );
-
-        const RESPS = await Promise.all(results);
-        let successful: Array<Submodel> = [];
-        let failed: Array<
-            { id: string; status: string; error: string } | undefined
-        > = [];
-        RESPS.forEach((item) => {
-            if (item.status == 'success') {
-                successful.push(item.configurations_as_documented);
-            } else {
-                failed.push(item.details);
-            }
-        });
-
-        return {
-            status: 200,
-            json: {
-                successful,
-                failed
-            }
-        };
-    } else {
-        return {
-            status: 404,
-            json: {
-                message:
-                    'Failed to retrieve ConfigurationAsDocumented Submodels from Netilion.'
-            }
-        };
-    }
-}
-
-// update specific ConfigurationAsDocumented submodel in OI4 repo using Netilion asset
-async function updateEHConfigurationsAsDocumentedInOI4(
-    asset_id: number
-): Promise<agent_op_result> {
-    const configuration_as_documented =
-        await netilion.EHConfigurationAsDocumented(asset_id);
-
-    if (configuration_as_documented) {
+    if (submodel_status === 200) {
         try {
-            const resp = await (
-                await oi4Client.updateSubmodel(configuration_as_documented)
-            ).data;
+            const resp = await (await oi4Client.updateSubmodel(submodel)).data;
             return { status: 200, json: resp };
         } catch (error: any) {
             logger.error(
-                `failed to update submodel [${configuration_as_documented.id}] in oi4 repo: ${error}`
+                `failed to update submodel [${submodel.id}] in oi4 repo: ${error}`
             );
-            const resp = error.respone || { status: 500 };
+            const resp = error.response || { status: 500 };
             return {
                 status: resp.status,
                 json: {
-                    message: `Failed to update Submodel [${configuration_as_documented.id}] in OI4 Repo`
+                    message: `Failed to update Submodel [${submodel.id}] in OI4 Repo`
                 }
             };
         }
     } else {
         return {
-            status: 404,
+            status: submodel_status,
             json: {
                 message:
-                    'Failed to retrieve ConfigurationAsDocumented Submodel for Asset [' +
+                    'Failed to retrieve ' +
+                    submodel_name +
+                    'Submodel for Asset [' +
                     asset_id +
-                    '] from Netilion.'
+                    '] from asset source.',
+                error: submodel_resp.json
             }
         };
     }
 }
 
-// update all ConfigurationAsDocumented submodels in OI4 repo using Netilion assets
-async function updateAllEHConfigurationsAsDocumentedInOI4(): Promise<agent_op_result> {
-    const submodels = (await getAllSubmodelsFromOI4()).json.submodels;
-    if (submodels && submodels.length) {
-        const configurations_as_documented = submodels.filter(
-            (item: Submodel) => {
-                return item.idShort == 'ConfigurationAsDocumented';
-            }
-        );
-        if (
-            configurations_as_documented &&
-            configurations_as_documented.length
-        ) {
-            const netilionAssetIds = configurations_as_documented.map(
-                (item: Submodel) => {
-                    return item.submodelElements?.find(
-                        (element: SubmodelElement) => {
-                            return element.idShort == 'NetilionAssetId';
-                        }
-                    );
-                }
-            );
-            const results = netilionAssetIds.map(async (item: Property) => {
-                try {
-                    const resp = await updateEHConfigurationsAsDocumentedInOI4(
-                        item.value
-                    );
-                    if (resp.status >= 200 && resp.status < 300) {
-                        return {
-                            id: item.value,
-                            status: 'success',
-                            response: resp.json
-                        };
-                    } else {
-                        return {
-                            id: item.value,
-                            status: 'failed',
-                            details: resp.json.message
-                        };
-                    }
-                } catch (error: any) {
-                    logger.error(
-                        `failed to update ConfigurationAs planned submodels in oi4 repo: ${error}`
-                    );
-
-                    const resp = error.respone || { status: 500 };
-                    return {
-                        status: 'failed',
-                        details: {
-                            id: item.value,
-                            status: resp.status,
-                            error: error.message
-                        }
-                    };
-                }
-            });
-            const RESPS = await Promise.all(results);
-            let successful: Array<{
-                id: string;
-                configuration_as_documented: any;
-            }> = [];
-            let failed: Array<
-                { id: string; status: string; error: string } | undefined
-            > = [];
-            RESPS.forEach((item) => {
-                if (item.status == 'success') {
-                    successful.push({
-                        id: item.id,
-                        configuration_as_documented:
-                            item.configuration_as_documented
-                    });
-                } else {
-                    failed.push(item.details);
-                }
-            });
-
-            return {
-                status: 200,
-                json: {
-                    successful,
-                    failed
-                }
-            };
-        } else {
-            return {
-                status: 404,
-                json: {
-                    message:
-                        'No ConfigurationAsDocumented Submodels found on OI4 Repo.'
-                }
-            };
-        }
-    } else {
-        return {
-            status: 404,
-            json: {
-                message: 'No Submodels found on OI4 Repo.'
-            }
-        };
-    }
-}
-
-// Retrieve all AssetAdministrationShells from ÖI4 Repo
-async function getAllAASFromOI4(): Promise<agent_op_result> {
+// Retrieve all AssetAdministrationShells from OI4 Repo
+async function get_all_aas(): Promise<AGENT_OP_RESULT> {
     try {
         const resp = await oi4Client.getAllShells();
-        const shells = await resp.data;
+        const shells = (await resp.data).result;
         return {
             status: resp.status,
             json: {
@@ -628,7 +476,7 @@ async function getAllAASFromOI4(): Promise<agent_op_result> {
 }
 
 // Retrieve specific AssetAdministrationShell from ÖI4 Repo using Base64 encoded id.
-async function getAASFromOI4(aas_id: string): Promise<agent_op_result> {
+async function get_aas(aas_id: string): Promise<AGENT_OP_RESULT> {
     try {
         const resp = await oi4Client.getShell(aas_id);
         const shell = await resp.data;
@@ -653,10 +501,10 @@ async function getAASFromOI4(aas_id: string): Promise<agent_op_result> {
 }
 
 // Retrieve all submodels from ÖI4 Repo
-async function getAllSubmodelsFromOI4(): Promise<agent_op_result> {
+async function get_all_submodels(): Promise<AGENT_OP_RESULT> {
     try {
         const resp = await oi4Client.getAllSubmodels();
-        const submodels = await resp.data;
+        const submodels = (await resp.data).result;
         return {
             status: resp.status,
             json: {
@@ -676,9 +524,7 @@ async function getAllSubmodelsFromOI4(): Promise<agent_op_result> {
 }
 
 // Retrieve specific submodel from ÖI4 Repo using Base64 encoded id.
-async function getSubmodelFromOI4(
-    submodel_id: string
-): Promise<agent_op_result> {
+async function get_submodel(submodel_id: string): Promise<AGENT_OP_RESULT> {
     try {
         const resp = await oi4Client.getShell(submodel_id);
         const submodel = await resp.data;
@@ -703,18 +549,16 @@ async function getSubmodelFromOI4(
 }
 
 export default {
-    postAllEHAASToOI4,
-    postAllEHNameplatesToOI4,
-    postAllEHConfigurationsAsBuiltToOI4,
-    postAllEHConfigurationsAsDocumentedToOI4,
-    updateEHAASInOI4,
-    updateEHNameplatesInOI4,
-    updateEHConfigurationsAsBuiltInOI4,
-    updateAllEHConfigurationsAsBuiltInOI4,
-    updateEHConfigurationsAsDocumentedInOI4,
-    updateAllEHConfigurationsAsDocumentedInOI4,
-    getAllAASFromOI4,
-    getAASFromOI4,
-    getAllSubmodelsFromOI4,
-    getSubmodelFromOI4
+    post_aas,
+    post_all_aas,
+    post_submodel,
+    post_submodel_for_all_assets,
+    update_aas,
+    update_all_aas,
+    update_submodel,
+    update_submodel_for_all_assets,
+    get_aas,
+    get_all_aas,
+    get_submodel,
+    get_all_submodels
 };

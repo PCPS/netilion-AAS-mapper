@@ -1,127 +1,64 @@
 import { Request, Response, NextFunction } from 'express';
-import netilion from '../services/netilion_agent';
-
-async function getAllEHNameplates(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    let nameplates = await netilion.allEHNameplates();
-    if (nameplates) {
-        return res.status(200).json({
-            nameplates
-        });
-    } else {
-        return res.status(404).json({
-            message: 'Namplates Not Found.'
-        });
-    }
+import netilion, { SubmodelName } from '../services/netilion_agent';
+import { decodeBase64 } from '../services/oi4_helpers';
+import { logger } from '../services/logger';
+import { OAUTH_TOKEN } from '../interfaces/Mapper';
+if (process.env.NODE_ENV !== 'production') {
+    const dotenv = require('dotenv');
+    // Use dev dependency
+    dotenv.config();
 }
 
-async function getEHNameplate(req: Request, res: Response, next: NextFunction) {
-    let nameplate = await netilion.EHNameplate(Number(req.params.id));
-    if (nameplate) {
-        return res.status(200).json(nameplate);
-    } else {
-        return res.status(404).json({
-            message: 'Namplate for Asset [' + req.params.id + '] Not Found.'
-        });
-    }
-}
+const submodel_name_map: { [key: string]: SubmodelName | undefined } = {
+    nameplate: 'Nameplate',
+    configuration_as_built: 'ConfigurationAsBuilt',
+    configuration_as_documented: 'ConfigurationAsDocumented'
+};
 
-async function getAllEHAAS(req: Request, res: Response, next: NextFunction) {
-    const shells = await netilion.allEHAAS();
-    if (shells) {
-        return res.status(200).json({
-            shells
-        });
-    } else {
-        return res.status(404).json({
-            message: 'Assets Not Found.'
-        });
-    }
-}
-
-async function getEHAAS(req: Request, res: Response, next: NextFunction) {
-    const shell = await netilion.EHAAS(req.params.id);
-    if (shell) {
-        return res.status(200).json(shell);
-    } else {
-        return res.status(404).json({
-            message: 'Asset [' + req.params.id + '] Not Found.'
-        });
-    }
-}
-
-async function getAllEHConfigurationsAsBuilt(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    let configurations_as_built = await netilion.allEHConfigurationsAsBuilt();
-    if (configurations_as_built) {
-        return res.status(200).json({
-            configurations_as_built
-        });
-    } else {
-        return res.status(404).json({
-            message: 'Configurations As Planned Not Found.'
-        });
-    }
-}
-
-async function getEHConfigurationAsBuilt(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    const cap = await netilion.EHConfigurationAsBuilt(Number(req.params.id));
-    if (cap) {
-        return res.status(200).json(cap);
-    } else {
-        return res.status(404).json({
-            message:
-                'Configuration As Planned for Asset [' +
-                req.params.id +
-                '] Not Found.'
-        });
-    }
-}
-
-async function getAllEHConfigurationsAsDocumented(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    let configurations_as_documented =
-        await netilion.allEHConfigurationsAsDocumented();
-    if (configurations_as_documented) {
-        return res.status(200).json({
-            configurations_as_documented
-        });
-    } else {
-        return res.status(404).json({
-            message: 'Configurations As Planned Not Found.'
-        });
-    }
-}
-
-async function getEHConfigurationAsDocumented(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    const cap = await netilion.EHConfigurationAsDocumented(
-        Number(req.params.id)
+async function get_aas(req: Request, res: Response, next: NextFunction) {
+    const result = await netilion.get_aas(
+        res.locals.token,
+        netilion.string_id_to_asset_id(req.params.id)
     );
-    if (cap) {
-        return res.status(200).json(cap);
+    res.status(result.status).json(result.json);
+}
+
+async function get_all_aas(req: Request, res: Response, next: NextFunction) {
+    const result = await netilion.get_all_aas(res.locals.token);
+    res.status(result.status).json(result.json);
+}
+
+async function get_submodel(req: Request, res: Response, next: NextFunction) {
+    const submodel_name = submodel_name_map[req.params.sm_name];
+    if (submodel_name) {
+        const result = await netilion.get_submodel(
+            res.locals.token,
+            netilion.string_id_to_asset_id(req.params.id),
+            submodel_name
+        );
+        res.status(result.status).json(result.json);
     } else {
-        return res.status(404).json({
-            message:
-                'Configuration As Planned for Asset [' +
-                req.params.id +
-                '] Not Found.'
+        res.status(404).json({
+            message: "No Submodel '" + req.params.sm_name + "'"
+        });
+    }
+}
+
+async function get_submodel_for_all_assets(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
+    const submodel_name = submodel_name_map[req.params.sm_name];
+    if (submodel_name) {
+        const result = await netilion.get_submodel_for_all_assets(
+            res.locals.token,
+            submodel_name
+        );
+        res.status(result.status).json(result.json);
+    } else {
+        res.status(404).json({
+            message: "No Submodel '" + req.params.sm_name + "'"
         });
     }
 }
@@ -163,14 +100,34 @@ async function getEHConfigurationAsDocumented(
 //     }
 // }
 
+async function getAuthToken(req: Request, res: Response, next: NextFunction) {
+    const encoded_userpass = req.headers.authorization?.match(/Basic (.*)/);
+    const userpass = encoded_userpass?.length
+        ? encoded_userpass.length > 1
+            ? decodeBase64(encoded_userpass[1])
+            : undefined
+        : undefined;
+
+    const [user, pass] = userpass ? userpass.split(':') : [];
+    const auth_response = await netilion.get_auth_token(user, pass);
+    if (auth_response) {
+        const auth_keys = Object.keys(auth_response);
+        auth_keys.forEach((key) => {
+            res.cookie(key, auth_response[key as keyof OAUTH_TOKEN]);
+        });
+        return res.status(200).json({ message: 'Authentication Successful' });
+    } else {
+        return res.status(401).json({
+            message: 'Authentication With Netilion Failed.'
+        });
+    }
+}
+
 export default {
-    getAllEHNameplates,
-    getEHNameplate,
-    getAllEHConfigurationsAsBuilt,
-    getEHConfigurationAsBuilt,
-    getAllEHConfigurationsAsDocumented,
-    getEHConfigurationAsDocumented,
-    getAllEHAAS,
-    getEHAAS
-    // getEHHandoverDocuments
+    get_submodel,
+    get_submodel_for_all_assets,
+    get_all_aas,
+    get_aas,
+    // getEHHandoverDocuments,
+    getAuthToken
 };

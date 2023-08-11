@@ -12,9 +12,6 @@ import {
     Resource,
     Key,
     ReferenceTypes,
-    DataSpecificationContent,
-    DataTypeIEC61360,
-    LevelType,
     MultiLanguageTextType,
     NameType,
     MultiLanguageNameType,
@@ -27,18 +24,25 @@ import {
 import { Mixin } from 'ts-mixer';
 import { logger } from '../services/logger';
 import { Serialize } from '../services/oi4_helpers';
+import DST from './data_specifications';
 
+/** AAS standard structure for References.
+ * 'type: ReferenceType' defines whether this refers to a locally defined model (AAS standard element) or an external resource.
+ * 'keys: Array<Key>' is an ordered list of directions where each key referes to a sub-element of the previousl key.
+ * Constraint: The first key in the case of an ExternalReference must always have 'GlobalReference' as its 'Key.type'.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.10
+ */
 export class Reference {
     public type: ReferenceTypes;
     public referredSemanticId?: Reference;
     public keys: Array<Key>;
     public constructor(opt: {
         type: ReferenceTypes;
-        refferedSemanticId?: Reference;
+        referredSemanticId?: Reference;
         keys: Array<Key>;
     }) {
         this.type = opt.type;
-        this.referredSemanticId = opt.refferedSemanticId;
+        this.referredSemanticId = opt.referredSemanticId;
         if (opt.keys.length > 0) {
             let keys: Array<Key> = [];
             opt.keys.forEach((value) => {
@@ -55,6 +59,13 @@ export class Reference {
     }
 }
 
+/** AAS standard structure for elements with semantics.
+ * 'semanticId' and 'supplementalSemanticIds' refer to the primary and additional semantic descriptions of any instance of this class
+ * respectively.
+ * Constraint: If at least one supplemental semantic ID ('HasSemantics.supplementalSemanticIds[0]') is defined, then the primary
+ * semantic ID ('HasSemantics.semanticId') must also be defined.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.6
+ */
 export abstract class HasSemantics {
     semanticId?: Reference;
     supplementalSemanticIds?: Array<Reference>;
@@ -77,6 +88,10 @@ export abstract class HasSemantics {
     }
 }
 
+/** AAS standard structure for element Extensions.
+ * Extesion instances are proprietary and do not support glonal interoperability.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.4
+ */
 export class Extension extends HasSemantics {
     public name: NameType;
     public valueType?: DataTypeDefXsd | DataTypeDefRdf;
@@ -88,7 +103,7 @@ export class Extension extends HasSemantics {
         name: NameType;
         valueType?: DataTypeDefXsd | DataTypeDefRdf;
         value?: any;
-        refersTo?: Referable; //can be local object or URI/ID. if local object, assign. if URI/ID, create local object and assign
+        refersTo?: Referable;
     }) {
         super(opt);
         this.name = opt.name;
@@ -103,6 +118,11 @@ export class Extension extends HasSemantics {
     }
 }
 
+/** AAS standard structure for elements with Extensions.
+ * Constraint: Name of each Extension ('Extension.name') element within the list of extensions ('HasExtnesion.extentions')
+ * must be unique in an instance of this class.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.4
+ */
 export abstract class HasExtension {
     public extentions?: Array<Extension>;
     public constructor(opt?: { extensions?: Array<Extension> }) {
@@ -125,14 +145,24 @@ export abstract class HasExtension {
     }
 }
 
+/** AAS standard structure for elements referable via their idShort attribute.
+ * 'Referable.idShort' is not globally unique, but unique within the scope of the namespace the element.
+ * Constraint: 'Referable.idShort' shall only feature letters, digits, underscore ("_"); starting mandatory with a letter,
+ * i.e. [a-zA-Z][a-zA-Z0-9_]*.
+ * Constraint: 'Referable.idShort' is a mandatory property of all referables except for direct childeren of SubmodelElementList elements
+ * and all Identifiables.
+ * Constraint: 'Referable.idShort' must be omitted for all direct children of a SubmodelElementList element.
+ * Constraint: 'Referable.idShort' of Elements in the same namespace must be unique (case-sensitive).
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.10
+ */
 export abstract class Referable extends HasExtension {
     public category?: ValuedElementCategory | string;
     public idShort?: NameType;
     public displayName?: MultiLanguageNameType;
-    public descriptoin?: MultiLanguageTextType;
+    public description?: MultiLanguageTextType;
     public constructor(opt?: {
         extensions?: Array<Extension>;
-        category?: ValuedElementCategory | NameType;
+        category?: ValuedElementCategory | NameType; //deprecated
         idShort?: NameType;
         displayName?: MultiLanguageNameType;
         description?: MultiLanguageTextType;
@@ -141,10 +171,15 @@ export abstract class Referable extends HasExtension {
         this.category = opt?.category;
         this.idShort = opt?.idShort;
         this.displayName = opt?.displayName;
-        this.descriptoin = opt?.description;
+        this.description = opt?.description;
     }
 }
 
+/** AAS standard structure for elements that can be extended via a data specification template which defines the names of aditional
+ * optional or mandatory attributes.
+ * items in 'HasDataSpecification.dataSpecifications' are strictly external references.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.3
+ */
 export abstract class HasDataSpecification {
     public dataSpecifications?: Array<Reference>;
     public constructor(opt?: { dataSpecifications?: Array<Reference> }) {
@@ -167,104 +202,22 @@ export interface ValueReferencePair {
 
 export type ValueList = Array<ValueReferencePair>;
 
-export class DataSpecificationIEC61360 extends DataSpecificationContent {
-    public preferredName: LangStringSet;
-    public shortName?: LangStringSet;
-    public unit?: string;
-    public unitId?: Reference;
-    public sourceOfDefinition?: string;
-    public symbol?: string;
-    public dataType?: DataTypeIEC61360;
-    public definition?: LangStringSet;
-    public valueFormt?: string;
-    public valueList?: ValueList;
-    public value?: string;
-    public levelType?: LevelType;
-    public constructor(opt: {
-        preferredName: LangStringSet;
-        shortName?: LangStringSet;
-        unit?: string;
-        unitId?: Reference;
-        sourceOfDefinition?: string;
-        symbol?: string;
-        dataType?: DataTypeIEC61360;
-        definition?: LangStringSet;
-        valueFormt?: string;
-        valueList?: ValueList;
-        value?: string;
-        levelType?: LevelType;
-    }) {
-        super();
-        this.preferredName = opt.preferredName;
-        this.shortName = opt.shortName;
-        this.unit = opt.unit;
-        this.unitId = opt.unitId;
-        this.sourceOfDefinition = opt.sourceOfDefinition;
-        this.symbol = opt.symbol;
-        this.dataType = opt.dataType;
-        this.definition = opt.definition;
-        this.valueFormt = opt.valueFormt;
-        this.valueList = opt.valueList;
-        this.value = opt.value;
-        this.levelType = opt.levelType;
-    }
-}
-
-export class DataSpecificationPhysicalUnit extends DataSpecificationContent {
-    public unitName: string;
-    public unitSymbol: string;
-    public definition: LangStringSet;
-    public siNotion?: string;
-    public siName?: string;
-    public dinNotion?: string;
-    public eceName?: string;
-    public eceCode?: string;
-    public nistName?: string;
-    public sourceOfDefinition?: string;
-    public conversionFator?: string;
-    public registrationAuthorityId?: string;
-    public supplier?: string;
-    public constructor(opt: {
-        unitName: string;
-        unitSymbol: string;
-        definition: LangStringSet;
-        siNotion?: string;
-        siName?: string;
-        dinNotion?: string;
-        eceName?: string;
-        eceCode?: string;
-        nistName?: string;
-        sourceOfDefinition?: string;
-        conversionFator?: string;
-        registrationAuthorityId?: string;
-        supplier?: string;
-    }) {
-        super();
-        this.unitName = opt.unitName;
-        this.unitSymbol = opt.unitSymbol;
-        this.definition = opt.definition;
-        this.siNotion = opt.siNotion;
-        this.siName = opt.siName;
-        this.dinNotion = opt.dinNotion;
-        this.eceName = opt.eceName;
-        this.eceCode = opt.eceCode;
-        this.nistName = opt.nistName;
-        this.sourceOfDefinition = opt.sourceOfDefinition;
-        this.conversionFator = opt.conversionFator;
-        this.registrationAuthorityId = opt.registrationAuthorityId;
-        this.supplier = opt.supplier;
-    }
-}
-
+/**
+ * 'DataSpicification.id' is a globally unique id which is referred to by 'HasDataSpicification.dataSpicification'
+ * During serilization, the contents of 'DataSpecification.dataSpecificationContent' are embedded into the HasDataSpicification
+ * instance by adding a list of 'EmbeddedDataSpecification' elements as a property ('HasDataSpecification.embeddedDataSpecifications')
+ * to the serialized instance and removing 'HasDataSpecification.dataSpecifications' from the instance.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 6 and 7.2.5
+ */
 export class DataSpecification {
     public administration?: AdministrativeInformation;
     public id: Identifier;
-    public dataSpecificationContent: DataSpecificationContent;
+    public dataSpecificationContent: DST.DataSpecificationContent;
     public description: LangStringSet;
     public constructor(opt: {
         administration?: AdministrativeInformation;
         id: Identifier;
-        dataSpecificationContent: DataSpecificationContent;
+        dataSpecificationContent: DST.DataSpecificationContent;
         description: MultiLanguageTextType;
     }) {
         this.administration = opt.administration;
@@ -274,8 +227,24 @@ export class DataSpecification {
     }
 }
 
-export class EmbeddedDataSpecification {}
+/** See above. */
+export class EmbeddedDataSpecification {
+    dataSpecification?: Reference;
+    dataSpicificationContent: DST.DataSpecificationContent;
+    public constructor(opt: {
+        dataSpecification?: Reference;
+        dataSpicificationContent: DST.DataSpecificationContent;
+    }) {
+        this.dataSpecification = opt.dataSpecification;
+        this.dataSpicificationContent = opt.dataSpicificationContent;
+    }
+}
 
+/** AAS standard structure for elements that may contain adimistrative information (e.g. versioning information).
+ * Constraint: If 'AdministrativeInformation.version' is provided, 'AdministrativeInformation.revision' is optional. Otherwise
+ * it must be omitted.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.2
+ */
 export class AdministrativeInformation extends HasDataSpecification {
     public version?: VersionType;
     public revision?: RevisionType;
@@ -296,6 +265,11 @@ export class AdministrativeInformation extends HasDataSpecification {
     }
 }
 
+/** AAS standard structure for elements that have a globally unique identifier.
+ * Instances of this class shall only be referred to via their id ('Identifiable.id'). Their idShort is not unique within
+ * their namespace.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.7
+ */
 export abstract class Identifiable extends Referable {
     public id: string; //should be an IRI/IDRI/CustomID
     public administration?: AdministrativeInformation;
@@ -314,6 +288,11 @@ export abstract class Identifiable extends Referable {
     }
 }
 
+/** AAS standard structure for elements which can either represent an instance or a template.
+ * This is used to distinguish between submodels and submodel templates.
+ * By default a Haskind element is an instance ('Haskind.kind' is 'instance')
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.5
+ */
 export abstract class HasKind {
     public kind: ModellingKind = 'Instance';
     public constructor(opt?: { kind?: ModellingKind }) {
@@ -323,6 +302,14 @@ export abstract class HasKind {
     }
 }
 
+/** AAS standard structure for Qualifiers.
+ * A type-value-pair that can make statements about the value, concept or existance of the qualifed element.
+ * By default the qualifier kind (Qualifer.kind) is a concept qualifier ('Qualifier.kind' is 'ConceptQualifier')
+ * valueId ('Qualifier.valueId') is recommended to be an external reference.
+ * Constraint: if both value and valueId are defined, value shoud be equal to the value that valueId refers to.
+ * Constraint: value should be consistent with data type given in valueType.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.9
+ */
 export class Qualifier extends HasSemantics {
     public kind: QualifierKind = 'ConceptQualifier';
     public type: QualifierType;
@@ -349,6 +336,14 @@ export class Qualifier extends HasSemantics {
     }
 }
 
+/** AAS standard structure for qualifiable elements.
+ * Constraint: Every qualifiable can only have one qualifier with the same Qualifier/type.
+ * Constraint: if an element inherits from both Qualifiable and HasKind, and one of its Qualifiers has
+ * 'Qualifier.type' set to 'TemplateQualifier', then its 'HasKind.Kind' must be 'Template'.
+ * Constraint: if the above condition occurs in a SubmodelElement, the Submodels that this SubmodelElement is
+ * a part of must have 'Submodel.kind' set to 'Template'.
+ * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.8
+ */
 export abstract class Qualifiable {
     public qualifiers?: Array<Qualifier>;
     public constructor(opt?: { qualifiers?: Array<Qualifier> }) {
@@ -364,6 +359,14 @@ export abstract class Qualifiable {
     }
 }
 
+/** AAS standard structure for Submodel elements.
+ * It is recommended to include a semantic ID for a Submodel element ('SubmodelElement.semanticId').
+ * In case of a Property SubmodelElement, if no corresponding ConceptDescription is available, then the
+ * SubmodelElement may have a data specification template defined. Otherwise, there is only the property definition
+ * referenced by semanticId available for the property; the attributes must be looked up online in a different way
+ * and are not available offline.
+ * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.6 and 5.3.7
+ */
 export abstract class SubmodelElement extends Mixin(
     Referable,
     HasSemantics,
@@ -383,8 +386,16 @@ export abstract class SubmodelElement extends Mixin(
     }) {
         super(opt);
     }
-} //TODO: must define different subclasses of submodelElement (e.g. event)
+}
 
+/** AAS standard structure for Submodel elements.
+ * A submodel is used to structure the digital representation and technical functionality of an Administration Shell
+ * into distinguishable parts. Each submodel refers to a well-defined domain or subject matter.
+ * It is recommended to include a semantic ID for a Submodel.
+ * If the value of 'Submodel.kind' is set to 'Template', all SubmodelElements within 'Submodel.submodelElements'
+ * represent Submodel element templates. if 'Submodel.kind' is instance, all Submodl elements represent instances.
+ * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.5
+ */
 export class Submodel extends Mixin(
     Identifiable,
     HasKind,
@@ -423,6 +434,15 @@ export class Submodel extends Mixin(
     }
 }
 
+/** AAS standard structure for specific asset IDs.
+ * They describe a generic supplementary identifying attribute of an asset. Not necesseraliy globally unique.
+ * These identifiers will be meaningful to some external subject which may be defined in
+ * 'SpecificAssetId.externalSubjectId'
+ * These IDs mainly serve the purpose of supporting discovery of Asset Administration Shells for an asset.
+ * Constraint: 'SpecificAssetId.externalSubjectId' shall be a global reference
+ * ('SpecificAssetId.externalSubjectId.type' must be 'ExternalReference').
+ * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.4
+ */
 export class SpecificAssetId extends HasSemantics {
     public name: LableType;
     public value: Identifier;
@@ -441,6 +461,14 @@ export class SpecificAssetId extends HasSemantics {
     }
 }
 
+/** AAS standard structure for identifying meta data of an asset.
+ * globalAssetId is required as soon as asset is exchanged via partners within its life cycle. It is
+ * only defined as optional to cover the edge case of assets in the first phase of their life cycle when
+ * this ID does not yet exist.
+ * Constraint: "globalAssetId" (case-insensitive) is a reserved key. If used as value for 'SpecificAssetId.name'
+ * in 'AssetInformation.specificAssetIds', 'SpecificAssetId.value' shall be identical to 'AssetInformation.globalAssetId'.
+ * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.4
+ */
 export class AssetInformation {
     public assetKind: AssetKind;
     public globalAssetId?: Identifier;
@@ -470,6 +498,10 @@ export class AssetInformation {
     }
 }
 
+/** AAS standard structure for Administration Shells.
+ * 'AssetAdministrationShell.derivedFrom' exists to establish such a relationship between two AAS.
+ * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.3 and 4.2
+ */
 export class AssetAdministrationShell extends Mixin(
     Identifiable,
     HasDataSpecification
@@ -505,6 +537,11 @@ export class AssetAdministrationShell extends Mixin(
     }
 }
 
+/** AAS standard structure for elements describing semantics of a submodel or its elements.
+ * 'ConceptDescription.isCaseOf' is a reference to a preferably external definition which the described concept is compatible to
+ * or derived from.
+ * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.8
+ */
 export class ConceptDescription extends Mixin(
     Identifiable,
     HasDataSpecification
@@ -532,18 +569,31 @@ export class ConceptDescription extends Mixin(
             this.isCaseOf = isCaseOf;
         }
     }
-    // public serialize(): Object {
-    //     return Serialize(this, {dataSpecifications: (obj: Object)=>{return undefined}}, {embeddedDataSpecification: (obj: Object)=>{return GetEmbeddedDataSpec(obj: Object)}});
-    // }
+    public serialize(): Object {
+        return Serialize(this, {
+            modifyKeys: {
+                embeddedDataSpecification: (obj: ConceptDescription) => {
+                    return obj.dataSpecifications?.map((ref) => {
+                        return RealizeDataSpecificationReference(ref);
+                    });
+                }
+            },
+            removeKeys: ['dataSpecifications']
+        });
+    }
 }
 
-class Environment extends Reference {
+/** AAS standard structure introduced solely to enable file transfer as well as serialization, and therefore not Identifiable nor referable.
+ * It is a container for sets of different identifiables.
+ * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.9
+ */
+export class Environment extends Reference {
     public assetAdminstrationShells?: Array<AssetAdministrationShell>;
     public submodels?: Array<Submodel>;
     public conceptDescriptions?: Array<ConceptDescription>;
     public constructor(opt: {
         type: ReferenceTypes;
-        refferedSemanticId?: Reference;
+        referredSemanticId?: Reference;
         keys: Array<Key>;
         assetAdminstrationShells?: Array<AssetAdministrationShell>;
         submodels?: Array<Submodel>;
@@ -577,4 +627,7 @@ class Environment extends Reference {
             this.conceptDescriptions = conceptDescriptions;
         }
     }
+}
+function RealizeDataSpecificationReference(ref: Reference): any {
+    throw new Error('Function not implemented.');
 }

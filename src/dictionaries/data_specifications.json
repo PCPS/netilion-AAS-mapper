@@ -1,1 +1,1034 @@
-{"0173-1#02-AAY811#001":{"elementName":"URIOfTheProduct","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"URI of the product"}],"definition":[{"language":"en","text":"unique global identification of the product using an universal resource identifier (URI)"}]}},"0173-1#02-AAO677#002":{"elementName":"ManufacturerName","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"Manufacturer name"}],"definition":[{"language":"en","text":"legally valid designation of the natural or judicial person which is directly responsible for the design, production, packaging and labeling of a product in respect to its being brought into circulation"}]}},"0173-1#02-AAW338#001":{"elementName":"ManufacturerProductDesignation","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"Manufacturer product designation"}],"definition":[{"language":"en","text":"Short description of the product (short text)"}]}},"0173-1#02-AAO128#002":{"elementName":"Street","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"street"}],"definition":[{"language":"en","text":"street name and house number"}]}},"0173-1#02-AAO129#002":{"elementName":"Zipcode","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"zip code"}],"definition":[{"language":"en","text":"ZIP code of address"}]}},"0173-1#02-AAO132#002":{"elementName":"CityTown","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"city/town"}],"definition":[{"language":"en","text":"town or city"}]}},"0173-1#02-AAO134#002":{"elementName":"NationalCode","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"national code"}],"definition":[{"language":"en","text":"code of a country"}]}},"0173-1#02-AAO204#003":{"elementName":"RoleOfContactPerson","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"role of contact person"}],"definition":[{"language":"en","text":"function of a contact person in a process"}]}},"0173-1#02-AAW001#001":{"elementName":"Company","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"company"}],"definition":[{"language":"en","text":"name of the company"}]}},"0173-1#02-AAO127#003":{"elementName":"Department","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"department"}],"definition":[{"language":"en","text":"administrative section within an organization where a business partner is located"}]}},"0173-1#02-AAO136#002":{"elementName":"TelephoneNumber","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"telephone number"}],"definition":[{"language":"en","text":"complete telephone number to be called to reach a business partner"}]}},"0173-1#02-AAO137#003":{"elementName":"TypeOfTelephone","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"type of telephone"}],"definition":[{"language":"en","text":"characterization of a telephone according to its location or usage"}]}},"0173-1#02-AAQ834#005":{"elementName":"Fax","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"Fax"}],"definition":[{"language":"en","text":"Fax number including type"}]}},"0173-1#02-AAO195#002":{"elementName":"FaxNumber","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"fax number"}],"definition":[{"language":"en","text":"complete telephone number to be called to reach a business partner's fax machine"}]}},"0173-1#02-AAO196#003":{"elementName":"TypeOfFaxNumber","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"type of fax number"}],"definition":[{"language":"en","text":"characterization of the fax according its location or usage"}]}},"0173-1#02-AAQ836#005":{"elementName":"Email","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"E-mail"}],"definition":[{"language":"en","text":"E-mail address and encryption method"}]}},"0173-1#02-AAO198#002":{"elementName":"EmailAddress","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"e-mail address"}],"definition":[{"language":"en","text":"electronic mail address of a business partner"}]}},"0173-1#02-AAO200#002":{"elementName":"PublicKey","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"public key"}],"definition":[{"language":"en","text":"public part of an unsymmetrical key pair to sign or encrypt text or messages"}]}},"0173-1#02-AAO199#003":{"elementName":"TypeOfEmailAddress","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"type of e-mail address"}],"definition":[{"language":"en","text":"characterization of an e-mail address according its location or usage"}]}},"0173-1#02-AAO201#002":{"elementName":"TypeOfPublicKey","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"type of public key"}],"definition":[{"language":"en","text":"characterization of a public key according to its encryption process"}]}},"0173-1#02-AAQ326#002":{"elementName":"AddressOfAdditionalLink","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"address of additional link"}],"definition":[{"language":"en","text":"web site address where information about the product or contact is given"}]}},"0173-1#02-AAO130#002":{"elementName":"POBox","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"PO box"}],"definition":[{"language":"en","text":"P.O. box number"}]}},"0173-1#02-AAO131#002":{"elementName":"ZipCodeOfPOBox","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"zip code of PO box"}],"definition":[{"language":"en","text":"ZIP code of P.O. box address"}]}},"0173-1#02-AAO133#002":{"elementName":"StateCounty","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"state/county"}],"definition":[{"language":"en","text":"federal state a part of a state"}]}},"0173-1#02-AAO205#002":{"elementName":"NameOfContact","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"name of contact"}],"definition":[{"language":"en","text":"surname of a contact person"}]}},"0173-1#02-AAO206#002":{"elementName":"FirstName","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"first name"}],"definition":[{"language":"en","text":"first name of a contact person"}]}},"0173-1#02-AAO207#002":{"elementName":"MiddleNames","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"middle names"}],"definition":[{"language":"en","text":"middle names of contact person"}]}},"0173-1#02-AAO208#003":{"elementName":"Title","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"title"}],"definition":[{"language":"en","text":"common, formal, religious, or other title preceding a contact person's name"}]}},"0173-1#02-AAO209#003":{"elementName":"AcademicTitle","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"academic title"}],"definition":[{"language":"en","text":"academic title preceding a contact person's name"}]}},"0173-1#02-AAO210#002":{"elementName":"FurtherDetailsOfContact","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"further details of contact"}],"definition":[{"language":"en","text":"additional information of the contact person"}]}},"0173-1#02-AAU732#001":{"elementName":"ManufacturerProductRoot","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"Manufacturer product root"}],"definition":[{"language":"en","text":"Top level of a 3 level manufacturer specific product hierarchy"}]}},"0173-1#02-AAU731#001":{"elementName":"ManufacturerProductFamily","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"Manufacturer product family"}],"definition":[{"language":"en","text":"2nd level of a 3 level manufacturer specific product hierarchy"}]}},"0173-1#02-AAO057#002":{"elementName":"ManufacturerProductType","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"Product type"}],"definition":[{"language":"en","text":"Characteristic to differentiate between different products of a product family or special variants"}]}},"0173-1#02-AAO227#002":{"elementName":"OrderCodeOfManufacturer","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"order code of manufacturer"}],"definition":[{"language":"en","text":"by manufactures issued unique combination of numbers and letters used to identify the device for ordering"}]}},"0173-1#02-AAO676#003":{"elementName":"ProductArticleNumberOfManufacturer","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"product article number of manufacturer"}],"shortName":[{"language":"en","text":"MAN_PROD_NUM"}],"definition":[{"language":"en","text":"unique product identifier of the manufacturer"}]}},"0173-1#02-AAM556#002":{"elementName":"SerialNumber","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"serial number"}],"definition":[{"language":"en","text":"unique combination of numbers and letters used to identify the device once it has been manufactured"}]}},"0173-1#02-AAP906#001":{"elementName":"YearOfConstruction","found":false},"0173-1#02-AAR972#002":{"elementName":"DateOfManufacture","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"Date of manufacture"}],"definition":[{"language":"en","text":"Date from which the production and / or development process is completed or from which a service is provided completely"}]}},"0173-1#02-AAN270#002":{"elementName":"HardwareVersion","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"hardware version"}],"definition":[{"language":"en","text":"version of the hardware supplied with the device"}]}},"0173-1#02-AAM985#002":{"elementName":"FirmwareVersion","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"firmware version"}],"definition":[{"language":"en","text":"version of the firmware supplied with the device"}]}},"0173-1#02-AAM737#002":{"elementName":"SoftwareVersion","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"software version"}],"definition":[{"language":"en","text":"version of the software used by the device"}]}},"0173-1#02-AAO259#004":{"elementName":"CountryOfOrigin","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"country of origin"}],"definition":[{"language":"en","text":"country where the product was manufactured"}]}},"0173-1#01-AGZ673#001":{"elementName":"Markings","found":false},"0173-1#01-AHD206#001":{"elementName":"Marking","found":false},"0173-1#02-AAM812#003":{"elementName":"TypeOfApproval","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"type of approval"}],"definition":[{"language":"en","text":"classification according to the standard or directive to which the approval applies"}]}},"0173-1#02-AAM632#001":{"elementName":"AppeovalAgencyTestingAgency","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"Approval agency/testing agency"}],"definition":[{"language":"en","text":"certificates and approvals pertaining to general usage and compliance with constructional standards and directives"}]}},"0173-1#02-AAQ325#003":{"elementName":"TypeOfProtection","found":false},"0173-1#02-AAN532#003":{"elementName":"RatedInsulationVoltage","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"rated insulation voltage"}],"definition":[{"language":"en","text":"from the manufacturer for the capital assets limited isolation with given(indicated) operating conditions"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA153#003"}]}}},"0173-1#02-AAK297#004":{"elementName":"DeviceCategory","found":false},"0173-1#02-AAM668#001":{"elementName":"EquipmentProtectionLevel","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"Equipment protection level"}],"definition":[{"language":"en","text":"part of a hazardous area classification system indicating the likelihood of the existence of a classified hazard"}]}},"0173-1#02-AAT372#001":{"elementName":"ExplosionGroup","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"explosion group"}],"definition":[{"language":"en","text":"classification of dangerous gaseous substances based on their ability to cause an explosion"}]}},"0173-1#02-AAZ952#001":{"elementName":"MinimumAmbientTemperature","found":false},"0173-1#02-BAA039#010":{"elementName":"MaxAmbientTemperature","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"max. ambient temperature"}],"definition":[{"language":"en","text":"upper limit of the temperature range of the surrounding space in which the component, the pipework or the system can be operated"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA567#004"}]}}},"0173-1#02-AAM666#005":{"elementName":"MaxSurfaceTemperatureForDustProof","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"max. surface temperature for dust-proof"}],"definition":[{"language":"en","text":"maximum permissible surface temperature of a device used in an explosion hazardous area with combustible dust"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA567#004"}]}}},"0173-1#02-AAO371#004":{"elementName":"TemperatureClass","found":false},"0173-1#02-AAN309#004":{"elementName":"LowerLimitingValueOfProcessTemperature","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"lower limiting value of process temperature"}],"definition":[{"language":"en","text":"lowest temperature to which the wetted parts of the equipment can be subjected without permanent impairment of operating characteristics"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA567#004"}]}}},"0173-1#02-AAN307#004":{"elementName":"UpperLimitingValueOfProcessTemperature","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"upper limiting value of process temperature"}],"definition":[{"language":"en","text":"highest temperature to which the wetted parts of the device may be subjected without permanent impairment of operating characteristics"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA567#004"}]}}},"0173-1#02-AAQ380#006":{"elementName":"SafetyRelatedPropertiesForPassiveBehaviour","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"Safety related properties for passive behaviour"}],"definition":[{"language":"en","text":"reference property"}]}},"0173-1#02-AAQ372#003":{"elementName":"MaxInputPower","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"max. input power"}],"definition":[{"language":"en","text":"maximum power that can be applied to the connection facilities of the apparatus without invalidating the type of protection"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA143#003"}]}}},"0173-1#02-AAM638#003":{"elementName":"MaxInputVoltage","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"max. input voltage"}],"definition":[{"language":"en","text":"maximum voltage (peak a.c. or d.c.) that can be applied to the connection facilities of the apparatus without invalidating the type of protection"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA153#003"}]}}},"0173-1#02-AAM642#004":{"elementName":"MaxInputCurrent","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"max. input current"}],"definition":[{"language":"en","text":"maximum current (peak a.c. or d.c) that can be applied to the connection facilities of the apparatus without invalidating the type of protection"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA723#003"}]}}},"0173-1#02-AAM640#004":{"elementName":"MaxInternalCapacitance","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"max. internal capacitance"}],"definition":[{"language":"en","text":"maximum equivalent internal capacitance of the apparatus which is considered as appearing across the connection facilities"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA007#003"}]}}},"0173-1#02-AAM639#003":{"elementName":"MaxInternalInductance","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"max. internal inductance"}],"definition":[{"language":"en","text":"maximum equivalent internal inductance of the apparatus which is considered as appearing across the connection facilities"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA047#003"}]}}},"0173-1#02-AAQ381#006":{"elementName":"SafetyRelatedPropertiesForActiveBehaviour","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"Safety related properties for active behaviour"}],"definition":[{"language":"en","text":"reference property"}]}},"0173-1#02-AAQ371#003":{"elementName":"MaxOutputPower","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"max. output power"}],"definition":[{"language":"en","text":"maximum electrical power that can be taken from the apparatus"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA143#003"}]}}},"0173-1#02-AAM635#003":{"elementName":"MaxOutputVoltage","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"max. output voltage"}],"definition":[{"language":"en","text":"maximum voltage (peak a.c. or d.c.) that can occur at the connection facilities of the apparatus at any applied voltage up to the maximum voltage"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA153#003"}]}}},"0173-1#02-AAM641#004":{"elementName":"MaxOutputCurrent","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"max. output current"}],"definition":[{"language":"en","text":"maximum current (peak a.c. or d.c.) in the apparatus that can be taken from the connection facilities of the apparatus"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA723#003"}]}}},"0173-1#02-AAM637#004":{"elementName":"MaxExternalCapacitance","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"max. external capacitance"}],"definition":[{"language":"en","text":"maximum capacitance that can be connected to the connection facilities of the apparatus without invalidating the type of protection"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA007#003"}]}}},"0173-1#02-AAM636#003":{"elementName":"MaxExternalInductance","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"max. external inductance"}],"definition":[{"language":"en","text":"maximum value of inductance that can be connected to the connection facilities of the apparatus without invalidating the type of protection"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA047#003"}]}}},"0173-1#02-AAM634#003":{"elementName":"MaxExternalInductanceResistanceRatio","found":true,"dataSpecificationContent":{"preferredName":[{"language":"en","text":"max. external inductance/resistance ratio"}],"definition":[{"language":"en","text":"maximum value of ratio of inductance (Lo) to resistance (Ro) of any external circuit that can be connected to the connection facilities of the electrical apparatus without invalidating intrinsic safety"}],"unitId":{"type":"ExternalReference","keys":[{"type":"GlobalReference","value":"[IRDI] 0173-1#05-AAA188#003"}]}}},"0173-1#01-AGZ672#001":{"elementName":"AssetSpecificProperties","found":false},"0173-1#01-AHD205#001":{"elementName":"GuidelineSpecificProperties","found":false},"0173-1#02-AAO856#002":{"elementName":"GuidelineForConformityDeclaration","found":false}}
+{
+    "0173-1#02-AAY811#001": {
+        "elementName": "URIOfTheProduct",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "URI of the product" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "unique global identification of the product using an universal resource identifier (URI)"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO677#002": {
+        "elementName": "ManufacturerName",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "Manufacturer name" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "legally valid designation of the natural or judicial person which is directly responsible for the design, production, packaging and labeling of a product in respect to its being brought into circulation"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAW338#001": {
+        "elementName": "ManufacturerProductDesignation",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "Manufacturer product designation" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "Short description of the product (short text)"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO128#002": {
+        "elementName": "Street",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "street" }],
+            "definition": [
+                { "language": "en", "text": "street name and house number" }
+            ]
+        }
+    },
+    "0173-1#02-AAO129#002": {
+        "elementName": "Zipcode",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "zip code" }],
+            "definition": [{ "language": "en", "text": "ZIP code of address" }]
+        }
+    },
+    "0173-1#02-AAO132#002": {
+        "elementName": "CityTown",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "city/town" }],
+            "definition": [{ "language": "en", "text": "town or city" }]
+        }
+    },
+    "0173-1#02-AAO134#002": {
+        "elementName": "NationalCode",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "national code" }],
+            "definition": [{ "language": "en", "text": "code of a country" }]
+        }
+    },
+    "0173-1#02-AAO204#003": {
+        "elementName": "RoleOfContactPerson",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "role of contact person" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "function of a contact person in a process"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAW001#001": {
+        "elementName": "Company",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "company" }],
+            "definition": [{ "language": "en", "text": "name of the company" }]
+        }
+    },
+    "0173-1#02-AAO127#003": {
+        "elementName": "Department",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "department" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "administrative section within an organization where a business partner is located"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO136#002": {
+        "elementName": "TelephoneNumber",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "telephone number" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "complete telephone number to be called to reach a business partner"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO137#003": {
+        "elementName": "TypeOfTelephone",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "type of telephone" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "characterization of a telephone according to its location or usage"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAQ834#005": {
+        "elementName": "Fax",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "Fax" }],
+            "definition": [
+                { "language": "en", "text": "Fax number including type" }
+            ]
+        }
+    },
+    "0173-1#02-AAO195#002": {
+        "elementName": "FaxNumber",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "fax number" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "complete telephone number to be called to reach a business partner's fax machine"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO196#003": {
+        "elementName": "TypeOfFaxNumber",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "type of fax number" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "characterization of the fax according its location or usage"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAQ836#005": {
+        "elementName": "Email",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "E-mail" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "E-mail address and encryption method"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO198#002": {
+        "elementName": "EmailAddress",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "e-mail address" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "electronic mail address of a business partner"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO200#002": {
+        "elementName": "PublicKey",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "public key" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "public part of an unsymmetrical key pair to sign or encrypt text or messages"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO199#003": {
+        "elementName": "TypeOfEmailAddress",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "type of e-mail address" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "characterization of an e-mail address according its location or usage"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO201#002": {
+        "elementName": "TypeOfPublicKey",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "type of public key" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "characterization of a public key according to its encryption process"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAQ326#002": {
+        "elementName": "AddressOfAdditionalLink",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "address of additional link" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "web site address where information about the product or contact is given"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO130#002": {
+        "elementName": "POBox",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "PO box" }],
+            "definition": [{ "language": "en", "text": "P.O. box number" }]
+        }
+    },
+    "0173-1#02-AAO131#002": {
+        "elementName": "ZipCodeOfPOBox",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "zip code of PO box" }
+            ],
+            "definition": [
+                { "language": "en", "text": "ZIP code of P.O. box address" }
+            ]
+        }
+    },
+    "0173-1#02-AAO133#002": {
+        "elementName": "StateCounty",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "state/county" }],
+            "definition": [
+                { "language": "en", "text": "federal state a part of a state" }
+            ]
+        }
+    },
+    "0173-1#02-AAO205#002": {
+        "elementName": "NameOfContact",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "name of contact" }],
+            "definition": [
+                { "language": "en", "text": "surname of a contact person" }
+            ]
+        }
+    },
+    "0173-1#02-AAO206#002": {
+        "elementName": "FirstName",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "first name" }],
+            "definition": [
+                { "language": "en", "text": "first name of a contact person" }
+            ]
+        }
+    },
+    "0173-1#02-AAO207#002": {
+        "elementName": "MiddleNames",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "middle names" }],
+            "definition": [
+                { "language": "en", "text": "middle names of contact person" }
+            ]
+        }
+    },
+    "0173-1#02-AAO208#003": {
+        "elementName": "Title",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "title" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "common, formal, religious, or other title preceding a contact person's name"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO209#003": {
+        "elementName": "AcademicTitle",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "academic title" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "academic title preceding a contact person's name"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO210#002": {
+        "elementName": "FurtherDetailsOfContact",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "further details of contact" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "additional information of the contact person"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAU732#001": {
+        "elementName": "ManufacturerProductRoot",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "Manufacturer product root" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "Top level of a 3 level manufacturer specific product hierarchy"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAU731#001": {
+        "elementName": "ManufacturerProductFamily",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "Manufacturer product family" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "2nd level of a 3 level manufacturer specific product hierarchy"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO057#002": {
+        "elementName": "ManufacturerProductType",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "Product type" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "Characteristic to differentiate between different products of a product family or special variants"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO227#002": {
+        "elementName": "OrderCodeOfManufacturer",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "order code of manufacturer" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "by manufactures issued unique combination of numbers and letters used to identify the device for ordering"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO676#003": {
+        "elementName": "ProductArticleNumberOfManufacturer",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                {
+                    "language": "en",
+                    "text": "product article number of manufacturer"
+                }
+            ],
+            "shortName": [{ "language": "en", "text": "MAN_PROD_NUM" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "unique product identifier of the manufacturer"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAM556#002": {
+        "elementName": "SerialNumber",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "serial number" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "unique combination of numbers and letters used to identify the device once it has been manufactured"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAP906#001": {
+        "elementName": "YearOfConstruction",
+        "found": false
+    },
+    "0173-1#02-AAR972#002": {
+        "elementName": "DateOfManufacture",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "Date of manufacture" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "Date from which the production and / or development process is completed or from which a service is provided completely"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAN270#002": {
+        "elementName": "HardwareVersion",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "hardware version" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "version of the hardware supplied with the device"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAM985#002": {
+        "elementName": "FirmwareVersion",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "firmware version" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "version of the firmware supplied with the device"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAM737#002": {
+        "elementName": "SoftwareVersion",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "software version" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "version of the software used by the device"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAO259#004": {
+        "elementName": "CountryOfOrigin",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "country of origin" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "country where the product was manufactured"
+                }
+            ]
+        }
+    },
+    "0173-1#01-AGZ673#001": { "elementName": "Markings", "found": false },
+    "0173-1#01-AHD206#001": { "elementName": "Marking", "found": false },
+    "0173-1#02-AAM812#003": {
+        "elementName": "TypeOfApproval",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "type of approval" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "classification according to the standard or directive to which the approval applies"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAM632#001": {
+        "elementName": "AppeovalAgencyTestingAgency",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "Approval agency/testing agency" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "certificates and approvals pertaining to general usage and compliance with constructional standards and directives"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAQ325#003": {
+        "elementName": "TypeOfProtection",
+        "found": false
+    },
+    "0173-1#02-AAN532#003": {
+        "elementName": "RatedInsulationVoltage",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "rated insulation voltage" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "from the manufacturer for the capital assets limited isolation with given(indicated) operating conditions"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA153#003"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#02-AAK297#004": { "elementName": "DeviceCategory", "found": false },
+    "0173-1#02-AAM668#001": {
+        "elementName": "EquipmentProtectionLevel",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "Equipment protection level" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "part of a hazardous area classification system indicating the likelihood of the existence of a classified hazard"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAT372#001": {
+        "elementName": "ExplosionGroup",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "explosion group" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "classification of dangerous gaseous substances based on their ability to cause an explosion"
+                }
+            ]
+        }
+    },
+    "0173-1#02-AAZ952#001": {
+        "elementName": "MinimumAmbientTemperature",
+        "found": false
+    },
+    "0173-1#02-BAA039#010": {
+        "elementName": "MaxAmbientTemperature",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "max. ambient temperature" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "upper limit of the temperature range of the surrounding space in which the component, the pipework or the system can be operated"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA567#004"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#02-AAM666#005": {
+        "elementName": "MaxSurfaceTemperatureForDustProof",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                {
+                    "language": "en",
+                    "text": "max. surface temperature for dust-proof"
+                }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "maximum permissible surface temperature of a device used in an explosion hazardous area with combustible dust"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA567#004"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#02-AAO371#004": {
+        "elementName": "TemperatureClass",
+        "found": false
+    },
+    "0173-1#02-AAN309#004": {
+        "elementName": "LowerLimitingValueOfProcessTemperature",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                {
+                    "language": "en",
+                    "text": "lower limiting value of process temperature"
+                }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "lowest temperature to which the wetted parts of the equipment can be subjected without permanent impairment of operating characteristics"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA567#004"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#02-AAN307#004": {
+        "elementName": "UpperLimitingValueOfProcessTemperature",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                {
+                    "language": "en",
+                    "text": "upper limiting value of process temperature"
+                }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "highest temperature to which the wetted parts of the device may be subjected without permanent impairment of operating characteristics"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA567#004"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#02-AAQ380#006": {
+        "elementName": "SafetyRelatedPropertiesForPassiveBehaviour",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                {
+                    "language": "en",
+                    "text": "Safety related properties for passive behaviour"
+                }
+            ],
+            "definition": [{ "language": "en", "text": "reference property" }]
+        }
+    },
+    "0173-1#02-AAQ372#003": {
+        "elementName": "MaxInputPower",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [{ "language": "en", "text": "max. input power" }],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "maximum power that can be applied to the connection facilities of the apparatus without invalidating the type of protection"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA143#003"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#02-AAM638#003": {
+        "elementName": "MaxInputVoltage",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "max. input voltage" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "maximum voltage (peak a.c. or d.c.) that can be applied to the connection facilities of the apparatus without invalidating the type of protection"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA153#003"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#02-AAM642#004": {
+        "elementName": "MaxInputCurrent",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "max. input current" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "maximum current (peak a.c. or d.c) that can be applied to the connection facilities of the apparatus without invalidating the type of protection"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA723#003"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#02-AAM640#004": {
+        "elementName": "MaxInternalCapacitance",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "max. internal capacitance" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "maximum equivalent internal capacitance of the apparatus which is considered as appearing across the connection facilities"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA007#003"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#02-AAM639#003": {
+        "elementName": "MaxInternalInductance",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "max. internal inductance" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "maximum equivalent internal inductance of the apparatus which is considered as appearing across the connection facilities"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA047#003"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#02-AAQ381#006": {
+        "elementName": "SafetyRelatedPropertiesForActiveBehaviour",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                {
+                    "language": "en",
+                    "text": "Safety related properties for active behaviour"
+                }
+            ],
+            "definition": [{ "language": "en", "text": "reference property" }]
+        }
+    },
+    "0173-1#02-AAQ371#003": {
+        "elementName": "MaxOutputPower",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "max. output power" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "maximum electrical power that can be taken from the apparatus"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA143#003"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#02-AAM635#003": {
+        "elementName": "MaxOutputVoltage",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "max. output voltage" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "maximum voltage (peak a.c. or d.c.) that can occur at the connection facilities of the apparatus at any applied voltage up to the maximum voltage"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA153#003"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#02-AAM641#004": {
+        "elementName": "MaxOutputCurrent",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "max. output current" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "maximum current (peak a.c. or d.c.) in the apparatus that can be taken from the connection facilities of the apparatus"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA723#003"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#02-AAM637#004": {
+        "elementName": "MaxExternalCapacitance",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "max. external capacitance" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "maximum capacitance that can be connected to the connection facilities of the apparatus without invalidating the type of protection"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA007#003"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#02-AAM636#003": {
+        "elementName": "MaxExternalInductance",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                { "language": "en", "text": "max. external inductance" }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "maximum value of inductance that can be connected to the connection facilities of the apparatus without invalidating the type of protection"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA047#003"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#02-AAM634#003": {
+        "elementName": "MaxExternalInductanceResistanceRatio",
+        "found": true,
+        "dataSpecificationContent": {
+            "preferredName": [
+                {
+                    "language": "en",
+                    "text": "max. external inductance/resistance ratio"
+                }
+            ],
+            "definition": [
+                {
+                    "language": "en",
+                    "text": "maximum value of ratio of inductance (Lo) to resistance (Ro) of any external circuit that can be connected to the connection facilities of the electrical apparatus without invalidating intrinsic safety"
+                }
+            ],
+            "unitId": {
+                "type": "ExternalReference",
+                "keys": [
+                    {
+                        "type": "GlobalReference",
+                        "value": "[IRDI] 0173-1#05-AAA188#003"
+                    }
+                ]
+            }
+        }
+    },
+    "0173-1#01-AGZ672#001": {
+        "elementName": "AssetSpecificProperties",
+        "found": false
+    },
+    "0173-1#01-AHD205#001": {
+        "elementName": "GuidelineSpecificProperties",
+        "found": false
+    },
+    "0173-1#02-AAO856#002": {
+        "elementName": "GuidelineForConformityDeclaration",
+        "found": false
+    }
+}

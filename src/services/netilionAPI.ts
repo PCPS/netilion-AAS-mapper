@@ -6,6 +6,13 @@ import axios, {
 } from 'axios';
 import { logger } from './logger';
 import { makeBase64 } from './oi4_helpers';
+import {
+    AuthType,
+    OAUTH_TOKEN,
+    OAUTH_REQUEST_BODY,
+    AUTH_RESULT,
+    OAUTH_REFRESH
+} from '../interfaces/Mapper';
 
 if (process.env.NODE_ENV !== 'production') {
     const dotenv = require('dotenv');
@@ -13,49 +20,29 @@ if (process.env.NODE_ENV !== 'production') {
     dotenv.config();
 }
 
-interface OAUTH_PASSWORD {
-    client_id: string;
-    client_secret: string;
-    grant_type: 'password';
-    username: string;
-    password: string;
-}
-
-interface OAUTH_REFRESH {
-    client_id: string;
-    client_secret: string;
-    grant_type: 'refresh_token';
-    refresh_token: string;
-}
-
-interface OAUTH_RESPONSE {
+class AutoAuthToken implements OAUTH_TOKEN {
     access_token: string;
-    token_type: 'Bearer';
-    expires_in: number;
-    refresh_token: string;
-    created_at: number;
-}
-
-class AuthToken {
-    authType: 'Bearer' | 'Basic';
-    value: string;
+    token_type: AuthType;
+    expires_in?: number;
+    refresh_token?: string;
+    created_at?: number;
     public constructor() {
         switch (process.env.NETILION_AUTH_TYPE) {
             case 'Basic':
-                this.authType = 'Basic';
-                this.value = makeBase64(
+                this.token_type = 'Basic';
+                this.access_token = makeBase64(
                     process.env.NETILION_USERNAME +
                         ':' +
                         process.env.NETILION_PASSWORD
                 );
                 logger.info(
                     `Basic token generatad form usr: ${process.env.NETILION_USERNAME}, \
-                    pwd: ${process.env.NETILION_PASSWORD} with value [ ${this.value} ]`
+                    pwd: ${process.env.NETILION_PASSWORD} with value [ ${this.access_token} ]`
                 );
                 break;
             case 'Bearer':
-                this.authType = 'Bearer';
-                this.value = '';
+                this.token_type = 'Bearer';
+                this.access_token = '';
                 this.requestOAuth2({
                     client_id:
                         process.env.NETILION_API_KEY ||
@@ -73,17 +60,17 @@ class AuthToken {
                 });
                 break;
             default:
-                this.authType = 'Basic';
-                this.value = 'ERROR_NETILION_AUTH_TYPE_UNDEFINED';
+                this.token_type = 'Basic';
+                this.access_token = 'ERROR_NETILION_AUTH_TYPE_UNDEFINED';
                 logger.error(
                     'AUTHTYPE [' +
                         process.env.NETILION_AUTH_TYPE +
-                        '] not found or not recognized'
+                        '] is not supported.'
                 );
                 break;
         }
     }
-    private async requestOAuth2(body: OAUTH_PASSWORD | OAUTH_REFRESH) {
+    private async requestOAuth2(body: OAUTH_REQUEST_BODY) {
         if (process.env.NETILION_AUTH_SERVER !== undefined) {
             try {
                 const resp = await axios.post(
@@ -96,25 +83,32 @@ class AuthToken {
                         }
                     }
                 );
-                const data: OAUTH_RESPONSE = await resp.data;
-                this.value = data.access_token;
-                console.log('AUTH VALUE RETIEVED: ' + data);
-                console.log(data);
+                const data: OAUTH_TOKEN = await resp.data;
+                this.access_token = data.access_token;
+                this.token_type = data.token_type;
+                this.expires_in = data.expires_in;
+                this.refresh_token = data.refresh_token;
+                this.created_at = data.created_at;
+                logger.info('Auth value retrieved for <add user info here>');
                 const time_to_next_req =
-                    data.expires_in * 1000 -
-                    (Date.now() - data.created_at * 1000 + 2000);
+                    (data.expires_in || 0) * 1000 -
+                    (Date.now() - (data.created_at || 0) * 1000 + 2000);
                 setTimeout(() => {
                     this.requestOAuth2({
                         client_id: body.client_id,
                         client_secret: body.client_secret,
                         grant_type: 'refresh_token',
-                        refresh_token: data.refresh_token
+                        refresh_token:
+                            data.refresh_token || 'ERROR_MISSING_REFRESH_TOKEN'
                     });
                 }, time_to_next_req);
             } catch (error: any) {
-                if (error.status) {
+                if (error.response) {
                     logger.error(
-                        'Authentication error ' + error.status + ': ' + error
+                        'Authentication error ' +
+                            error.response.status +
+                            ': ' +
+                            error.response.data.error_description
                     );
                 } else {
                     logger.error(
@@ -126,11 +120,16 @@ class AuthToken {
     }
 }
 
-const token = new AuthToken();
+const token =
+    process.env.MAPPER_AUTH_MODE === 'INTERNAL'
+        ? new AutoAuthToken()
+        : undefined;
 
 export class NetelionClient {
+    private token: OAUTH_TOKEN;
     private api: AxiosInstance;
     public constructor() {
+        this.token = token || { access_token: '', token_type: 'Bearer' };
         const apiConfig: CreateAxiosDefaults = {
             baseURL:
                 process.env.NETILION_API_URL +
@@ -144,9 +143,10 @@ export class NetelionClient {
         };
         this.api = axios.create(apiConfig);
         this.api.interceptors.request.use((config) => {
-            config.headers.Authorization = token.authType + ' ' + token.value;
             logger.info(
-                `request ready with URL[${config.baseURL! + config.url!}]`
+                `request ready with URL[${
+                    config.baseURL! + config.url!
+                }] and headers[${config.headers}]`
             );
             return config;
         });
@@ -178,67 +178,208 @@ export class NetelionClient {
     }
 
     public getVDICategories<T = any, R = AxiosResponse<T>>(
+        auth: OAUTH_TOKEN,
         page: number = 1
     ): Promise<R> {
         return this.api.get(
-            '/document/categories?page=' + page + '&standard_id=1'
+            '/document/categories?page=' + page + '&standard_id=1',
+            token
+                ? {
+                      headers: {
+                          Authorization:
+                              token.token_type + ' ' + token.access_token
+                      }
+                  }
+                : {
+                      headers: {
+                          Authorization:
+                              auth.token_type + ' ' + auth.access_token
+                      }
+                  }
         );
     }
 
     public getAllAssets<T = any, R = AxiosResponse<T>>(
+        auth: OAUTH_TOKEN,
         page: number = 1
     ): Promise<R> {
-        return this.api.get('/assets?page=' + page);
+        return this.api.get(
+            '/assets?page=' + page,
+            token
+                ? {
+                      headers: {
+                          Authorization:
+                              token.token_type + ' ' + token.access_token
+                      }
+                  }
+                : {
+                      headers: {
+                          Authorization:
+                              auth.token_type + ' ' + auth.access_token
+                      }
+                  }
+        );
     }
 
     public getAsset<T = any, R = AxiosResponse<T>>(
+        auth: OAUTH_TOKEN,
         asset_id: string
     ): Promise<R> {
-        return this.api.get('/assets/' + asset_id);
+        return this.api.get(
+            '/assets/' + asset_id,
+            token
+                ? {
+                      headers: {
+                          Authorization:
+                              token.token_type + ' ' + token.access_token
+                      }
+                  }
+                : {
+                      headers: {
+                          Authorization:
+                              auth.token_type + ' ' + auth.access_token
+                      }
+                  }
+        );
     }
 
     public getAssetSpecs<T = any, R = AxiosResponse<T>>(
+        auth: OAUTH_TOKEN,
         asset_id: string
     ): Promise<R> {
-        return this.api.get('/assets/' + asset_id + '/specifications');
+        return this.api.get(
+            '/assets/' + asset_id + '/specifications',
+            token
+                ? {
+                      headers: {
+                          Authorization:
+                              token.token_type + ' ' + token.access_token
+                      }
+                  }
+                : {
+                      headers: {
+                          Authorization:
+                              auth.token_type + ' ' + auth.access_token
+                      }
+                  }
+        );
     }
 
     public getAssetSoftwares<T = any, R = AxiosResponse<T>>(
+        auth: OAUTH_TOKEN,
         asset_id: string,
         page: number = 1
     ): Promise<R> {
-        return this.api.get('/assets/' + asset_id + '/softwares?page=' + page);
+        return this.api.get(
+            '/assets/' + asset_id + '/softwares?page=' + page,
+            token
+                ? {
+                      headers: {
+                          Authorization:
+                              token.token_type + ' ' + token.access_token
+                      }
+                  }
+                : {
+                      headers: {
+                          Authorization:
+                              auth.token_type + ' ' + auth.access_token
+                      }
+                  }
+        );
     }
 
     public getProduct<T = any, R = AxiosResponse<T>>(
+        auth: OAUTH_TOKEN,
         product_id: string
     ): Promise<R> {
-        return this.api.get('/products/' + product_id);
+        return this.api.get(
+            '/products/' + product_id,
+            token
+                ? {
+                      headers: {
+                          Authorization:
+                              token.token_type + ' ' + token.access_token
+                      }
+                  }
+                : {
+                      headers: {
+                          Authorization:
+                              auth.token_type + ' ' + auth.access_token
+                      }
+                  }
+        );
     }
 
     public getProductCategories<T = any, R = AxiosResponse<T>>(
+        auth: OAUTH_TOKEN,
         product_id: string,
         page: number = 1
     ): Promise<R> {
         return this.api.get(
-            '/products/' + product_id + '/categories?page=' + page
+            '/products/' + product_id + '/categories?page=' + page,
+            token
+                ? {
+                      headers: {
+                          Authorization:
+                              token.token_type + ' ' + token.access_token
+                      }
+                  }
+                : {
+                      headers: {
+                          Authorization:
+                              auth.token_type + ' ' + auth.access_token
+                      }
+                  }
         );
     }
 
     public getManufacturer<T = any, R = AxiosResponse<T>>(
+        auth: OAUTH_TOKEN,
         manufacturer_id: string
     ): Promise<R> {
-        return this.api.get('/companies/' + manufacturer_id);
+        return this.api.get(
+            '/companies/' + manufacturer_id,
+            token
+                ? {
+                      headers: {
+                          Authorization:
+                              token.token_type + ' ' + token.access_token
+                      }
+                  }
+                : {
+                      headers: {
+                          Authorization:
+                              auth.token_type + ' ' + auth.access_token
+                      }
+                  }
+        );
     }
 
     public getAssetDocs<T = any, R = AxiosResponse<T>>(
+        auth: OAUTH_TOKEN,
         asset_id: string,
         page: number = 1
     ): Promise<R> {
-        return this.api.get('/assets/' + asset_id + '/documents?page=' + page);
+        return this.api.get(
+            '/assets/' + asset_id + '/documents?page=' + page,
+            token
+                ? {
+                      headers: {
+                          Authorization:
+                              token.token_type + ' ' + token.access_token
+                      }
+                  }
+                : {
+                      headers: {
+                          Authorization:
+                              auth.token_type + ' ' + auth.access_token
+                      }
+                  }
+        );
     }
 
     public getProductDocs<T = any, R = AxiosResponse<T>>(
+        auth: OAUTH_TOKEN,
         product_id: string,
         page: number = 1,
         category_ids: Array<string> = []
@@ -255,8 +396,73 @@ export class NetelionClient {
             );
         } else {
             return this.api.get(
-                '/products/' + product_id + '/documents?page=' + page
+                '/products/' + product_id + '/documents?page=' + page,
+                token
+                    ? {
+                          headers: {
+                              Authorization:
+                                  token.token_type + ' ' + token.access_token
+                          }
+                      }
+                    : {
+                          headers: {
+                              Authorization:
+                                  auth.token_type + ' ' + auth.access_token
+                          }
+                      }
             );
         }
+    }
+
+    public getAuth<T = any, R = AxiosResponse<T>>(
+        username: string,
+        password: string
+    ): Promise<R> {
+        const body = {
+            client_id:
+                process.env.NETILION_API_KEY ||
+                'ERROR_NETILION_API_KEY_UNDEFINED',
+            client_secret:
+                process.env.NETILION_SECRET ||
+                'ERROR_NETILION_SECRET_UNDEFINED',
+            grant_type: 'password',
+            username,
+            password
+        };
+        return axios.post(
+            process.env.NETILION_AUTH_SERVER || 'ERROR_NO_AUTH_SERVER_DEFINED',
+            body,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                }
+            }
+        );
+    }
+
+    public refreshAuth<T = any, R = AxiosResponse<T>>(
+        auth: OAUTH_TOKEN
+    ): Promise<R> {
+        const body = {
+            client_id:
+                process.env.NETILION_API_KEY ||
+                'ERROR_NETILION_API_KEY_UNDEFINED',
+            client_secret:
+                process.env.NETILION_SECRET ||
+                'ERROR_NETILION_SECRET_UNDEFINED',
+            grant_type: 'refresh_token',
+            refresh_token: auth.refresh_token
+        };
+        return axios.post(
+            process.env.NETILION_AUTH_SERVER || 'ERROR_NO_AUTH_SERVER_DEFINED',
+            body,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                }
+            }
+        );
     }
 }

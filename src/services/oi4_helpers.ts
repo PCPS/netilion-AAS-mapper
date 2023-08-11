@@ -1,7 +1,4 @@
-import {
-    DataSpecificationIEC61360,
-    Reference
-} from '../oi4_definitions/aas_components';
+import { Reference } from '../oi4_definitions/aas_components';
 import model_semantics from '../dictionaries/model_semantics.json';
 import {
     KeyTypes,
@@ -9,7 +6,7 @@ import {
 } from '../oi4_definitions/primitive_data_types';
 import fs from 'fs';
 import path from 'path';
-import DataSpecificationInput from '../interfaces/DataSpecificationInput';
+import DataSpecificationTemplates from '../oi4_definitions/interfaces/data_specification_interfaces';
 
 // convert from index number to a zero-padded number in string format.
 // used as postfix to idShort of recurrent submodel elements
@@ -38,30 +35,53 @@ export function GetSemanticId(idShort: string): Reference {
         return new Reference({ type: 'ExternalReference', keys: [] });
     }
 }
-
-// Serilize Object 'obj' to desired output format using Objects 'modifyKeys' and 'appendKeys'.
-// modifyKeys and appendKeys are mappings from keys to functions on obj.
-// modifyKeys only contains keys found in obj and appendKeys only contains unique keys that do not exist in obj
-export function Serialize(
-    obj: { [key: string]: any },
-    modifyKeys: any,
-    appendKeys: any
+// Serilize Object 'obj' to desired output format using Objects 'modifyKeys' and 'removeKeys'.
+// modifyKeys is a mapping from keys to functions on obj.
+// removeKeys is a list of keys that, if included in obj, will be removed from it along with their value.
+// Serialization method must be defined per class by adding a 'serialize()' method to the class.
+// Serialization is recursive and applize to all properties of class.
+export function Serialize<T>(
+    obj: T,
+    opt: {
+        modifyKeys?: { [key: string]: (arg: T) => any }; // add or modify keys in obj with the function they are assigned to in this object.
+        removeKeys?: Array<string>; // list of keys to remove from obj.
+    }
 ): any {
-    let serialized = Object.assign({}, obj);
-    let objProps = Object.getOwnPropertyNames(serialized);
-    let modProps = Object.getOwnPropertyNames(modifyKeys);
-    let addProps = Object.getOwnPropertyNames(appendKeys);
+    let serialized: any = {};
+    let objProps = Object.getOwnPropertyNames(obj);
+    let modProps = Object.getOwnPropertyNames(opt.modifyKeys);
+    let remProps = opt.removeKeys;
+
     objProps
         .filter((prop) => {
-            return modProps.includes(prop);
+            return !remProps?.includes(prop) && !modProps?.includes(prop);
         })
         .forEach((prop) => {
-            serialized[prop] = modifyKeys[prop](obj);
+            serialized[prop] = obj[prop as keyof T];
         });
-    addProps.forEach((prop) => {
-        serialized[prop] = appendKeys[prop](obj);
+    if (opt.modifyKeys) {
+        modProps
+            .filter((prop) => {
+                return !remProps?.includes(prop);
+            })
+            .forEach((prop) => {
+                serialized[prop] = opt.modifyKeys![prop](obj);
+            });
+    }
+    let serProps = Object.getOwnPropertyNames(serialized);
+    serProps.forEach((prop) => {
+        if (serialized[prop]) {
+            if (typeof serialized[prop].serialize === 'function') {
+                serialized[prop] = serialized[prop].serialize();
+            }
+        }
     });
+    return serialized;
 }
+
+// export function RealizeDataSpecificationReferenceL(ref: Reference) {
+//     assert(false);
+// }
 
 //create ConceptDescription elements from eclass JSON dictionary
 export function GenerateDescriptionsFromEclass() {
@@ -131,7 +151,7 @@ export function GenerateDescriptionsFromEclass() {
 // export function GetEmbeddedDataSpec(obj: { [key: string]: any }): any {
 //     let dataSpecs = obj.dataSpecifications;
 //     dataSpecs.
-//     let embeddedDataSpecs = dataSpecs.map((item: Reference) => {return {dataSpecificationContent: new DataSpecificationIEC61360(), dataSpecification: item}})
+//     let embeddedDataSpecs = dataSpecs.map((item: Reference) => {return {dataSpecificationContent: new DataSpecificationIec61360(), dataSpecification: item}})
 // }
 
 // Encode string to Base64 (by default from utf8)

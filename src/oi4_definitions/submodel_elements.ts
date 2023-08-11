@@ -23,6 +23,14 @@ import {
     NameType
 } from './primitive_data_types';
 import { xs } from './xs_data_types';
+
+// Submodel Elements defined within the AAS standard specification.
+
+/** Used to define a relationship between two elements being either refarable (model reference) or external (external reference)
+ * 'RelationshipElement.first' is the subject.
+ * 'RelationshipElement.second' is the object.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.15
+ */
 export class RelationshipElement extends SubmodelElement {
     readonly modelType: string = 'RelationshipElement';
 
@@ -409,6 +417,9 @@ export class ReferenceElement extends DataElement {
     }
 }
 
+/** Used to define a logical encapsulation of named values (submodel elements).
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.16
+ */
 export class SubmodelElementCollection extends SubmodelElement {
     readonly modelType: string = 'SubmodelElementCollection';
 
@@ -436,6 +447,20 @@ export class SubmodelElementCollection extends SubmodelElement {
     }
 }
 
+/** Used to define an ordered list of submodel elements, however this ordering might be irrelevant (decided by 'SubmodelElementList.orderRelevant')
+ * This element is used when there needs to be a list of semantically identical elements added to a submodel.
+ * Constraint: The elements inside 'SubmodelElementList.value' shall not have 'idShort's defined.
+ * Constraint: If a first level child of 'SubmodelElementList' has a 'semanticId', it shall be identicall to 'SubmodelElementList.semanticIdListElement'.
+ * SubmodelElementList do not count as first level children of 'SubmodelElementList's (Details of the Asset Administration Shell part 1 v3.0 section
+ * 5.3.7.16 paragraph 2, description of multi-dimensional arrays).
+ * Constraint: If two first level child elements in a SubmodelElementList have a 'semanticId', they shall be identical.
+ * Constraint: If a first level child element in a 'SubmodelElementList' does not specify a 'semanticId', the value is assumed to be identical to
+ * 'SubmodelElementList.semanticIdListElemen'
+ * Constraint: All first level child elements in a 'SubmodelElementList' shall have the same submodel element type as specified in 'SubmodelElementList.typeValueListElement'.
+ * Constraint: If SubmodelElementList/typeValueListElement is equal to Property or Range, SubmodelElementList/valueTypeListElement shall be set and all first level child
+ * elements in the SubmodelElementList shall have the value type as specified in SubmodelElementList/valueTypeListElement.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.16
+ */
 export class SubmodelElementList extends SubmodelElement {
     readonly modelType: string = 'SubmodelElementList';
 

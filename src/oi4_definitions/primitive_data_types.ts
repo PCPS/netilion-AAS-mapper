@@ -1,3 +1,5 @@
+import DataSpecificationTemplates from './interfaces/data_specification_interfaces';
+
 export interface langString {
     language: string;
     text: string;
@@ -166,8 +168,6 @@ export type Direction = 'input' | 'output';
 export type StateOfEvent = 'on' | 'off';
 
 export type EntityType = 'CoManagedEntity' | ' SelfManagedEntity';
-
-export abstract class DataSpecificationContent {}
 
 export type DataTypeIEC61360 =
     | 'DATE'

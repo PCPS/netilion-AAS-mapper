@@ -1,145 +1,144 @@
 import { Request, Response, NextFunction } from 'express';
 import oi4 from '../services/oi4_repo_agent';
+import { Submodel } from '../oi4_definitions/aas_components';
+import { SubmodelName } from '../services/netilion_agent';
 
-async function postAllEHAASToOI4(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    const result = await oi4.postAllEHAASToOI4();
+const submodel_name_map: { [key: string]: SubmodelName | undefined } = {
+    nameplate: 'Nameplate',
+    configuration_as_built: 'ConfigurationAsBuilt',
+    configuration_as_documented: 'ConfigurationAsDocumented'
+};
+
+async function post_aas(req: Request, res: Response, next: NextFunction) {
+    const result = await oi4.post_aas(res.locals.token, Number(req.params.id));
     res.status(result.status).json(result.json);
 }
 
-async function updateEHAASInOI4(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    const result = await oi4.updateEHAASInOI4(req.params.id);
+async function post_all_aas(req: Request, res: Response, next: NextFunction) {
+    const result = await oi4.post_all_aas(res.locals.token);
     res.status(result.status).json(result.json);
 }
 
-async function postAllEHNameplatesToOI4(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    const result = await oi4.postAllEHNameplatesToOI4();
-    res.status(result.status).json(result.json);
-}
-
-async function updateEHNameplatesInOI4(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    const result = await oi4.updateEHNameplatesInOI4(Number(req.params.id));
-    res.status(result.status).json(result.json);
-}
-
-async function postAllEHConfigurationsAsBuiltToOI4(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    const result = await oi4.postAllEHConfigurationsAsBuiltToOI4();
-    res.status(result.status).json(result.json);
-}
-
-async function updateEHConfigurationsAsBuiltInOI4(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    const result = await oi4.updateEHConfigurationsAsBuiltInOI4(
+async function update_aas(req: Request, res: Response, next: NextFunction) {
+    const result = await oi4.update_aas(
+        res.locals.token,
         Number(req.params.id)
     );
     res.status(result.status).json(result.json);
 }
 
-async function updateAllEHConfigurationsAsBuiltInOI4(
+async function update_all_aas(req: Request, res: Response, next: NextFunction) {
+    const result = await oi4.update_all_aas(res.locals.token);
+    res.status(result.status).json(result.json);
+}
+
+async function post_submodel(req: Request, res: Response, next: NextFunction) {
+    const submodel_name = submodel_name_map[req.params.sm_name];
+    if (submodel_name) {
+        const result = await oi4.post_submodel(
+            res.locals.token,
+            Number(req.params.id),
+            submodel_name
+        );
+        res.status(result.status).json(result.json);
+    } else {
+        res.status(404).json({
+            message: "No Submodel '" + req.params.sm_name + "'"
+        });
+    }
+}
+
+async function post_submodel_for_all_assets(
     req: Request,
     res: Response,
     next: NextFunction
 ) {
-    const result = await oi4.updateAllEHConfigurationsAsBuiltInOI4();
-    res.status(result.status).json(result.json);
+    const submodel_name = submodel_name_map[req.params.sm_name];
+    if (submodel_name) {
+        const result = await oi4.post_submodel_for_all_assets(
+            res.locals.token,
+            submodel_name
+        );
+        res.status(result.status).json(result.json);
+    } else {
+        res.status(404).json({
+            message: "No Submodel '" + req.params.sm_name + "'"
+        });
+    }
 }
 
-async function postAllEHConfigurationsAsDocumentedToOI4(
+async function update_submodel(
     req: Request,
     res: Response,
     next: NextFunction
 ) {
-    const result = await oi4.postAllEHConfigurationsAsDocumentedToOI4();
-    res.status(result.status).json(result.json);
+    const submodel_name = submodel_name_map[req.params.sm_name];
+    if (submodel_name) {
+        const result = await oi4.update_submodel(
+            res.locals.token,
+            Number(req.params.id),
+            submodel_name
+        );
+        res.status(result.status).json(result.json);
+    } else {
+        message: "No Submodel '" + req.params.sm_name + "'";
+    }
 }
 
-async function updateEHConfigurationsAsDocumentedInOI4(
+async function update_submodel_for_all_assets(
     req: Request,
     res: Response,
     next: NextFunction
 ) {
-    const result = await oi4.updateEHConfigurationsAsDocumentedInOI4(
-        Number(req.params.id)
-    );
+    const submodel_name = submodel_name_map[req.params.sm_name];
+    if (submodel_name) {
+        const result = await oi4.update_submodel_for_all_assets(
+            res.locals.token,
+            submodel_name
+        );
+        res.status(result.status).json(result.json);
+    } else {
+        res.status(404).json({
+            message: "No Submodel '" + req.params.sm_name + "'"
+        });
+    }
+}
+
+async function get_all_aas(req: Request, res: Response, next: NextFunction) {
+    const result = await oi4.get_all_aas();
     res.status(result.status).json(result.json);
 }
 
-async function updateAllEHConfigurationsAsDocumentedInOI4(
+async function get_aas(req: Request, res: Response, next: NextFunction) {
+    const result = await oi4.get_aas(req.params.id);
+    res.status(result.status).json(result.json);
+}
+
+async function get_submodel_for_all_assets(
     req: Request,
     res: Response,
     next: NextFunction
 ) {
-    const result = await oi4.updateAllEHConfigurationsAsDocumentedInOI4();
+    const result = await oi4.get_all_submodels();
     res.status(result.status).json(result.json);
 }
 
-async function getAllAASFromOI4(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    const result = await oi4.getAllAASFromOI4();
-    res.status(result.status).json(result.json);
-}
-
-async function getAASFromOI4(req: Request, res: Response, next: NextFunction) {
-    const result = await oi4.getAASFromOI4(req.params.id);
-    res.status(result.status).json(result.json);
-}
-
-async function getAllSubmodelsFromOI4(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    const result = await oi4.getAllSubmodelsFromOI4();
-    res.status(result.status).json(result.json);
-}
-
-async function getSubmodelFromOI4(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    const result = await oi4.getSubmodelFromOI4(req.params.id);
+async function get_submodel(req: Request, res: Response, next: NextFunction) {
+    const result = await oi4.get_submodel(req.params.id);
     res.status(result.status).json(result.json);
 }
 
 export default {
-    postAllEHAASToOI4,
-    postAllEHNameplatesToOI4,
-    postAllEHConfigurationsAsBuiltToOI4,
-    postAllEHConfigurationsAsDocumentedToOI4,
-    updateEHAASInOI4,
-    updateEHNameplatesInOI4,
-    updateEHConfigurationsAsBuiltInOI4,
-    updateAllEHConfigurationsAsBuiltInOI4,
-    updateEHConfigurationsAsDocumentedInOI4,
-    updateAllEHConfigurationsAsDocumentedInOI4,
-    getAllAASFromOI4,
-    getAASFromOI4,
-    getAllSubmodelsFromOI4,
-    getSubmodelFromOI4
+    post_aas,
+    post_all_aas,
+    update_aas,
+    update_all_aas,
+    get_all_aas,
+    get_aas,
+    post_submodel,
+    post_submodel_for_all_assets,
+    update_submodel,
+    update_submodel_for_all_assets,
+    get_submodel_for_all_assets,
+    get_submodel
 };
