@@ -22,48 +22,61 @@ router.use(async (req, res, next) => {
     logger.info(
         `METHOD - [${req.method}], URL - [${req.url}], IP - [${req.socket.remoteAddress}]`
     );
-    const authorization = decodeBase64(
-        req.headers.authorization?.split(' ')[1] || ''
-    );
-    let user_token: OAUTH_TOKEN | undefined;
-    if (authorization) {
-        const [username, password]: string[] = authorization.split(':');
-        user_token = await netilion_agent.get_auth_token(username, password);
-    } else {
-        const cookies: any = req.headers.cookie
-            ?.split(';')
-            .reduce((res: Object, item: string) => {
-                const [key, vaue]: string[] = item.trim().split('=');
-                return { ...res, [key]: vaue };
-            }, {});
-        if (cookies) {
-            if (cookies.access_token && cookies.token_type) {
-                const exp =
-                    Date.now() -
-                    (Number(cookies.expires_in) * 1000 +
-                        cookies.created_at * 1000);
-                if (exp > 0) {
-                    return res.status(401).json({
-                        message: 'Session has expired'
-                    });
-                }
-                user_token = {
-                    access_token: cookies.access_token,
-                    token_type: cookies.token_type,
-                    expires_in: Number(cookies?.expires_in),
-                    refresh_token: cookies?.refresh_token || undefined,
-                    created_at: Number(cookies?.created_at)
-                };
-            }
+    if (process.env.MAPPER_AUTH_MODE === 'BY_USER') {
+        const authorization = decodeBase64(
+            req.headers.authorization?.split(' ')[1] || ''
+        );
+        let user_token: OAUTH_TOKEN | undefined;
+        if (authorization) {
+            const [username, password]: string[] = authorization.split(':');
+            user_token = await netilion_agent.get_auth_token(
+                username,
+                password
+            );
         } else {
-            return res.status(401).json({
-                message: 'No authorization information found'
-            });
+            const cookies: any = req.headers.cookie
+                ?.split(';')
+                .reduce((res: Object, item: string) => {
+                    const [key, vaue]: string[] = item.trim().split('=');
+                    return { ...res, [key]: vaue };
+                }, {});
+            if (cookies) {
+                if (cookies.access_token && cookies.token_type) {
+                    const exp =
+                        Date.now() -
+                        (Number(cookies.expires_in) * 1000 +
+                            cookies.created_at * 1000);
+                    if (exp > 0) {
+                        return res.status(401).json({
+                            message: 'Session has expired'
+                        });
+                    }
+                    user_token = {
+                        access_token: cookies.access_token,
+                        token_type: cookies.token_type,
+                        expires_in: Number(cookies?.expires_in),
+                        refresh_token: cookies?.refresh_token || undefined,
+                        created_at: Number(cookies?.created_at)
+                    };
+                }
+            } else {
+                return res.status(401).json({
+                    message: 'No authorization information found'
+                });
+            }
+            // console.log(cookies ? cookies : 'no coookie :(');
         }
+        res.locals.token = user_token;
+    } else if (process.env.MAPPER_AUTH_MODE === 'INTERNAL') {
+        // token generation will be handled by the assetSource client, this is a place holder.
+        res.locals.token = {
+            access_token: '',
+            token_type: '',
+            expires_in: NaN,
+            refresh_token: undefined,
+            created_at: NaN
+        };
     }
-    res.locals.token = user_token;
-    // console.log(cookies ? cookies : 'no coookie :(');
-
     res.on('finish', () => {
         logger.info(
             `METHOD - [${req.method}], URL - [${req.url}], IP - [${req.socket.remoteAddress}], STATUS - [${res.statusCode}]`

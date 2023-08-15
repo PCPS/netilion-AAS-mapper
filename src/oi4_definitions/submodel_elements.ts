@@ -26,7 +26,8 @@ import { xs } from './xs_data_types';
 
 // Submodel Elements defined within the AAS standard specification.
 
-/** Used to define a relationship between two elements being either refarable (model reference) or external (external reference)
+/** Used to define a relationship between two elements being either refarable (model reference) or
+ * external (external reference)
  * 'RelationshipElement.first' is the subject.
  * 'RelationshipElement.second' is the object.
  * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.15
@@ -55,6 +56,12 @@ export class RelationshipElement extends SubmodelElement {
     }
 }
 
+/** Uses to define Submodel elements that aren't composed of other Submodel elements.
+ * DataElement has a value. The type of this value depends on which subtype of DataElement
+ * an instance belongs to.
+ * Categories are deprecated.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.6
+ */
 export abstract class DataElement extends SubmodelElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
@@ -71,6 +78,9 @@ export abstract class DataElement extends SubmodelElement {
     }
 }
 
+/** Used to defined a RelationshipElement that can be furthere annotates with DataElements
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.1
+ */
 export class AnnotatedRelationshipElement extends RelationshipElement {
     readonly modelType: string = 'AnnotatedRelationshipElement';
 
@@ -100,6 +110,10 @@ export class AnnotatedRelationshipElement extends RelationshipElement {
     }
 }
 
+/** Used to define events
+ * Events are a very versatile mechanism of the AAS with various use cases.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 4.6, 5.3.7.8
+ */
 export abstract class EventElement extends SubmodelElement {
     public constructor(opt: {
         extensions?: Array<Extension>;
@@ -116,6 +130,24 @@ export abstract class EventElement extends SubmodelElement {
     }
 }
 
+/** Used to define a basic EventElement.
+ * 'BasicEventElement.observed' is a reference to a referable that is being observed. this can
+ * be a data element or a submodel.
+ * 'BasicEventElement.direction' is either 'input' or 'output'.
+ * 'BasicEventElement.state' is either 'on' or 'off'
+ * 'BasicEventElement.messageTopic' is used by an external infrustructure to help que the event
+ * in the appropriate channel.
+ * 'BasicEventElement.messageBroker' is a reference to a Submodel element container (SM, SMC, SML)
+ *  which contains DataElements describing a proprietary spec for the external message broker
+ * infrastructure.
+ * 'BasicEventElement.minInterval' for input direction specifies the max. frequency of event
+ * messages that the software entity behind the respective referable can handle, and for output
+ * direction it specifies the max. frequency this message will be sent to the outer infrustructure.
+ * 'BasicEventElement.maxInterval' is only applicable to output direction, and specifes the maximum
+ * durtion of time before a status update for this event is sent, even if no trigger condition has
+ * been met.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.3
+ */
 export class BasicEventElement extends EventElement {
     readonly modelType: string = 'BasicEventElement';
 
@@ -161,6 +193,13 @@ export class BasicEventElement extends EventElement {
     }
 }
 
+/** Used to specify a DataElement representing a file that is contained in the value attribute with
+ * its source code. Difference between a Blob and a File is that the content of the blob is stored
+ * directly inside the Blob Object, instead of a file on disk.
+ * 'Blob.value' is the raw content of the blob.
+ * 'Blob.contentType' is a MIME type specifying possible file extentions.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.4
+ */
 export class Blob extends DataElement {
     readonly modelType: string = 'Blob';
 
@@ -185,6 +224,14 @@ export class Blob extends DataElement {
     }
 }
 
+/** Used to specify an implementation-independent description of the potential of an asset to
+ * acheive a certain effect in the physical or virtual world.
+ * 'Capability.sematicId' is typically an ontology, which enables reasononing on the capability.
+ * To map a capability to one or more skills implementing the capability, a RelationshipElement
+ * with the corresponding semantics is used. in complex cases the mapping can be a
+ * SubmodelElementCollection or complete Submodel. a skill is typically a Property or Operation.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.5
+ */
 export class Capability extends SubmodelElement {
     readonly modelType: string = 'Capability';
 
@@ -203,13 +250,22 @@ export class Capability extends SubmodelElement {
     }
 }
 
+/** Used in Submodels that define the relationship between parts of a composite asset (e.g.
+ * Submodel for bill of materials). These parts are called entities. Not all entities have a global
+ * asset ID.
+ * 'Entity.statements' describes statements applicable to entity by a set of SubmodelElements which
+ * typically have qualified values.
+ * 'Enitity.entityType' is either 'CoManagedEntity' or 'SelfManagedEntity'.
+ * 'Entity.globalAssetId' and 'Entity.SpecificAssetId refer to the asset represented by the entity.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.7
+ */
 export class Entity extends SubmodelElement {
     readonly modelType: string = 'Entity';
 
     public statements?: Array<SubmodelElement>;
     public entityType: EntityType;
     public globalAssetId?: Identifier;
-    public specificAssetId?: SpecificAssetId;
+    public specificAssetIds?: Array<SpecificAssetId>;
 
     public constructor(opt: {
         extensions?: Array<Extension>;
@@ -224,7 +280,7 @@ export class Entity extends SubmodelElement {
         statements?: Array<SubmodelElement>;
         entityType: EntityType;
         globalAssetId?: Identifier;
-        specificAssetId?: SpecificAssetId;
+        specificAssetIds?: Array<SpecificAssetId>;
     }) {
         super(opt);
         if (opt.statements) {
@@ -236,10 +292,23 @@ export class Entity extends SubmodelElement {
         }
         this.entityType = opt.entityType;
         this.globalAssetId = opt.globalAssetId;
-        this.specificAssetId = opt.specificAssetId;
+        if (opt.specificAssetIds) {
+            let specificAssetIds: Array<SpecificAssetId> = [];
+            if (opt.specificAssetIds.length > 0) {
+                opt.specificAssetIds.forEach((val) =>
+                    specificAssetIds.push(val)
+                );
+            }
+            this.specificAssetIds = specificAssetIds;
+        }
     }
 }
 
+/** Used to define a DataElement that represents an addres to a file (a locator). The value is a
+ * URI that can represent an absolute or relative path.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.9
+ * See document: Details of the Asset Administration Shell part 5
+ */
 export class File extends DataElement {
     readonly modelType: string = 'File';
 
@@ -264,6 +333,13 @@ export class File extends DataElement {
     }
 }
 
+/** used to define a property with a multi-language string as value.
+ * the value can be either specified directly in the element ('MultiLanguageProperty.value'), or in case of a coded value
+ * it can be referenced by the 'MultyLanguageProperty.valueId'.
+ * Constraint: If both 'MultyLanguageProperty.value' and 'MultyLanguageProperty.valueId' are specified, the meaning must
+ * be the same for each string in a specific language, as specified in 'MultyLanguageProperty.valueId'.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.10
+ */
 export class MultiLanguageProperty extends DataElement {
     readonly modelType: string = 'MultiLanguageProperty';
 
@@ -288,6 +364,10 @@ export class MultiLanguageProperty extends DataElement {
     }
 }
 
+/** used to define an operation variable as an attribute of an Operation. OperationVariable is introduced as separate
+ * class to enable future extensions, e.g. for adding a default value or cardinality (option/mandatory).
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.11
+ */
 export class OperationVariable {
     readonly modelType: string = 'OperationVariable';
 
@@ -297,6 +377,13 @@ export class OperationVariable {
     }
 }
 
+/** used to define an operation wiht input and output variables. operations typicall specify the behavior of a component
+ * in terms of procedures. Hence, operations enable the specification of services with procedure-based interactions.
+ * even if the submodel element as the value of an input and an output variable have the same idShort, this does not
+ * mean that they are identical or mapped to the same variable since OperationVariables are no referables. The same
+ * applies to two input variables or an input variable and an inoutputVariable and so on.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.11
+ */
 export class Operation extends SubmodelElement {
     readonly modelType: string = 'Operation';
 
@@ -342,6 +429,14 @@ export class Operation extends SubmodelElement {
     }
 }
 
+/** Used to define a DataElement with a single value.
+ * Constraint: If both the 'Property.value' and 'Propert.valueId' are present, the value of the former needs to
+ * be identical to the coded value resolved from the latter.
+ * 'Property.value' contains the value of the property.
+ * 'Property.valueType' specifies the data type of 'Property.value' or the coded value referenced by 'Property.valueId'.
+ * 'Property.valueId' is a reference to a coded  value. it is recommended to use an external value for this.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.12
+ */
 export class Property extends DataElement {
     readonly modelType: string = 'Property';
 
@@ -369,6 +464,12 @@ export class Property extends DataElement {
     }
 }
 
+/** Used to define range data with a min and a max.
+ * 'Range.valueType' is the data type of the 'Range.min' and 'Range.max' values.
+ * 'Range.min' and 'Range.max' values define a lower and an upper band respectively for the property described by the
+ * Range element.
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.13
+ */
 export class Range extends DataElement {
     readonly modelType: string = 'Range';
 
@@ -396,6 +497,12 @@ export class Range extends DataElement {
     }
 }
 
+/** Used to define a logical reference to another element within the same or another AAS or a reference to an external
+ * object or entity.
+ * 'ReferenceElement.value' is an External reference to an external object or entity or a logical reference to another
+ * element within the same or another Asset Administration Shell (i.e. a model reference to a Referable)
+ * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.7.14
+ */
 export class ReferenceElement extends DataElement {
     readonly modelType: string = 'ReferenceElement';
 
