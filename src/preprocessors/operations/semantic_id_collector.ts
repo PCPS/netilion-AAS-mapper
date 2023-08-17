@@ -3,15 +3,15 @@ import fs from 'fs';
 import path from 'path';
 import convert from 'xml-js';
 
+// Set the following variable to the name of the ECLASS advance dictionary file in 'dictionaries' directory
+const ECLASS_XML_FILE_NAME = 'ECLASS12_0_ADVANCED_EN_SG_27.xml';
+
 const sm_path = '../submodels/';
 
-//create eclass dictiononary in JSON format from xml file
+// Create eclass dictiononary in JSON format from xml file
 export function GenerateEclassFromXml() {
     let xml_dict = fs.readFileSync(
-        path.join(
-            __dirname,
-            '../dictionaries/ECLASS12_0_ADVANCED_EN_SG_27.xml'
-        ),
+        path.join(__dirname, '../dictionaries/' + ECLASS_XML_FILE_NAME),
         'utf8'
     );
     let eclass_dict = convert.xml2json(xml_dict, {
@@ -74,7 +74,7 @@ submodel_list.forEach((submodel_file) => {
     });
 });
 
-//create ConceptDescription elements from eclass JSON dictionary
+// Create ConceptDescription elements from eclass JSON dictionary
 export function GenerateDescriptionsFromEclass() {
     const eclass = JSON.parse(
         fs.readFileSync(

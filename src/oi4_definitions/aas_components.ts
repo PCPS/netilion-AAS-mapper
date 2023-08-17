@@ -30,7 +30,7 @@ import DST from './data_specifications';
  * 'type: ReferenceType' defines whether this refers to a locally defined model (AAS standard element) or an external resource.
  * 'keys: Array<Key>' is an ordered list of directions where each key referes to a sub-element of the previousl key.
  * Constraint: The first key in the case of an ExternalReference must always have 'GlobalReference' as its 'Key.type'.
- * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.10
+ * See document: Specification of the Asset Administration Shell part 1 v3.0 section 5.3.10
  */
 export class Reference {
     public type: ReferenceTypes;
@@ -64,7 +64,7 @@ export class Reference {
  * respectively.
  * Constraint: If at least one supplemental semantic ID ('HasSemantics.supplementalSemanticIds[0]') is defined, then the primary
  * semantic ID ('HasSemantics.semanticId') must also be defined.
- * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.6
+ * See document: Specification of the Asset Administration Shell part 1 v3.0 section 5.3.2.6
  */
 export abstract class HasSemantics {
     semanticId?: Reference;
@@ -90,7 +90,7 @@ export abstract class HasSemantics {
 
 /** AAS standard structure for element Extensions.
  * Extesion instances are proprietary and do not support glonal interoperability.
- * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.4
+ * See document: Specification of the Asset Administration Shell part 1 v3.0 section 5.3.2.4
  */
 export class Extension extends HasSemantics {
     public name: NameType;
@@ -121,7 +121,7 @@ export class Extension extends HasSemantics {
 /** AAS standard structure for elements with Extensions.
  * Constraint: Name of each Extension ('Extension.name') element within the list of extensions ('HasExtnesion.extentions')
  * must be unique in an instance of this class.
- * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.4
+ * See document: Specification of the Asset Administration Shell part 1 v3.0 section 5.3.2.4
  */
 export abstract class HasExtension {
     public extentions?: Array<Extension>;
@@ -153,7 +153,7 @@ export abstract class HasExtension {
  * and all Identifiables.
  * Constraint: 'Referable.idShort' must be omitted for all direct children of a SubmodelElementList element.
  * Constraint: 'Referable.idShort' of Elements in the same namespace must be unique (case-sensitive).
- * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.10
+ * See document: Specification of the Asset Administration Shell part 1 v3.0 section 5.3.2.10
  */
 export abstract class Referable extends HasExtension {
     public category?: ValuedElementCategory | string;
@@ -178,7 +178,7 @@ export abstract class Referable extends HasExtension {
 /** AAS standard structure for elements that can be extended via a data specification template which defines the names of aditional
  * optional or mandatory attributes.
  * items in 'HasDataSpecification.dataSpecifications' are strictly external references.
- * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.3
+ * See document: Specification of the Asset Administration Shell part 1 v3.0 section 5.3.2.3
  */
 export abstract class HasDataSpecification {
     public dataSpecifications?: Array<Reference>;
@@ -207,7 +207,7 @@ export type ValueList = Array<ValueReferencePair>;
  * During serilization, the contents of 'DataSpecification.dataSpecificationContent' are embedded into the HasDataSpicification
  * instance by adding a list of 'EmbeddedDataSpecification' elements as a property ('HasDataSpecification.embeddedDataSpecifications')
  * to the serialized instance and removing 'HasDataSpecification.dataSpecifications' from the instance.
- * See document: Details of the Asset Administration Shell part 1 v3.0 section 6 and 7.2.5
+ * See document: Specification of the Asset Administration Shell part 1 v3.0 section 6 and 7.2.5
  */
 export class DataSpecification {
     public administration?: AdministrativeInformation;
@@ -243,7 +243,7 @@ export class EmbeddedDataSpecification {
 /** AAS standard structure for elements that may contain adimistrative information (e.g. versioning information).
  * Constraint: If 'AdministrativeInformation.version' is provided, 'AdministrativeInformation.revision' is optional. Otherwise
  * it must be omitted.
- * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.2
+ * See document: Specification of the Asset Administration Shell part 1 v3.0 section 5.3.2.2
  */
 export class AdministrativeInformation extends HasDataSpecification {
     public version?: VersionType;
@@ -268,7 +268,7 @@ export class AdministrativeInformation extends HasDataSpecification {
 /** AAS standard structure for elements that have a globally unique identifier.
  * Instances of this class shall only be referred to via their id ('Identifiable.id'). Their idShort is not unique within
  * their namespace.
- * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.7
+ * See document: Specification of the Asset Administration Shell part 1 v3.0 section 5.3.2.7
  */
 export abstract class Identifiable extends Referable {
     public id: string; //should be an IRI/IDRI/CustomID
@@ -291,7 +291,7 @@ export abstract class Identifiable extends Referable {
 /** AAS standard structure for elements which can either represent an instance or a template.
  * This is used to distinguish between submodels and submodel templates.
  * By default a Haskind element is an instance ('Haskind.kind' is 'instance')
- * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.5
+ * See document: Specification of the Asset Administration Shell part 1 v3.0 section 5.3.2.5
  */
 export abstract class HasKind {
     public kind: ModellingKind = 'Instance';
@@ -308,7 +308,7 @@ export abstract class HasKind {
  * valueId ('Qualifier.valueId') is recommended to be an external reference.
  * Constraint: if both value and valueId are defined, value shoud be equal to the value that valueId refers to.
  * Constraint: value should be consistent with data type given in valueType.
- * See document: Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.9
+ * See document: Specification of the Asset Administration Shell part 1 v3.0 section 5.3.2.9
  */
 export class Qualifier extends HasSemantics {
     public kind: QualifierKind = 'ConceptQualifier';
@@ -342,7 +342,7 @@ export class Qualifier extends HasSemantics {
  * 'Qualifier.type' set to 'TemplateQualifier', then its 'HasKind.Kind' must be 'Template'.
  * Constraint: if the above condition occurs in a SubmodelElement, the Submodels that this SubmodelElement is
  * a part of must have 'Submodel.kind' set to 'Template'.
- * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.2.8
+ * See document:Specification of the Asset Administration Shell part 1 v3.0 section 5.3.2.8
  */
 export abstract class Qualifiable {
     public qualifiers?: Array<Qualifier>;
@@ -365,7 +365,7 @@ export abstract class Qualifiable {
  * SubmodelElement may have a data specification template defined. Otherwise, there is only the property definition
  * referenced by semanticId available for the property; the attributes must be looked up online in a different way
  * and are not available offline.
- * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.6 and 5.3.7
+ * See document:Specification of the Asset Administration Shell part 1 v3.0 section 5.3.6 and 5.3.7
  */
 export abstract class SubmodelElement extends Mixin(
     Referable,
@@ -394,7 +394,7 @@ export abstract class SubmodelElement extends Mixin(
  * It is recommended to include a semantic ID for a Submodel.
  * If the value of 'Submodel.kind' is set to 'Template', all SubmodelElements within 'Submodel.submodelElements'
  * represent Submodel element templates. if 'Submodel.kind' is instance, all Submodl elements represent instances.
- * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.5
+ * See document:Specification of the Asset Administration Shell part 1 v3.0 section 5.3.5
  */
 export class Submodel extends Mixin(
     Identifiable,
@@ -441,7 +441,7 @@ export class Submodel extends Mixin(
  * These IDs mainly serve the purpose of supporting discovery of Asset Administration Shells for an asset.
  * Constraint: 'SpecificAssetId.externalSubjectId' shall be a global reference
  * ('SpecificAssetId.externalSubjectId.type' must be 'ExternalReference').
- * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.4
+ * See document:Specification of the Asset Administration Shell part 1 v3.0 section 5.3.4
  */
 export class SpecificAssetId extends HasSemantics {
     public name: LableType;
@@ -467,7 +467,7 @@ export class SpecificAssetId extends HasSemantics {
  * this ID does not yet exist.
  * Constraint: "globalAssetId" (case-insensitive) is a reserved key. If used as value for 'SpecificAssetId.name'
  * in 'AssetInformation.specificAssetIds', 'SpecificAssetId.value' shall be identical to 'AssetInformation.globalAssetId'.
- * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.4
+ * See document:Specification of the Asset Administration Shell part 1 v3.0 section 5.3.4
  */
 export class AssetInformation {
     public assetKind: AssetKind;
@@ -500,7 +500,7 @@ export class AssetInformation {
 
 /** AAS standard structure for Administration Shells.
  * 'AssetAdministrationShell.derivedFrom' exists to establish such a relationship between two AAS.
- * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.3 and 4.2
+ * See document:Specification of the Asset Administration Shell part 1 v3.0 section 5.3.3 and 4.2
  */
 export class AssetAdministrationShell extends Mixin(
     Identifiable,
@@ -540,7 +540,7 @@ export class AssetAdministrationShell extends Mixin(
 /** AAS standard structure for elements describing semantics of a submodel or its elements.
  * 'ConceptDescription.isCaseOf' is a reference to a preferably external definition which the described concept is compatible to
  * or derived from.
- * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.8
+ * See document:Specification of the Asset Administration Shell part 1 v3.0 section 5.3.8
  */
 export class ConceptDescription extends Mixin(
     Identifiable,
@@ -585,7 +585,7 @@ export class ConceptDescription extends Mixin(
 
 /** AAS standard structure introduced solely to enable file transfer as well as serialization, and therefore not Identifiable nor referable.
  * It is a container for sets of different identifiables.
- * See document:Details of the Asset Administration Shell part 1 v3.0 section 5.3.9
+ * See document:Specification of the Asset Administration Shell part 1 v3.0 section 5.3.9
  */
 export class Environment extends Reference {
     public assetAdminstrationShells?: Array<AssetAdministrationShell>;

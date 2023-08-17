@@ -7,6 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "rimraf ./build/ && tsc",
         "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+        "preprocess": "ts-node src/preprocessors/main.ts",
         "start:dev": "export NODE_ENV='development' && nodemon",
         "start": "export NODE_ENV='production' && node build/index.js",
         "postinstall": "rimraf ./build/ && tsc",
