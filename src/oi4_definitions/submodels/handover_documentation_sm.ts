@@ -1,10 +1,8 @@
 import { Reference, SpecificAssetId, Submodel } from '../aas_components';
 import {
     ContentType,
-    DataTypeDefXsd,
     LangStringSet,
     PathType,
-    ValueDataType,
     EntityType,
     Identifier
 } from '../primitive_data_types';
@@ -18,7 +16,6 @@ import {
 } from '../submodel_elements';
 import { xs } from '../xs_data_types';
 import { SubmodelElement } from '../aas_components';
-import { GetSemanticId } from '../../services/oi4_helpers';
 import { number_to_padded_string } from '../../services/oi4_helpers';
 
 function Generate_SMC_DocumentId(
@@ -326,7 +323,7 @@ export function Generate_SM_HandoverDocumentation(
             statements?: Array<SubmodelElement>;
             entityType: EntityType;
             globalAssetId?: Identifier;
-            specificAssetId?: SpecificAssetId;
+            specificAssetIds?: Array<SpecificAssetId>;
         }>;
     },
     id: string,
@@ -347,7 +344,7 @@ export function Generate_SM_HandoverDocumentation(
                 statements: item.statements,
                 entityType: item.entityType,
                 globalAssetId: item.globalAssetId,
-                specificAssetId: item.specificAssetId
+                specificAssetIds: item.specificAssetIds
             });
             submodelElements.push(entity);
         });

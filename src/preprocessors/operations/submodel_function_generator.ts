@@ -185,7 +185,7 @@ function GetOptProps(opt: Model, opt_count?: CountType): string {
                 '    statements?: Array<SubmodelElement>,\n' +
                 '    entityType: EntityType,\n' +
                 '    globalAssetId?: Identifier,\n' +
-                '    specificAssetId?: SpecificAssetId\n' +
+                '    specificAssetIds?: Array<SpecificAssetId>\n' +
                 '}';
             break;
 
@@ -285,10 +285,10 @@ function GenerateArbitraryAssignmentBody(sme: Model): string {
                     'opt.' +
                     element_name +
                     '.globalAssetId,' +
-                    '\nspecificAssetId: ' +
+                    '\nspecificAssetIds: ' +
                     'opt.' +
                     element_name +
-                    '.specificAssetId,';
+                    '.specificAssetIds,';
             }
             break;
     }
@@ -379,10 +379,10 @@ function GenerateAssignmentBody(sme: Model, idShort: string): string {
                     'opt.' +
                     (m.alias || idShort) +
                     '.globalAssetId,' +
-                    '\nspecificAssetId: ' +
+                    '\nspecificAssetIds: ' +
                     'opt.' +
                     (m.alias || idShort) +
-                    '.specificAssetId,';
+                    '.specificAssetIds,';
             }
             break;
 

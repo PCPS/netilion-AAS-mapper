@@ -277,8 +277,8 @@ The values of the count are explained in the following table:\
 | ----------------------- | ------------------------------------------------------------------------------------- | ------------ |
 | **?**                   | This element is optional, either a single instance of it is present, or none.         | 0..1         |
 | **!**                   | This element is mandatory, a single instance of it must be present.                   | 1            |
-| **\***                  | This element is optional, an array of it might be present.                            | 0..n         |
-| **+**                   | This element is mandatory, an array of it with a minimum length of 1 must be present. | 1..n         |
+| **\***                  | This element is optional, an array of it might be present.                            | 0..*         |
+| **+**                   | This element is mandatory, an array of it with a minimum length of 1 must be present. | 1..*         |
 _____________________
 
 ### Generation of Data Specifications Dictionary
@@ -299,7 +299,7 @@ const ECLASS_XML_FILE_NAME
 
 ## API Guide
 
-the following API endpoints are defined in the mapper as is, if no defaults are changed. Please note, all endpoints are preceded by `<SERVER_URL>:<PORT>/<SERVER_API_VERSION>/` in _dev_ mode and `<SERVER_URL>:<PORT>/<SERVER_API_VERSION>/` in _production_ mode:
+the following API endpoints are defined in the mapper as is, if no defaults are changed. Please note, all endpoints are preceded by `<SERVER_URL>/<SERVER_API_VERSION>/` in _dev_ mode and `<SERVER_URL>:<PORT>/<SERVER_API_VERSION>/` in _production_ mode:
 
 | API Endpoint | Method | Functionality | Notes |
 | ------------ | ------ | ------------- | ------ |
