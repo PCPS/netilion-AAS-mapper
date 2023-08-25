@@ -1,6 +1,39 @@
 import { LangStringSet } from '../oi4_definitions/primitive_data_types';
 import { xs } from '../oi4_definitions/xs_data_types';
-import { NetilionAsset } from '../interfaces/Netilion';
+import { NetilionAsset, NetilionAssetId } from '../interfaces/Netilion';
+import { submodel_name } from './netilion_agent';
+if (process.env.NODE_ENV !== 'production') {
+    const dotenv = require('dotenv');
+    // Use dev dependency
+    dotenv.config();
+}
+
+export function netilionAssetIdToSubmodelId(
+    asset_id: NetilionAssetId,
+    sm_name: submodel_name
+) {
+    return (
+        process.env.SERVER_URL +
+        (process.env.NODE_ENV !== 'production' ? ':' + process.env.PORT : '') +
+        '/' +
+        process.env.SERVER_API_VERSION +
+        '/mapper/shells/' +
+        asset_id +
+        '/submodels/' +
+        sm_name +
+        '/'
+    );
+}
+export function netilionAssetIdToShellId(asset_id: NetilionAssetId) {
+    return (
+        process.env.SERVER_URL +
+        (process.env.NODE_ENV !== 'production' ? ':' + process.env.PORT : '') +
+        '/' +
+        process.env.SERVER_API_VERSION +
+        '/mapper/shells/' +
+        asset_id
+    );
+}
 
 // Maps asset object retrieved from netilion to sufficeint input of the Namplate submodel generator function
 export function netilionAssetToNameplateInput(opt: {

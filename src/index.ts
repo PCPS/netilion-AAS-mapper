@@ -102,9 +102,9 @@ router.use((req, res, next) => {
 });
 
 // Routes
-router.use('/' + process.env.SERVER_API_VERSION + '/netilion', netilionRoutes);
+router.use('/' + process.env.SERVER_API_VERSION + '/mapper', netilionRoutes);
 router.use('/auth', authRoutes);
-router.use('/' + process.env.SERVER_API_VERSION + '/oi4_repo', oi4Routes);
+router.use('/' + process.env.SERVER_API_VERSION + '/oi4-repo', oi4Routes);
 
 // Error Handling
 router.use((req, res, next) => {

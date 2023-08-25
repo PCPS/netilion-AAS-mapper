@@ -303,22 +303,16 @@ the following API endpoints are defined in the mapper as is, if no defaults are 
 
 | API Endpoint | Method | Functionality | Notes |
 | ------------ | ------ | ------------- | ------ |
-|netilion/get/aas/| GET | Retrieve all Asset Administration Shells from Netilion ||
-|netilion/get/aas/\<AssetID\>| GET | Retrieve Asset Administration Shell for specific asset from netilion | \<AssetID\> is the asset id in the asset source (in this case Netilion asset ID) |
-|netilion/get/submodels/\<SubmodelName\>| GET | Retrieve all submodels of a specific type from Netilion | \<SubmodelName\> is one of "nameplate", "configurations_as_built" or "configurations_as_documented". These are the defined submodels in the mapper by default and can be extended. |
-|netilion/get/submodels/\<SubmodelName\>/\<AssetID\>| GET | Retrieve submodel of a specific type for specific asset from Netilion | See above for \<SubmodelName\> and \<AssetID\> |
-|oi4_repo/get/aas| GET | Retrieve all Asset Administration Shells from the AAS repository ||
-|oi4_repo/get/aas/\<AASID\>| GET | Retrieve specific Asset Administration Shell from the AAS repository | \<AASID\> is the base 64 encoded ID of the desired shell.|
-|oi4_repo/get/submodels| GET | Retrieve all submodels from the AAS repository ||
-|oi4_repo/get/submodels/\<SMID\>| GET | Retrieve specific submodel from the AAS repository | \<SMID\> is the base 64 encoded ID of the desired submodel.|
-|oi4_repo/post/aas| GET | Post Asset Administration Shells for all assets from Netilion into the AAS repository ||
-|oi4_repo/post/aas/\<AssetID\>| GET | Post Asset Administration Shells for specific asset from Netilion into the AAS repository | \<AssetID\> is the asset id in the asset source (in this case Netilion asset ID)|
-|oi4_repo/post/submodels/\<SubmodelName\>| GET | Post submodel of specific type for all assets from Netilion into the AAS repository | \<SubmodelName\> is one of "nameplate", "configurations_as_built" or "configurations_as_documented". These are the defined submodels in the mapper by default and can be extended. |
-|oi4_repo/get/submodels/\<SubmodelName\>/\<AssetID\>| GET | Post submodel of specific type for all assets from Netilion into the AAS repository | See above for \<SubmodelName\> and \<AssetID\>|
-|oi4_repo/update/aas| GET | Update Asset Administration Shells for all assets in the AAS repository from Netilion ||
-|oi4_repo/update/aas/\<AASID\>| GET | Update Asset Administration Shells for specific asset in the AAS repository from Netilion | \<AASID\> is the base 64 encoded ID of the desired shell.|
-|oi4_repo/update/submodels/\<SubmodelName\>| GET | Update all submodels of specific type in the AAS repository from Netilion | \<SubmodelName\> is one of "nameplate", "configurations_as_built" or "configurations_as_documented". These are the defined submodels in the mapper by default and can be extended. |
-|oi4_repo/update/submodels/\<SubmodelName\>/\<AASID\>| GET | Update submodel of specific type for specific shell in the AAS repository from Netilion | See above for \<SubmodelName\> and \<AASID\>|
+|mapper/shells| GET | Retrieve all Asset Administration Shells from Netilion ||
+|mapper/shells/\<AssetID\>| GET | Retrieve Asset Administration Shell for specific asset from netilion | \<AssetID\> is the asset id in the asset source (in this case Netilion asset ID) |
+|mapper/shells/\<AssetID\>/submodels| GET | Retrieve all submodels referenced by the Asset Administration Shell of a specific asset from netilion | \<AssetID\> is the asset id in the asset source (in this case Netilion asset ID) |
+|mapper/shells/\<AssetID\>/submodels/\<SubmodelName\>| GET | Retrieve all submodels of a specific type referenced by the Asset Administration Shell of a specific asset from netilion | \<AssetID\> is the asset id in the asset source (in this case Netilion asset ID). \<SubmodelName\> is one of "nameplate", "configurations_as_built" or "configurations_as_documented". These are the defined submodels in the mapper by default and can be extended.|
+|mapper/submodels/| GET | Retrieve all submodels from Netilion | \<SubmodelName\> is one of "nameplate", "configurations_as_built" or "configurations_as_documented". These are the defined submodels in the mapper by default and can be extended. |
+|mapper/submodels/\<SubmodelName\>| GET | Retrieve all submodels of a specific type from Netilion | \<SubmodelName\> is one of "nameplate", "configurations_as_built" or "configurations_as_documented". These are the defined submodels in the mapper by default and can be extended. |
+|oi4-repo/shells| GET | Retrieve all Asset Administration Shells from the AAS repository |
+|oi4-repo/shells/\<AASID\>| GET | Retrieve specific Asset Administration Shell from the AAS repository | \<AASID\> is the base 64 encoded ID of the desired shell.|
+|oi4-repo/submodels| GET | Retrieve all submodels from the AAS repository |
+|oi4-repo/submodels/\<SMID\>| GET | Retrieve specific submodel from the AAS repository | \<SMID\> is the base 64 encoded ID of the desired submodel.|
 |auth/token| GET | Authenticate with Netilion and save the authentication token as cookie for user | the request in this endpoint must contain Basic authorization header with user's username and password.|
 
 ## Environment Variables

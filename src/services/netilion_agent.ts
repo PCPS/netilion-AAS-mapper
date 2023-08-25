@@ -6,7 +6,11 @@ import {
 } from '../oi4_definitions/aas_components';
 import { Generate_SM_Nameplate } from '../oi4_definitions/submodels/nameplate_sm';
 import { logger } from './logger';
-import { netilionAssetToNameplateInput } from './mappers';
+import {
+    netilionAssetIdToShellId,
+    netilionAssetIdToSubmodelId,
+    netilionAssetToNameplateInput
+} from './mappers';
 import { NetelionClient } from './netilionAPI';
 import { Generate_SM_ConfigurationAsBuilt } from '../oi4_definitions/submodels/configuration_as_built_sm';
 import { Generate_SM_ConfigurationAsDocumented } from '../oi4_definitions/submodels/configuration_as_documented_sm';
@@ -14,17 +18,30 @@ import { NetilionAsset, NetilionAssetId } from '../interfaces/Netilion';
 import { OAUTH_TOKEN } from '../interfaces/Mapper';
 import { AGENT_OP_RESULT } from '../interfaces/Agent';
 import { json } from 'body-parser';
+if (process.env.NODE_ENV !== 'production') {
+    const dotenv = require('dotenv');
+    // Use dev dependency
+    dotenv.config();
+}
 
 const netilionClient = new NetelionClient();
 
 export type SubmodelName =
     | 'Nameplate'
+    // | 'ContactInformation'
+    // | 'HandoverDucumentation'
     | 'ConfigurationAsBuilt'
-    | 'ConfigurationAsDocumented'
-    | 'ContactInformation'
-    | 'HandoverDucumentation';
+    | 'ConfigurationAsDocumented';
+
+export type submodel_name =
+    | 'nameplate'
+    // | 'ContactInformation'
+    // | 'HandoverDucumentation'
+    | 'configuration_as_built'
+    | 'configuration_as_documented';
 
 export type AssetId = NetilionAssetId;
+
 // Retrieve all document category IDs corresponding to the VDI standard within netilion
 async function get_vdi_categories(auth: OAUTH_TOKEN): Promise<Array<any>> {
     //TODO: add category schema for return type
@@ -48,6 +65,40 @@ async function get_vdi_categories(auth: OAUTH_TOKEN): Promise<Array<any>> {
         return CATS;
     } catch (error: any) {
         logger.error(`failed to get VDI categories from netilion: ${error}`);
+        throw error;
+    }
+}
+
+// Get names of idShort of all implemented submodels
+function defined_submodel_names(): Array<SubmodelName> {
+    return ['Nameplate', 'ConfigurationAsBuilt', 'ConfigurationAsDocumented'];
+}
+
+// Get list of valid submodels for asset
+async function asset_submodel_names(
+    auth: OAUTH_TOKEN,
+    asset_id: AssetId
+): Promise<Array<SubmodelName>> {
+    const sm_names: Array<SubmodelName> = ['Nameplate'];
+    try {
+        const specs = await get_asset_specifications(auth, asset_id);
+        if (
+            specs['anfangswert_des_messbereiches'] &&
+            specs['anfangswert_des_messbereiches']
+        ) {
+            return [
+                'Nameplate',
+                'ConfigurationAsBuilt',
+                'ConfigurationAsDocumented'
+            ];
+        } else {
+            return ['Nameplate'];
+        }
+    } catch (error: any) {
+        logger.error(
+            `failed to get specifications for asset ${asset_id} from netilion: ${error}`
+        );
+        error.response = error.response || { status: 500 };
         throw error;
     }
 }
@@ -278,15 +329,7 @@ async function asset_to_aas(
             keys: [
                 {
                     type: 'Submodel',
-                    value:
-                        process.env.SERVER_URL +
-                        (process.env.NODE_ENV !== 'production'
-                            ? ':' + process.env.PORT
-                            : '') +
-                        '/' +
-                        process.env.SERVER_API_VERSION +
-                        '/nameplates/' +
-                        asset.id
+                    value: netilionAssetIdToSubmodelId(asset.id, 'nameplate')
                 }
             ]
         });
@@ -335,15 +378,7 @@ async function asset_to_aas(
                       }
                   ]
                 : undefined,
-            id:
-                process.env.SERVER_URL +
-                (process.env.NODE_ENV !== 'production'
-                    ? ':' + process.env.PORT
-                    : '') +
-                '/' +
-                process.env.SERVER_API_VERSION +
-                '/aas/' +
-                asset.id,
+            id: netilionAssetIdToShellId(asset.id),
             assetInformation: {
                 assetKind: 'Instance',
                 globalAssetId: '[IRI] dsp.endress.com/' + asset.serial_number
@@ -428,14 +463,7 @@ async function asset_to_nameplate(
 
         const nameplate = Generate_SM_Nameplate(
             nameplate_input,
-            process.env.SERVER_URL +
-                (process.env.NODE_ENV !== 'production'
-                    ? ':' + process.env.PORT
-                    : '') +
-                '/' +
-                process.env.SERVER_API_VERSION +
-                '/nameplates/' +
-                asset.id
+            netilionAssetIdToSubmodelId(asset.id, 'nameplate')
         );
         return nameplate;
     } catch (error: any) {
@@ -475,14 +503,7 @@ async function asset_to_configuration_as_built(
                 MinTemp,
                 MaxTemp
             },
-            process.env.SERVER_URL +
-                (process.env.NODE_ENV !== 'production'
-                    ? ':' + process.env.PORT
-                    : '') +
-                '/' +
-                process.env.SERVER_API_VERSION +
-                '/configurations_as_built/' +
-                asset.id
+            netilionAssetIdToSubmodelId(asset.id, 'configuration_as_built')
         );
         return cap;
     } catch (error: any) {
@@ -522,14 +543,7 @@ async function asset_to_configuration_as_documented(
                 MinTemp,
                 MaxTemp
             },
-            process.env.SERVER_URL +
-                (process.env.NODE_ENV !== 'production'
-                    ? ':' + process.env.PORT
-                    : '') +
-                '/' +
-                process.env.SERVER_API_VERSION +
-                '/configurations_as_built/' +
-                asset.id
+            netilionAssetIdToSubmodelId(asset.id, 'configuration_as_documented')
         );
         return cad;
     } catch (error: any) {
@@ -584,12 +598,20 @@ async function get_all_aas(auth: OAUTH_TOKEN): Promise<AGENT_OP_RESULT> {
                     return {
                         failed: true,
                         res: {
-                            status: resp.status,
+                            status: 500,
                             json: {
-                                asset_id: asset.id,
                                 message:
-                                    'Failed to get AssetAdministrationShell for asset',
-                                error: error.message
+                                    'Failed to get AssetAdministrationShell for asset [' +
+                                    asset.id +
+                                    ']',
+                                error: {
+                                    status: resp.status,
+                                    json: {
+                                        message:
+                                            resp.error_description ||
+                                            error.message
+                                    }
+                                }
                             }
                         }
                     };
@@ -612,7 +634,7 @@ async function get_all_aas(auth: OAUTH_TOKEN): Promise<AGENT_OP_RESULT> {
                 ? { status: 207, json: { shells, failed } }
                 : { status: 200, json: { shells } }
             : fail
-            ? { status: 400, json: { message: 'All failed', results: failed } }
+            ? { status: 400, json: { message: 'All failed', error: failed } }
             : { status: 418, json: { message: 'Something went wrong' } };
     } catch (error: any) {
         logger.error(`failed to get aas from assets in netilion: ${error}`);
@@ -705,20 +727,23 @@ async function get_submodel_for_all_assets(
     } catch (error: any) {
         const resp = error.response || { status: 500 };
         return {
-            status: resp.status,
+            status: 500,
             json: {
                 message:
                     'Failed to get ' +
                     submodel_name +
                     'submodels from Netilion',
-                error: error
+                error: {
+                    status: resp.status,
+                    json: { message: resp.error_description || error.message }
+                }
             }
         };
     }
 }
 
 // Get submodel for specifica asset on Netiliom
-async function get_submodel(
+async function get_submodel_for_asset(
     auth: OAUTH_TOKEN,
     asset_id: NetilionAssetId,
     submodel_name: SubmodelName
@@ -778,10 +803,86 @@ async function get_submodel(
     }
 }
 
+async function get_all_submodels_for_asset(
+    auth: OAUTH_TOKEN,
+    asset_id: NetilionAssetId
+) {
+    try {
+        const sm_names = await asset_submodel_names(auth, asset_id);
+        const submodels = (
+            await Promise.all(
+                sm_names.map(async (sm_name) => {
+                    return await get_submodel_for_asset(
+                        auth,
+                        asset_id,
+                        sm_name
+                    );
+                })
+            )
+        ).reduce((a, b) => {
+            if (b.status === 200) {
+                a.push(b.json);
+                return a;
+            } else {
+                const error = new Error(
+                    'Failed to retrieve existing submodel: ' + b.json.message
+                );
+                throw error;
+            }
+        }, new Array<Submodel>());
+        return { status: 200, json: { submodels } };
+    } catch (error: any) {
+        const resp = error.response || { status: 500 };
+        logger.error(error.message);
+        return {
+            status: 500,
+            json: {
+                message: 'Something went wrong',
+                error: {
+                    status: resp.status,
+                    json: { message: resp.error_description || error.message }
+                }
+            }
+        };
+    }
+}
+
+async function get_all_submodels_for_all_assets(auth: OAUTH_TOKEN) {
+    try {
+        const sm_names = defined_submodel_names();
+        const submodels = (
+            await Promise.all(
+                sm_names.map(async (sm_name) => {
+                    return await get_submodel_for_all_assets(auth, sm_name);
+                })
+            )
+        ).reduce((a, b) => {
+            if (b.status === 200) {
+                return a.concat(b.json.submodels);
+            } else {
+                return a;
+            }
+        }, []);
+        return { status: 200, json: { submodels } };
+    } catch (error: any) {
+        const resp = error.response || { status: 500 };
+        logger.error(error.message);
+        return {
+            status: 500,
+            json: {
+                message: 'Something went wrong',
+                error: {
+                    status: resp.status,
+                    json: { message: resp.error_description || error.message }
+                }
+            }
+        };
+    }
+}
 // Extract Netilion asset ID from submodel ID
 function submodel_id_to_source_asset_id(submodel_id: string): AssetId {
     const id_split = submodel_id.split('/');
-    const assetId = Number(id_split[id_split.length - 1]);
+    const assetId = Number(id_split[id_split.length - 4]);
     return assetId;
 }
 
@@ -799,10 +900,14 @@ function string_id_to_asset_id(id: string): AssetId {
 
 // Necessary fuctionality of an asset source agent for the rest of the sdk to function
 export default {
+    defined_submodel_names,
+    asset_submodel_names,
     get_aas,
     get_all_aas,
-    get_submodel,
+    get_submodel_for_asset,
     get_submodel_for_all_assets,
+    get_all_submodels_for_asset,
+    get_all_submodels_for_all_assets,
     submodel_id_to_source_asset_id,
     aas_id_short_to_source_asset_id,
     get_auth_token,
