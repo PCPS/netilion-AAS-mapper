@@ -101,20 +101,16 @@ element types is added to the preprocessor._
 
 ```json
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "SubmodelDefinitionContainer",
     "description": "Container of simplified submodel definitions",
     "type": "object",
     "patternProperties": {
-        "^[A-Z][a-zA-Z0-9]*$": {
-            "$ref": "#/definitions/Submodel"
-        }
+        "^[A-Z][a-zA-Z0-9]*$": { "$ref": "#/definitions/Submodel" }
     },
     "minProperties": 1,
-    "definiontions": {
-        "Submodel": {
-            "title": "Submodel",
-            "description": "A simplified submodel definiton",
+    "definitions": {
+        "CommonProperties": {
             "type": "object",
             "properties": {
                 "semanticId": { "type": "string" },
@@ -123,85 +119,84 @@ element types is added to the preprocessor._
                     "enum": ["IRI", "IRDI", "Custom"]
                 },
                 "isCaseOf": { "type": "string" },
-                "modelType": { "type": "string", "enum": ["Submodel"] },
-                "count": { "type": "string", "enum": ["?", "!", "*", "+"] },
-                "submodelElements": {
-                    "Type": "object",
-                    "patternProperties": {
-                        "^[A-Z][a-zA-Z0-9]*$": {
-                            "$ref": "#/definitions/SubmodelElement"
-                        }
-                    },
-                    "minProperties": 1
-                }
+                "modelType": { "type": "string" },
+                "count": { "type": "string", "enum": ["?", "!", "*", "+"] }
             },
-            "required": ["modelType", "count", "submodelElements"]
+            "required": ["modelType", "count"]
         },
         "SubmodelElement": {
             "title": "SubmodelElement",
-            "description": "A simplified submodel element definiton",
-            "type": "object",
             "oneOf": [
                 { "$ref": "#/definitions/Property" },
                 { "$ref": "#/definitions/MultiLanguageProperty" },
                 { "$ref": "#/definitions/SubmodelElementCollection" },
                 { "$ref": "#/definitions/ReferenceElement" },
                 { "$ref": "#/definitions/File" },
-                { "$ref": "#/definitions/ReferenceElement" },
                 { "$ref": "#/definitions/Entity" }
             ]
         },
         "Property": {
             "title": "Property",
-            "properties": {
-                "semanticId": { "type": "string" },
-                "semanticIdType": {
-                    "type": "string",
-                    "enum": ["IRI", "IRDI", "Custom"]
-                },
-                "isCaseOf": { "type": "string" },
-                "modelType": { "type": "string", "enum": ["Property"] },
-                "count": { "type": "string", "enum": ["?", "!", "*", "+"] },
-                "valueType": {
-                    "type": "string",
-                    "enum": ["xs:string", "xs:decimal", "xs:date", "xs:boolean"]
+            "allOf": [
+                { "$ref": "#/definitions/CommonProperties" },
+                {
+                    "properties": {
+                        "valueType": {
+                            "type": "string",
+                            "enum": [
+                                "xs:string",
+                                "xs:decimal",
+                                "xs:date",
+                                "xs:boolean"
+                            ]
+                        }
+                    },
+                    "required": ["valueType"]
                 }
-            },
-            "required": ["modelType", "count", "valueType"]
+            ]
         },
         "MultiLanguageProperty": {
             "title": "MultiLanguageProperty",
-            "properties": {
-                "semanticId": { "type": "string" },
-                "semanticIdType": {
-                    "type": "string",
-                    "enum": ["IRI", "IRDI", "Custom"]
-                },
-                "isCaseOf": { "type": "string" },
-                "modelType": {
-                    "type": "string",
-                    "enum": ["MultiLanguageProperty"]
-                },
-                "count": { "type": "string", "enum": ["?", "!", "*", "+"] }
-            },
-            "required": ["modelType", "count"]
+            "allOf": [{ "$ref": "#/definitions/CommonProperties" }]
         },
         "SubmodelElementCollection": {
             "title": "SubmodelElementCollection",
+            "allOf": [
+                { "$ref": "#/definitions/CommonProperties" },
+                {
+                    "properties": {
+                        "value": {
+                            "type": "object",
+                            "patternProperties": {
+                                "^[A-Z][a-zA-Z0-9]*$": {
+                                    "$ref": "#/definitions/SubmodelElement"
+                                }
+                            },
+                            "minProperties": 1
+                        }
+                    },
+                    "required": ["value"]
+                }
+            ]
+        },
+        "ReferenceElement": {
+            "title": "ReferenceElement",
+            "allOf": [{ "$ref": "#/definitions/CommonProperties" }]
+        },
+        "File": {
+            "title": "File",
+            "allOf": [{ "$ref": "#/definitions/CommonProperties" }]
+        },
+        "Entity": {
+            "title": "Entity",
+            "allOf": [{ "$ref": "#/definitions/CommonProperties" }]
+        },
+        "Submodel": {
+            "title": "Submodel",
+            "type": "object",
             "properties": {
-                "semanticId": { "type": "string" },
-                "semanticIdType": {
-                    "type": "string",
-                    "enum": ["IRI", "IRDI", "Custom"]
-                },
-                "isCaseOf": { "type": "string" },
-                "modelType": {
-                    "type": "string",
-                    "enum": ["SubmodelElementCollection"]
-                },
-                "count": { "type": "string", "enum": ["?", "!", "*", "+"] },
-                "value": {
-                    "Type": "object",
+                "submodelElements": {
+                    "type": "object",
                     "patternProperties": {
                         "^[A-Z][a-zA-Z0-9]*$": {
                             "$ref": "#/definitions/SubmodelElement"
@@ -210,69 +205,14 @@ element types is added to the preprocessor._
                     "minProperties": 1
                 }
             },
-            "required": ["modelType", "count"]
-        },
-        "ReferenceElement": {
-            "title": "ReferenceElement",
-            "properties": {
-                "semanticId": { "type": "string" },
-                "semanticIdType": {
-                    "type": "string",
-                    "enum": ["IRI", "IRDI", "Custom"]
-                },
-                "isCaseOf": { "type": "string" },
-                "modelType": { "type": "string", "enum": ["ReferenceElement"] },
-                "count": { "type": "string", "enum": ["?", "!", "*", "+"] }
-            },
-            "required": ["modelType", "count"]
-        },
-        "File": {
-            "title": "File",
-            "properties": {
-                "semanticId": { "type": "string" },
-                "semanticIdType": {
-                    "type": "string",
-                    "enum": ["IRI", "IRDI", "Custom"]
-                },
-                "isCaseOf": { "type": "string" },
-                "modelType": { "type": "string", "enum": ["File"] },
-                "count": { "type": "string", "enum": ["?", "!", "*", "+"] }
-            },
-            "required": ["modelType", "count"]
-        },
-        "ReferenceElement": {
-            "title": "ReferenceElement",
-            "properties": {
-                "semanticId": { "type": "string" },
-                "semanticIdType": {
-                    "type": "string",
-                    "enum": ["IRI", "IRDI", "Custom"]
-                },
-                "isCaseOf": { "type": "string" },
-                "modelType": { "type": "string", "enum": ["ReferenceElement"] },
-                "count": { "type": "string", "enum": ["?", "!", "*", "+"] }
-            },
-            "required": ["modelType", "count"]
-        },
-        "Entity": {
-            "title": "Entity",
-            "properties": {
-                "semanticId": { "type": "string" },
-                "semanticIdType": {
-                    "type": "string",
-                    "enum": ["IRI", "IRDI", "Custom"]
-                },
-                "isCaseOf": { "type": "string" },
-                "modelType": { "type": "string", "enum": ["Entity"] },
-                "count": { "type": "string", "enum": ["?", "!", "*", "+"] }
-            },
-            "required": ["modelType", "count"]
+            "required": ["submodelElements"]
         }
     }
 }
+
 ```
 
-The values of the count are explained in the following table:\
+The values of the count are explained in the following table:
 |`.count` Parameter Value | Explanation                                                                           | UML Notation |
 | ----------------------- | ------------------------------------------------------------------------------------- | ------------ |
 | **?**                   | This element is optional, either a single instance of it is present, or none.         | 0..1         |
