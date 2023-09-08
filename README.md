@@ -238,7 +238,7 @@ const ECLASS_XML_FILE_NAME
 
 ## API Guide
 
-[This Swagger UI document]() defines the API endpoints in the mapper as is, if no defaults are changed. Please note, all endpoints are preceded by `<SERVER_URL>/<SERVER_API_VERSION>/` in _production_ mode and `<SERVER_URL>:<PORT>/<SERVER_API_VERSION>/` in _dev_ mode. This Swagger UI can also be accessed on the deployed application through `<SERVER_URL>/api-docs` in _production_ mode and `<SERVER_URL>:<PORT>/api-docs` in _dev_ mode.
+[This SwaggerHub document](https://app.swaggerhub.com/apis/ariaranjbar-EH/aas-mapper_api/1.0.0#/Mapper/get_all_aas) defines the API endpoints in the mapper as is, if no defaults are changed. Please note, all endpoints are preceded by `<SERVER_URL>/<SERVER_API_VERSION>/` in _production_ mode and `<SERVER_URL>:<PORT>/<SERVER_API_VERSION>/` in _dev_ mode. This Swagger UI can also be accessed on the deployed application through `<SERVER_URL>/api-docs` in _production_ mode and `<SERVER_URL>:<PORT>/api-docs` in _dev_ mode.
 
 ## Environment Variables
 
