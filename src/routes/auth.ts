@@ -4,6 +4,6 @@ import netilion_controller from '../controllers/netilion_controller';
 const router = Router();
 
 // Authenticate
-router.get('/token', netilion_controller.getAuthToken);
+router.post('/asset-source', netilion_controller.get_auth_token);
 
 export = router;

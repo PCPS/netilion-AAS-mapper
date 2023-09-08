@@ -2,19 +2,31 @@ import http from 'http';
 import express from 'express';
 import { logger } from './services/logger';
 import bodyParser from 'body-parser';
-import netilionRoutes from './routes/netilion_routes';
+import netilionRoutes, { options } from './routes/netilion_routes';
 import authRoutes from './routes/auth';
 import oi4Routes from './routes/oi4_routes';
-import auto_update from './services/auto_update';
+// import auto_update from './services/auto_update';
 import { OAUTH_TOKEN } from './interfaces/Mapper';
 import { decodeBase64 } from './services/oi4_helpers';
 import netilion_agent from './services/netilion_agent';
+import _swagger_config from './swagger.json';
+import { server_root_address } from './services/mappers';
 
 if (process.env.NODE_ENV !== 'production') {
     const dotenv = require('dotenv');
     // Use dev dependency
     dotenv.config();
 }
+
+/********** Swagger documentation **********/
+import swaggerUI from 'swagger-ui-express';
+
+const swagger_config: swaggerUI.JsonObject = _swagger_config;
+
+swagger_config.servers.push({ url: server_root_address() });
+console.log(swagger_config);
+
+/********************************************/
 
 const router = express();
 
@@ -29,10 +41,17 @@ router.use(async (req, res, next) => {
         let user_token: OAUTH_TOKEN | undefined;
         if (authorization) {
             const [username, password]: string[] = authorization.split(':');
-            user_token = await netilion_agent.get_auth_token(
+            const auth_response = await netilion_agent.get_auth_token(
                 username,
                 password
             );
+            if (auth_response.status >= 200 && auth_response.status < 300) {
+                user_token = auth_response.json as OAUTH_TOKEN;
+            } else {
+                return res
+                    .status(auth_response.status)
+                    .json(auth_response.json);
+            }
         } else {
             const cookies: any = req.headers.cookie
                 ?.split(';')
@@ -103,8 +122,9 @@ router.use((req, res, next) => {
 
 // Routes
 router.use('/' + process.env.SERVER_API_VERSION + '/mapper', netilionRoutes);
-router.use('/auth', authRoutes);
+router.use('/' + process.env.SERVER_API_VERSION + '/auth', authRoutes);
 router.use('/' + process.env.SERVER_API_VERSION + '/oi4-repo', oi4Routes);
+router.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swagger_config));
 
 // Error Handling
 router.use((req, res, next) => {

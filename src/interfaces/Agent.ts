@@ -1,5 +1,3 @@
-import { error } from 'winston';
-
 interface VALID_OP_RESULT<T> {
     status: 200;
     json: T;

@@ -85,6 +85,12 @@ export class OI4Client {
         return this.api.get('/shells/' + aas_id);
     }
 
+    public deleteShell<T = any, R = AxiosResponse<T>>(
+        aas_id: string
+    ): Promise<R> {
+        return this.api.delete('/shells/' + aas_id);
+    }
+
     public postShell<T = any, R = AxiosResponse<T>>(
         shell: AssetAdministrationShell
     ): Promise<R> {
@@ -107,6 +113,12 @@ export class OI4Client {
         submodel_id: string
     ): Promise<R> {
         return this.api.get('/submodels/' + submodel_id);
+    }
+
+    public deleteSubmodel<T = any, R = AxiosResponse<T>>(
+        submodel_id: string
+    ): Promise<R> {
+        return this.api.delete('/submodels/' + submodel_id);
     }
 
     public postSubmodel<T = any, R = AxiosResponse<T>>(

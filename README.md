@@ -8,12 +8,11 @@ standardized format of Asset Administration Shells and Submodels as specified by
 the
 [Industrial Digital Twin Association](https://industrialdigitaltwin.org/en/). By
 default the project provides support for mapping assets form
-[Netilion](https://netilion.endress.com/) to any standard AAS infrustructure
+[Netilion](https://netilion.endress.com/) – Though it is designed to be generalizable for any other proprietary asset repository – to any standard AAS infrustructure
 compliant with **_Specification of the Asset Administratoin Shell_**
 [Part 1 v3.0](https://industrialdigitaltwin.org/en/wp-content/uploads/sites/2/2023/06/IDTA-01001-3-0_SpecificationAssetAdministrationShell_Part1_Metamodel.pdf)
 and
-[Part 2](https://industrialdigitaltwin.org/en/wp-content/uploads/sites/2/2023/06/IDTA-01002-3-0_SpecificationAssetAdministrationShell_Part2_API_.pdf),
-But is designed to be generalizable for any other proprietary asset repository.
+[Part 2](https://industrialdigitaltwin.org/en/wp-content/uploads/sites/2/2023/06/IDTA-01002-3-0_SpecificationAssetAdministrationShell_Part2_API_.pdf).
 For information on how to costumize the source asset manager, refer to the
 [documentation](null)
 
@@ -239,41 +238,23 @@ const ECLASS_XML_FILE_NAME
 
 ## API Guide
 
-the following API endpoints are defined in the mapper as is, if no defaults are changed. Please note, all endpoints are preceded by `<SERVER_URL>/<SERVER_API_VERSION>/` in _dev_ mode and `<SERVER_URL>:<PORT>/<SERVER_API_VERSION>/` in _production_ mode:
-
-| API Endpoint | Method | Functionality | Notes |
-| ------------ | ------ | ------------- | ------ |
-|mapper/shells| GET | Retrieve all Asset Administration Shells from Netilion ||
-|mapper/shells/\<AssetID\>| GET | Retrieve Asset Administration Shell for specific asset from netilion | \<AssetID\> is the asset id in the asset source (in this case Netilion asset ID) |
-|mapper/shells/\<AssetID\>/submodels| GET | Retrieve all submodels referenced by the Asset Administration Shell of a specific asset from netilion | \<AssetID\> is the asset id in the asset source (in this case Netilion asset ID) |
-|mapper/shells/\<AssetID\>/submodels/\<SubmodelName\>| GET | Retrieve all submodels of a specific type referenced by the Asset Administration Shell of a specific asset from netilion | \<AssetID\> is the asset id in the asset source (in this case Netilion asset ID). \<SubmodelName\> is one of "nameplate", "configurations_as_built" or "configurations_as_documented". These are the defined submodels in the mapper by default and can be extended.|
-|mapper/submodels/| GET | Retrieve all submodels from Netilion | \<SubmodelName\> is one of "nameplate", "configurations_as_built" or "configurations_as_documented". These are the defined submodels in the mapper by default and can be extended. |
-|mapper/submodels/\<SubmodelName\>| GET | Retrieve all submodels of a specific type from Netilion | \<SubmodelName\> is one of "nameplate", "configurations_as_built" or "configurations_as_documented". These are the defined submodels in the mapper by default and can be extended. |
-|oi4-repo/shells| GET | Retrieve all Asset Administration Shells from the AAS repository |
-|oi4-repo/shells/\<AASID\>| GET | Retrieve specific Asset Administration Shell from the AAS repository | \<AASID\> is the base 64 encoded ID of the desired shell.|
-|oi4-repo/submodels| GET | Retrieve all submodels from the AAS repository |
-|oi4-repo/submodels/\<SMID\>| GET | Retrieve specific submodel from the AAS repository | \<SMID\> is the base 64 encoded ID of the desired submodel.|
-|auth/token| GET | Authenticate with Netilion and save the authentication token as cookie for user | the request in this endpoint must contain Basic authorization header with user's username and password.|
+[This Swagger UI document]() defines the API endpoints in the mapper as is, if no defaults are changed. Please note, all endpoints are preceded by `<SERVER_URL>/<SERVER_API_VERSION>/` in _production_ mode and `<SERVER_URL>:<PORT>/<SERVER_API_VERSION>/` in _dev_ mode. This Swagger UI can also be accessed on the deployed application through `<SERVER_URL>/api-docs` in _production_ mode and `<SERVER_URL>:<PORT>/api-docs` in _dev_ mode.
 
 ## Environment Variables
 
 Here is a table of environment variables and their role:
 |Environment Variable| Role | Value Explanation|
 | --- | --- | --- |
-| SERVER_URL | URL of the mapper. | For dev mode can be "127.0.0.1" |
+| SERVER_URL | URL of the mapper. | For dev mode can be "<http://127.0.0.1>" |
 | PORT | The server port the mapper listens to | For example "1337" |
 | SERVER_API_VERSION | Version of the mapper API | Letter 'v' followed by version number. For example "v1" |
-| NETILION_API_URL | API URL of the asset source (in case of modification of the asset source this name must be changed) | "<https://api.netilion.endress.com>" |
-| NETILION_API_VERSION | API verion of the asset source | For Netilion must be "v1" |
+| NETILION_API_URL | API URL of the asset source (in case of modification of the asset source this name must be changed) | "<https://api.netilion.endress.com/v1>" |
 | NETILION_API_KEY | API Key of the asset source | A string of letters and numbers |
 | NETILION_SECRET | Secret of the asset source in case of Bearer authentication type. |A string of letters and numbers |
 | NETILION_USERNAME | Username of the master asset source account, In case of 'Internal' authentication mode | For example "app_name@connect" |
 | NETILION_PASSWORD | Password of the master asset source account, In case of 'Internal' authentication mode. | A string of characters |
 | NETILION_AUTH_TYPE | Type of authentication | "Bearer" or "Basic" |
 | MAPPER_AUTH_MODE | Mode of authentication | "BY_USER" or "INTERNAL" |
-| NETILION_AUTH_SERVER | Server asset source authentication | "<https://api.netilion.endress.com/oauth/token>" |
+| NETILION_AUTH_SERVER | Asset source authentication server | "<https://api.netilion.endress.com/oauth/token>" |
 | OI4_REPO_API_URL | AAS Repo URL | For example "<https://eundh-aas-repository.cpone.conplement.cloud/api/v3.0>" |
 | OI4_REPO_AUTH_TOKEN | Auth typ of AAS Repo | "Bearer eh_aas_repository_bidlJWSwVAXRLL=hNh1eCgMzbQx8P=LuWUG2Nfx1f6Buh06SGC/Qgfo=!AUJ6/6eJVPbNvsjAVFj?jHSyimig9YdmBLlcsqrM6bxDAiD0t0!AxQfQOFkeon/xd6j!x" |
-| AAS_POST_PERIOD | - | "10000" |
-| SM_POST_PERIOD | - | "10000" |
-| CONFIG_UPDATE_PERIOD | - | "10000" |

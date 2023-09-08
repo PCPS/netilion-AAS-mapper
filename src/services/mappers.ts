@@ -8,27 +8,30 @@ if (process.env.NODE_ENV !== 'production') {
     dotenv.config();
 }
 
+export function server_root_address(): string {
+    return (
+        process.env.SERVER_URL +
+        (process.env.NODE_ENV !== 'production' ? ':' + process.env.PORT : '') +
+        '/' +
+        process.env.SERVER_API_VERSION
+    );
+}
+
 export function netilionAssetIdToSubmodelId(
     asset_id: NetilionAssetId,
     sm_name: submodel_name
 ) {
     return (
-        process.env.SERVER_URL +
-        (process.env.NODE_ENV !== 'production' ? ':' + process.env.PORT : '') +
-        '/' +
-        process.env.SERVER_API_VERSION +
+        server_root_address() +
         '/mapper/shells/' +
         asset_id +
         '/submodels/' +
-        sm_name +
-        '/'
+        sm_name
     );
 }
 export function netilionAssetIdToShellId(asset_id: NetilionAssetId) {
     return (
-        process.env.SERVER_URL +
-        (process.env.NODE_ENV !== 'production' ? ':' + process.env.PORT : '') +
-        '/' +
+        server_root_address() +
         process.env.SERVER_API_VERSION +
         '/mapper/shells/' +
         asset_id

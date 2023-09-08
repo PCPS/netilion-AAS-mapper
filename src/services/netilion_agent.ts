@@ -42,6 +42,49 @@ export type submodel_name =
 
 export type AssetId = NetilionAssetId;
 
+function netilion_error_to_agent_error(
+    error: any,
+    message: string
+): AGENT_OP_RESULT {
+    const resp = error.response || { status: 500, data: {} };
+    resp.data.errors = resp.data.errors || [];
+    if (resp.data.errors.length) {
+        const errors = resp.data.errors.map(
+            (e: { type: string; message: string }) => {
+                return {
+                    status: resp.status,
+                    json: {
+                        message:
+                            error.message +
+                            ' (' +
+                            (e.message || error.type) +
+                            ').'
+                    }
+                };
+            }
+        );
+        return {
+            status: 502,
+            json: {
+                message,
+                error: errors
+            }
+        };
+    }
+    return {
+        status: 502,
+        json: {
+            message,
+            error: {
+                status: resp.status,
+                json: {
+                    message: resp.data.error_description || error.message
+                }
+            }
+        }
+    };
+}
+
 // Retrieve all document category IDs corresponding to the VDI standard within netilion
 async function get_vdi_categories(auth: OAUTH_TOKEN): Promise<Array<any>> {
     //TODO: add category schema for return type
@@ -65,6 +108,7 @@ async function get_vdi_categories(auth: OAUTH_TOKEN): Promise<Array<any>> {
         return CATS;
     } catch (error: any) {
         logger.error(`failed to get VDI categories from netilion: ${error}`);
+        error.message += ': Failed to get VDI category IDs from Netilion';
         throw error;
     }
 }
@@ -98,6 +142,11 @@ async function asset_submodel_names(
         logger.error(
             `failed to get specifications for asset ${asset_id} from netilion: ${error}`
         );
+        error.message =
+            'Failed to get submodel names for asset [' +
+            asset_id +
+            '] from Netilion: ' +
+            error.message;
         error.response = error.response || { status: 500 };
         throw error;
     }
@@ -127,6 +176,8 @@ async function get_all_assets(
         return ASSETS;
     } catch (error: any) {
         logger.error(`failed to get assets from netilion: ${error}`);
+        error.message = 'Failed to get assets from Netilion: ' + error.message;
+        error.response = error.response || { status: 500 };
         throw error;
     }
 }
@@ -163,6 +214,12 @@ async function get_asset_softwares(
         logger.error(
             `failed to get softwares for asset ${str_asset_id} from netilion: ${error}`
         );
+        error.message =
+            'Failed to get softwares for asset [' +
+            str_asset_id +
+            '] from Netilion: ' +
+            error.message;
+        error.response = error.response || { status: 500 };
         throw error;
     }
 }
@@ -200,6 +257,12 @@ async function get_product_categories(
         logger.error(
             `failed to get categories for product ${str_product_id} from netilion: ${error}`
         );
+        error.message =
+            'Failed to get categories for product [' +
+            str_product_id +
+            '] from Netilion: ' +
+            error.message;
+        error.response = error.response || { status: 500 };
         throw error;
     }
 }
@@ -223,6 +286,12 @@ async function get_asset_specifications(
         logger.error(
             `failed to get specifications for asset ${str_asset_id} from netilion: ${error}`
         );
+        error.message =
+            'Failed to get specifications for asset [' +
+            str_asset_id +
+            '] from Netilion: ' +
+            error.message;
+        error.response = error.response || { status: 500 };
         throw error;
     }
 }
@@ -265,12 +334,18 @@ async function get_product_documents(
             return a;
         });
         return DOCS;
-    } catch (error) {
+    } catch (error: any) {
         logger.error(
             'failed to get product documents for product ' +
                 str_product_id +
                 ' from netilion'
         );
+        error.message =
+            'Failed to get documents for product [' +
+            str_product_id +
+            '] from Netilion: ' +
+            error.message;
+        error.response = error.response || { status: 500 };
         throw error;
     }
 }
@@ -305,12 +380,18 @@ async function get_asset_documents(
             return a;
         });
         return DOCS;
-    } catch (error) {
+    } catch (error: any) {
         logger.error(
             'failed to get asset documents for asset ' +
                 str_asset_id +
                 ' from netilion'
         );
+        error.message =
+            'Failed to get documents for asset [' +
+            str_asset_id +
+            '] from Netilion: ' +
+            error.message;
+        error.response = error.response || { status: 500 };
         throw error;
     }
 }
@@ -390,6 +471,12 @@ async function asset_to_aas(
         logger.error(
             `failed to get aas from asset [id: ` + asset.id + `]: ${error}`
         );
+        error.message =
+            'Failed to generate AssetAdministrationShell from asset [' +
+            asset.id +
+            ']: ' +
+            error.message;
+        error.response = error.response || { status: 500 };
         throw error;
     }
 }
@@ -410,18 +497,20 @@ async function asset_to_nameplate(
             ).data;
         } catch (error: any) {
             error.message =
-                `failed to get asset specifications [id: ` +
+                'Failed to get asset specifications [' +
                 asset.id +
-                `] from netilion: ${error.message}`;
+                '] from netilion: ' +
+                error.message;
             throw error;
         }
         try {
             assetSoftwares = await get_asset_softwares(auth, asset.id);
         } catch (error: any) {
             error.message =
-                `failed to get asset software [id: ` +
+                'Failed to get asset software [' +
                 asset.id +
-                `] from netilion: ${error.message}`;
+                '] from netilion: ' +
+                error.message;
             throw error;
         }
         try {
@@ -433,9 +522,10 @@ async function asset_to_nameplate(
             ).data;
         } catch (error: any) {
             error.message =
-                `failed to get product [id: ` +
+                'Failed to get product [' +
                 asset.product.id +
-                `] from netilion: ${error.message}`;
+                '] from netilion: ' +
+                error.message;
             throw error;
         }
         try {
@@ -447,9 +537,10 @@ async function asset_to_nameplate(
             ).data;
         } catch (error: any) {
             error.message =
-                `failed to get manufacturer [id: ` +
+                'Failed to get manufacturer [' +
                 product.manufacturer.id +
-                `] from netilion: ${error.message}`;
+                '] from netilion: ' +
+                error.message;
             throw error;
         }
 
@@ -470,6 +561,12 @@ async function asset_to_nameplate(
         logger.error(
             `failed to get nameplate submodel of asset ${asset.id} from netilion: ${error}`
         );
+        error.message =
+            'Failed to generate Nameplate submodel from asset [' +
+            asset.id +
+            ']: ' +
+            error.message;
+        error.response = error.response || { status: 500 };
         throw error;
     }
 }
@@ -510,6 +607,12 @@ async function asset_to_configuration_as_built(
         logger.error(
             `failed to get ConfigurationAsBuilt submodel of asset ${asset.id} from netilion: ${error}`
         );
+        error.message =
+            'Failed to generate ConfigurationAsBuilt submodel from asset [' +
+            asset.id +
+            ']: ' +
+            error.message;
+        error.response = error.response || { status: 500 };
         throw error;
     }
 }
@@ -550,6 +653,12 @@ async function asset_to_configuration_as_documented(
         logger.error(
             `failed to get ConfigurationAsDocumented submodel of asset ${asset.id} from netilion: ${error}`
         );
+        error.message =
+            'Failed to generate ConfigurationAsDocumented submodel from asset [' +
+            asset.id +
+            ']: ' +
+            error.message;
+        error.response = error.response || { status: 500 };
         throw error;
     }
 }
@@ -569,14 +678,15 @@ async function get_aas(
         logger.error(
             `failed to get asset [id: ` + asset_id + `] from netilion: ${error}`
         );
-        console.error(error);
-        const resp = error.response || { status: 500 };
-        return {
-            status: resp.status,
-            json: {
-                message: 'Failed to get asset [' + asset_id + '] from Netilion'
-            }
-        };
+        console.error({ start: '!!!!!!!!' });
+        console.error(error.response.data);
+        console.error({ end: '!!!!!!!!!!' });
+        return netilion_error_to_agent_error(
+            error,
+            'Failed to get AssetAdministrationShell for asset [' +
+                asset_id +
+                ']'
+        );
     }
 }
 
@@ -594,26 +704,14 @@ async function get_all_aas(auth: OAUTH_TOKEN): Promise<AGENT_OP_RESULT> {
                         res: await asset_to_aas(auth, asset)
                     };
                 } catch (error: any) {
-                    const resp = error.response || { status: 500 };
                     return {
                         failed: true,
-                        res: {
-                            status: 500,
-                            json: {
-                                message:
-                                    'Failed to get AssetAdministrationShell for asset [' +
-                                    asset.id +
-                                    ']',
-                                error: {
-                                    status: resp.status,
-                                    json: {
-                                        message:
-                                            resp.error_description ||
-                                            error.message
-                                    }
-                                }
-                            }
-                        }
+                        res: netilion_error_to_agent_error(
+                            error,
+                            'Failed to get AssetAdministrationShell for asset [' +
+                                asset.id +
+                                ']'
+                        )
                     };
                 }
             })
@@ -634,17 +732,14 @@ async function get_all_aas(auth: OAUTH_TOKEN): Promise<AGENT_OP_RESULT> {
                 ? { status: 207, json: { shells, failed } }
                 : { status: 200, json: { shells } }
             : fail
-            ? { status: 400, json: { message: 'All failed', error: failed } }
-            : { status: 418, json: { message: 'Something went wrong' } };
+            ? { status: 500, json: { message: 'All failed', error: failed } }
+            : { status: 404, json: { message: 'None found' } };
     } catch (error: any) {
         logger.error(`failed to get aas from assets in netilion: ${error}`);
-        const resp = error.response || { status: 500 };
-        return {
-            status: resp.status,
-            json: {
-                message: 'Failed to get assets from Netilion'
-            }
-        };
+        return netilion_error_to_agent_error(
+            error,
+            'Failed to get assets from Netilion'
+        );
     }
 }
 
@@ -652,28 +747,36 @@ async function get_all_aas(auth: OAUTH_TOKEN): Promise<AGENT_OP_RESULT> {
 async function get_auth_token(
     username: string,
     password: string
-): Promise<OAUTH_TOKEN | undefined> {
+): Promise<AGENT_OP_RESULT<OAUTH_TOKEN>> {
     try {
-        const auth = await (
-            await netilionClient.getAuth(username, password)
-        ).data;
-        return auth;
+        const result = await netilionClient.getAuth(username, password);
+        const auth_status = result.status;
+        const auth = await result.data;
+        return { status: auth_status, json: auth };
     } catch (error: any) {
         logger.error(`failed to authenticate with natilion: ${error}`);
-        return undefined;
+        return netilion_error_to_agent_error(
+            error,
+            'Failed to authenticate with Netilion'
+        );
     }
 }
 
 // refresh Authentication token from Netilion based on username and password
-async function referesh_auth_token(auth: OAUTH_TOKEN) {
+async function referesh_auth_token(
+    auth: OAUTH_TOKEN
+): Promise<AGENT_OP_RESULT<OAUTH_TOKEN>> {
     try {
-        const refreshed_auth = await (
-            await netilionClient.refreshAuth(auth)
-        ).data;
-        return refreshed_auth;
+        const auth_response = await netilionClient.refreshAuth(auth);
+        const auth_status = auth_response.status;
+        const refreshed_auth = await auth_response.data;
+        return { status: auth_status, json: refreshed_auth };
     } catch (error: any) {
         logger.error(`failed to authenticate with natilion: ${error}`);
-        return undefined;
+        return netilion_error_to_agent_error(
+            error,
+            'Failed to authenticate with Netilion'
+        );
     }
 }
 
@@ -702,7 +805,7 @@ async function get_submodel_for_all_assets(
                 submodel_name + ' retrieval from Netilion not implemeneted'
             );
             return {
-                status: 404,
+                status: 501,
                 json: {
                     message: 'no submodel ' + submodel_name + ' implemented'
                 }
@@ -710,35 +813,71 @@ async function get_submodel_for_all_assets(
     }
     try {
         const assets = await get_all_assets(auth);
-        let submodels = (
+        let fail,
+            success: boolean = false;
+        let sm_resps = (
             await Promise.all(
                 assets.map(async (asset: NetilionAsset) => {
-                    try {
-                        return await asset_to_submodel(auth, asset);
-                    } catch (error) {
+                    if (
+                        (await asset_submodel_names(auth, asset.id)).includes(
+                            submodel_name
+                        )
+                    ) {
+                        try {
+                            return {
+                                failed: false,
+                                res: await asset_to_submodel(auth, asset)
+                            };
+                        } catch (error: any) {
+                            return {
+                                failed: true,
+                                res: netilion_error_to_agent_error(
+                                    error,
+                                    'Failed to get ' +
+                                        submodel_name +
+                                        ' submodel for asset [' +
+                                        asset.id +
+                                        ']'
+                                )
+                            };
+                        }
+                    } else {
                         return undefined;
                     }
                 })
             )
         ).filter((sm) => {
             return sm !== undefined;
-        }) as Array<Submodel>;
-        return { status: 200, json: { submodels } };
-    } catch (error: any) {
-        const resp = error.response || { status: 500 };
-        return {
-            status: 500,
-            json: {
-                message:
-                    'Failed to get ' +
-                    submodel_name +
-                    'submodels from Netilion',
-                error: {
-                    status: resp.status,
-                    json: { message: resp.error_description || error.message }
-                }
+        }) as Array<
+            | {
+                  failed: boolean;
+                  res: Submodel;
+              }
+            | { failed: boolean; res: AGENT_OP_RESULT }
+        >;
+        const submodels = new Array<Submodel>();
+        const failed = new Array<AGENT_OP_RESULT>();
+        sm_resps.forEach((sm_resp) => {
+            if (sm_resp.failed) {
+                fail = true;
+                failed.push(sm_resp.res as AGENT_OP_RESULT);
+            } else {
+                success = true;
+                submodels.push(sm_resp.res as Submodel);
             }
-        };
+        });
+        return success
+            ? fail
+                ? { status: 207, json: { submodels, failed } }
+                : { status: 200, json: { submodels } }
+            : fail
+            ? { status: 500, json: { message: 'All failed', error: failed } }
+            : { status: 404, json: { message: 'None found' } };
+    } catch (error: any) {
+        return netilion_error_to_agent_error(
+            error,
+            'Failed to get ' + submodel_name + 'submodels from Netilion'
+        );
     }
 }
 
@@ -768,7 +907,7 @@ async function get_submodel_for_asset(
                 submodel_name + ' retrieval from Netilion not implemeneted'
             );
             return {
-                status: 404,
+                status: 501,
                 json: {
                     message: 'no submodel ' + submodel_name + ' implemented'
                 }
@@ -788,18 +927,14 @@ async function get_submodel_for_asset(
                 str_asset_id +
                 `] from netilion: ${error}`
         );
-        const resp = error.response || { status: 500 };
-        return {
-            status: resp.status,
-            json: {
-                message:
-                    'Failed to get ' +
-                    submodel_name +
-                    ' submodel for asset [' +
-                    asset_id +
-                    '] from Netilion'
-            }
-        };
+        return netilion_error_to_agent_error(
+            error,
+            'Failed to get ' +
+                submodel_name +
+                ' submodel for asset [' +
+                asset_id +
+                '] from Netilion'
+        );
     }
 }
 
@@ -809,74 +944,87 @@ async function get_all_submodels_for_asset(
 ) {
     try {
         const sm_names = await asset_submodel_names(auth, asset_id);
-        const submodels = (
-            await Promise.all(
-                sm_names.map(async (sm_name) => {
-                    return await get_submodel_for_asset(
-                        auth,
-                        asset_id,
-                        sm_name
-                    );
-                })
-            )
-        ).reduce((a, b) => {
-            if (b.status === 200) {
+        const submodels_resps = await Promise.all(
+            sm_names.map(async (sm_name) => {
+                return await get_submodel_for_asset(auth, asset_id, sm_name);
+            })
+        );
+        const submodels = submodels_resps.reduce((a, b) => {
+            if (b.status >= 200 && b.status < 300) {
                 a.push(b.json);
-                return a;
-            } else {
-                const error = new Error(
-                    'Failed to retrieve existing submodel: ' + b.json.message
-                );
-                throw error;
             }
+            return a;
         }, new Array<Submodel>());
-        return { status: 200, json: { submodels } };
-    } catch (error: any) {
-        const resp = error.response || { status: 500 };
-        logger.error(error.message);
-        return {
-            status: 500,
-            json: {
-                message: 'Something went wrong',
-                error: {
-                    status: resp.status,
-                    json: { message: resp.error_description || error.message }
-                }
+
+        const failed = submodels_resps.reduce((a, b) => {
+            if (!(b.status >= 200 && b.status < 300)) {
+                a.push({
+                    status: 500,
+                    json: {
+                        message: 'Failed to retrieve existing submodel.',
+                        error: b
+                    }
+                });
             }
-        };
+            return a;
+        }, new Array<AGENT_OP_RESULT>());
+        const success = submodels.length;
+        const fail = failed.length;
+        return success
+            ? fail
+                ? { status: 207, json: { submodels, failed } }
+                : { status: 200, json: { submodels } }
+            : fail
+            ? { status: 500, json: { message: 'All failed', error: failed } }
+            : { status: 404, json: { message: 'Non found' } };
+    } catch (error: any) {
+        logger.error(error.message);
+        return netilion_error_to_agent_error(
+            error,
+            'Failed to retrieve all submodels for asset [' +
+                asset_id +
+                '] form Netilion'
+        );
     }
 }
 
 async function get_all_submodels_for_all_assets(auth: OAUTH_TOKEN) {
     try {
         const sm_names = defined_submodel_names();
-        const submodels = (
-            await Promise.all(
-                sm_names.map(async (sm_name) => {
-                    return await get_submodel_for_all_assets(auth, sm_name);
-                })
-            )
-        ).reduce((a, b) => {
-            if (b.status === 200) {
+        const submodels_resps = await Promise.all(
+            sm_names.map(async (sm_name) => {
+                return await get_submodel_for_all_assets(auth, sm_name);
+            })
+        );
+        const submodels = submodels_resps.reduce((a, b) => {
+            if (b.status >= 200 && b.status < 300) {
                 return a.concat(b.json.submodels);
             } else {
                 return a;
             }
-        }, []);
-        return { status: 200, json: { submodels } };
-    } catch (error: any) {
-        const resp = error.response || { status: 500 };
-        logger.error(error.message);
-        return {
-            status: 500,
-            json: {
-                message: 'Something went wrong',
-                error: {
-                    status: resp.status,
-                    json: { message: resp.error_description || error.message }
-                }
+        }, new Array<Submodel>());
+        const failed = submodels_resps.reduce((a, b) => {
+            if (b.status === 207) {
+                return a.concat(b.json.failed);
+            } else {
+                return a;
             }
-        };
+        }, []);
+        const success = submodels.length;
+        const fail = failed.length;
+        return success
+            ? fail
+                ? { status: 207, json: { submodels, failed } }
+                : { status: 200, json: { submodels } }
+            : fail
+            ? { status: 500, json: { message: 'All failed', error: failed } }
+            : { status: 404, json: { message: 'None found' } };
+    } catch (error: any) {
+        logger.error(error.message);
+        return netilion_error_to_agent_error(
+            error,
+            'Failed to retrieve all submodels from Netilion'
+        );
     }
 }
 // Extract Netilion asset ID from submodel ID

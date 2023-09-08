@@ -131,10 +131,7 @@ export class NetelionClient {
     public constructor() {
         this.token = token || { access_token: '', token_type: 'Bearer' };
         const apiConfig: CreateAxiosDefaults = {
-            baseURL:
-                process.env.NETILION_API_URL +
-                '/' +
-                process.env.NETILION_API_VERSION,
+            baseURL: process.env.NETILION_API_URL,
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
