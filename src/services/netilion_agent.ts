@@ -780,7 +780,7 @@ async function referesh_auth_token(
     }
 }
 
-// Get submodel for all assets on Netiliom
+// Get submodel for all assets on Netilion
 async function get_submodel_for_all_assets(
     auth: OAUTH_TOKEN,
     submodel_name: SubmodelName
@@ -881,7 +881,7 @@ async function get_submodel_for_all_assets(
     }
 }
 
-// Get submodel for specifica asset on Netiliom
+// Get submodel for specifica asset on Netilion
 async function get_submodel_for_asset(
     auth: OAUTH_TOKEN,
     asset_id: NetilionAssetId,
