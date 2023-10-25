@@ -6,7 +6,7 @@ import netilionRoutes, { options } from './routes/netilion_routes';
 import authRoutes from './routes/auth';
 import oi4Routes from './routes/oi4_routes';
 // import auto_update from './services/auto_update';
-import { OAUTH_TOKEN } from './interfaces/Mapper';
+import { OAUTH_TOKEN } from './interfaces/Auth';
 import { decodeBase64 } from './services/oi4_helpers';
 import netilion_agent from './services/netilion_agent';
 import _swagger_config from './swagger.json';

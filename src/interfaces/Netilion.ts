@@ -1,5 +1,41 @@
 export type NetilionAssetId = number;
 
+export interface NetilionPagination {
+    total_count: number;
+    page_count: number;
+    per_page: number;
+    page: number;
+    prev?: string;
+    next?: string;
+    first?: string;
+    last?: string;
+}
+
+export interface NetilionBatchResposeAsset {
+    assets: Array<NetilionAsset>;
+    pagination: NetilionPagination;
+}
+export interface NetilionBatchResposeProduct {
+    products: Array<NetilionProduct>;
+    pagination: NetilionPagination;
+}
+export interface NetilionBatchResposeDocument {
+    documents: Array<NetilionDocument>;
+    pagination: NetilionPagination;
+}
+export interface NetilionBatchResposeSoftware<T> {
+    softwares: Array<NetilionSoftware>;
+    pagination: NetilionPagination;
+}
+export interface NetilionBatchResposeDocumentCategory {
+    categories: Array<NetilionDocumentCategory>;
+    pagination: NetilionPagination;
+}
+export interface NetilionBatchResposeProductCategories {
+    categories: Array<NetilionProductCategory>;
+    pagination: NetilionPagination;
+}
+
 export interface NetilionLink {
     href: string;
 }
@@ -303,7 +339,7 @@ export interface NetilionProduct {
         categories?: NetilionLink | Array<NetilionProductCategory>;
         documents?: NetilionLink | Array<NetilionDocument>;
         pictures?: NetilionLink; // Find what the interface for the resolved link is.
-        specifications?: NetilionLink | Array<NetilionSpecification>;
+        specifications?: NetilionLink | NetilionSpecification;
         health_conditions?:
             | NetilionLink
             | Array<NetilionProductHealthCondition>;
@@ -423,7 +459,7 @@ export interface NetilionInstrumenation {
         documents?: NetilionLink | Array<NetilionDocument>;
         nodes?: NetilionLink | Array<NetilionNode>;
         pictures?: NetilionLink; // Find what the interface for the resolved link is.
-        specifications?: NetilionLink | Array<NetilionSpecification>;
+        specifications?: NetilionLink | NetilionSpecification;
         thresholds?: NetilionLink | Array<NetilionThreshold>;
     };
 }
@@ -450,7 +486,7 @@ export interface NetilionNode {
         assets?: NetilionLink | Array<NetilionAsset>;
         documents?: NetilionLink | Array<NetilionDocument>;
         pictures?: NetilionLink; // Find what the interface for the resolved link is.
-        specifications?: NetilionLink | Array<NetilionSpecification>;
+        specifications?: NetilionLink | NetilionSpecification;
         recipes?: NetilionLink; // Lab
     };
 }
@@ -481,7 +517,7 @@ export interface NetilionEvent {
         documents?: NetilionLink | Array<NetilionDocument>;
         instrumentations?: NetilionLink | Array<NetilionInstrumenation>;
         nodes?: NetilionLink | Array<NetilionNode>;
-        specifications?: NetilionLink | Array<NetilionSpecification>;
+        specifications?: NetilionLink | NetilionSpecification;
     };
 }
 
@@ -490,7 +526,7 @@ export interface NetilionAsset {
     description?: string;
     production_date?: string;
     last_seen_at?: string;
-    id: NetilionAssetId;
+    id: number;
     ownership_claimed?: boolean;
     created_at?: string;
     updated_at?: string;
@@ -506,7 +542,7 @@ export interface NetilionAsset {
         instrumentations?: NetilionLink | Array<NetilionInstrumenation>;
         systems?: NetilionLink; // Lab
         pictures?: NetilionLink; // Find what the interface for the resolved link is.
-        specifications?: NetilionLink | Array<NetilionSpecification>;
+        specifications?: NetilionLink | NetilionSpecification;
         subscriptions?: NetilionLink;
         api_subscriptions?: NetilionLink;
         health_conditions?: NetilionLink | Array<NetilionAssetHealthCondition>;

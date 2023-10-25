@@ -15,7 +15,7 @@ import { NetelionClient } from './netilionAPI';
 import { Generate_SM_ConfigurationAsBuilt } from '../oi4_definitions/submodels/configuration_as_built_sm';
 import { Generate_SM_ConfigurationAsDocumented } from '../oi4_definitions/submodels/configuration_as_documented_sm';
 import { NetilionAsset, NetilionAssetId } from '../interfaces/Netilion';
-import { OAUTH_TOKEN } from '../interfaces/Mapper';
+import { OAUTH_TOKEN } from '../interfaces/Auth';
 import { AGENT_OP_RESULT } from '../interfaces/Agent';
 import { json } from 'body-parser';
 if (process.env.NODE_ENV !== 'production') {
@@ -462,7 +462,7 @@ async function asset_to_aas(
             id: netilionAssetIdToShellId(asset.id),
             assetInformation: {
                 assetKind: 'Instance',
-                globalAssetId: '[IRI] dsp.endress.com/' + asset.serial_number
+                globalAssetId: 'dsp.endress.com/' + asset.serial_number
             },
             submodels: submodel_refs
         });

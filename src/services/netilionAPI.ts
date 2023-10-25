@@ -6,13 +6,7 @@ import axios, {
 } from 'axios';
 import { logger } from './logger';
 import { makeBase64 } from './oi4_helpers';
-import {
-    AuthType,
-    OAUTH_TOKEN,
-    OAUTH_REQUEST_BODY,
-    AUTH_RESULT,
-    OAUTH_REFRESH
-} from '../interfaces/Mapper';
+import { AuthType, OAUTH_TOKEN, OAUTH_REQUEST_BODY } from '../interfaces/Auth';
 
 if (process.env.NODE_ENV !== 'production') {
     const dotenv = require('dotenv');

@@ -8,7 +8,7 @@ import { decodeBase64 } from './oi4_helpers';
 import source_agent from './netilion_agent';
 import { SubmodelName, AssetId } from './netilion_agent';
 import { OI4Client } from './oi4RepoAPI';
-import { OAUTH_TOKEN } from '../interfaces/Mapper';
+import { OAUTH_TOKEN } from '../interfaces/Auth';
 import { AGENT_OP_RESULT } from '../interfaces/Agent';
 
 const oi4Client = new OI4Client();

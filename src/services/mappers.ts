@@ -30,12 +30,7 @@ export function netilionAssetIdToSubmodelId(
     );
 }
 export function netilionAssetIdToShellId(asset_id: NetilionAssetId) {
-    return (
-        server_root_address() +
-        process.env.SERVER_API_VERSION +
-        '/mapper/shells/' +
-        asset_id
-    );
+    return server_root_address() + '/mapper/shells/' + asset_id;
 }
 
 // Maps asset object retrieved from netilion to sufficeint input of the Namplate submodel generator function
@@ -89,7 +84,7 @@ export function netilionAssetToNameplateInput(opt: {
         }
     }
     const nameplate_input = {
-        URIOfTheProduct: 'endress.com/' + opt.product.product_code,
+        URIOfTheProduct: 'de.endress.com/en/' + opt.product.product_code,
         ManufacturerName: [{ language: 'en', text: opt.manufacturer.name }],
         ManufacturerProductDesignation: [
             { language: 'en', text: opt.product.name }

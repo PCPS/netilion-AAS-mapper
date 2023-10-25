@@ -1,0 +1,201 @@
+{
+    "environment_variables": [
+        "NETILION_API_URL",
+        "NETILION_AUTH_SERVER",
+        "NETILION_API_KEY"
+    ],
+    "interfaces": [
+        {
+            "name": "I_Auth",
+            "path": "interfaces/Auth.ts",
+            "import_all": false,
+            "imported_names": ["OAUTH_TOKEN", "OAUTH_REQUEST_BODY"]
+        },
+        {
+            "name": "I_Netilion",
+            "path": "interfaces/Netilion.ts",
+            "import_all": false,
+            "imported_names": [
+                "NetilionAsset",
+                "NetilionProduct",
+                "NetilionDocumentCategoryBatchResponse"
+            ]
+        },
+        {
+            "name": "I_BDIH",
+            "path": "interfaces/BDIH.ts",
+            "import_all": true
+        },
+        {
+            "name": "I_AAS",
+            "path": "oi4_definitions/interfaces/AssetAdministrationShellInterfaces.ts",
+            "import_all": true
+        }
+    ],
+    "Clients": [
+        {
+            "name": "NetilionClient",
+            "base_url": "${environment_variables.0}",
+            "header": {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Api-Key": "${environment_variables.2}"
+            },
+            "api": [
+                {
+                    "name": "getVDICategories",
+                    "returns": "Promise<Array<NetilionDocumentCategory>>",
+                    "header": "inherit",
+                    "response_type": "NetilionBatchResponseDocumentCategory",
+                    "url": {
+                        "relative": true,
+                        "value": "'/document/categories?standard_id=1'"
+                    },
+                    "method": "get"
+                },
+                {
+                    "name": "getAllAssets",
+                    "returns": "Promise<Array<NetilionAsset>>",
+                    "header": "inherit",
+                    "response_type": "NetilionBatchResponseAsset",
+                    "url": {
+                        "relative": true,
+                        "value": "'/assets'"
+                    },
+                    "method": "get"
+                },
+                {
+                    "name": "getAsset",
+                    "params": [{ "name": "asset_id", "type": "number" }],
+                    "returns": "Promise<NetilionAsset>",
+                    "header": "inherit",
+                    "response_type": "Promise<NetilionAsset>",
+                    "url": {
+                        "relative": true,
+                        "value": "'/assets/'+${local.params.0}"
+                    },
+                    "method": "get"
+                },
+                {
+                    "name": "getAssetSpecs",
+                    "params": [{ "name": "asset_id", "type": "number" }],
+                    "returns": "Promise<NetilionSpecification>",
+                    "header": "inherit",
+                    "response_type": "NetilionSpecification",
+                    "url": {
+                        "relative": true,
+                        "value": "'/assets/'+${local.params.0}+'/specifications'"
+                    },
+                    "method": "get"
+                },
+                {
+                    "name": "getAssetSoftwares",
+                    "params": [{ "name": "asset_id", "type": "number" }],
+                    "returns": "Promise<Array<NetilionSoftware>>",
+                    "header": "inherit",
+                    "response_type": "NetilionBatchResponseSoftware",
+                    "url": {
+                        "relative": true,
+                        "value": "'/assets/'+${local.params.0}+'/softwares'"
+                    },
+                    "method": "get"
+                },
+                {
+                    "name": "getProduct",
+                    "params": [{ "name": "product_id", "type": "number" }],
+                    "returns": "Promise<NetilionProduct>",
+                    "header": "inherit",
+                    "response_type": "NetilionProduct",
+                    "url": {
+                        "relative": true,
+                        "value": "'/products/'+${local.params.0}"
+                    },
+                    "method": "get"
+                },
+                {
+                    "name": "getProductCategories",
+                    "params": [{ "name": "product_id", "type": "number" }],
+                    "returns": "Promise<Array<NetilionProductCategory>>",
+                    "header": "inherit",
+                    "response_type": "NetilionBatchResponseProductCategory",
+                    "url": {
+                        "relative": true,
+                        "value": "'/products/'+${local.params.0}+'/categories'"
+                    },
+                    "method": "get"
+                },
+                {
+                    "name": "getManufacturer",
+                    "params": [{ "name": "manufacturer_id", "type": "number" }],
+                    "returns": "NetilionCompany",
+                    "header": "inherit",
+                    "response_type": "NetilionCompany",
+                    "url": {
+                        "relative": true,
+                        "value": "'/companies/'+${local.params.0}"
+                    },
+                    "method": "get"
+                },
+                {
+                    "name": "getAssetDocs",
+                    "params": [{ "name": "asset_id", "type": "number" }],
+                    "returns": "Promise<Array<NetilionDocument>>",
+                    "header": "inherit",
+                    "response_type": "NetilionBatchResponseDocument",
+                    "url": {
+                        "relative": true,
+                        "value": "'/assets/'+${local.params.0}+'/documents'"
+                    },
+                    "method": "get"
+                },
+                {
+                    "name": "getProductDocs",
+                    "params": [{ "name": "product_id", "type": "number" }],
+                    "returns": "Promise<Array<NetilionDocument>>",
+                    "header": "inherit",
+                    "response_type": "NetilionBatchResponseDocument",
+                    "url": {
+                        "relative": true,
+                        "value": "'/products/'+${local.params.0}+'/documents'"
+                    },
+                    "method": "get"
+                },
+                {
+                    "name": "getAuth",
+                    "params": [
+                        { "name": "username", "type": "string" },
+                        { "name": "password", "type": "string" }
+                    ],
+                    "returns": "Promise<OAUTH_TOKEN>",
+                    "header": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "response_type": "OAUTH_TOKEN",
+                    "url": {
+                        "relative": false,
+                        "value": "${environment_variables.1}"
+                    },
+                    "method": "post"
+                },
+                {
+                    "name": "refreshAuth",
+                    "params": [{ "name": "token", "type": "OAUTH_TOKEN" }],
+                    "returns": "Promise<OAUTH_TOKEN>",
+                    "header": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "response_type": "OAUTH_TOKEN",
+                    "url": {
+                        "relative": false,
+                        "value": "${environment_variables.1}"
+                    },
+                    "method": "post"
+                }
+            ]
+        },
+        { "name": "BdihClient", "api": [{}] }
+    ],
+    "AssetAdministrationShell": {}
+}

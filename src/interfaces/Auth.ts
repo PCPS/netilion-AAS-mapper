@@ -23,7 +23,3 @@ export interface OAUTH_TOKEN {
     refresh_token?: string;
     created_at?: number;
 }
-export interface AUTH_RESULT {
-    status: AuthStatus;
-    response?: OAUTH_TOKEN;
-}

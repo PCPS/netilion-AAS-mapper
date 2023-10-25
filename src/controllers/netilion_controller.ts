@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import netilion, { SubmodelName } from '../services/netilion_agent';
 import { decodeBase64, makeBase64 } from '../services/oi4_helpers';
 import { logger } from '../services/logger';
-import { OAUTH_TOKEN } from '../interfaces/Mapper';
+import { OAUTH_TOKEN } from '../interfaces/Auth';
 import oi4_repo_agent from '../services/oi4_repo_agent';
 import {
     AssetAdministrationShell,
