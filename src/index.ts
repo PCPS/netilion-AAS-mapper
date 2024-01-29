@@ -1,16 +1,16 @@
-import http from 'http';
-import express from 'express';
-import { logger } from './services/logger';
 import bodyParser from 'body-parser';
-import netilionRoutes, { options } from './routes/netilion_routes';
+import express from 'express';
+import http from 'http';
 import authRoutes from './routes/auth';
+import netilionRoutes from './routes/netilion_routes';
 import oi4Routes from './routes/oi4_routes';
+import { logger } from './services/logger';
 // import auto_update from './services/auto_update';
 import { OAUTH_TOKEN } from './interfaces/Auth';
-import { decodeBase64 } from './services/oi4_helpers';
-import netilion_agent from './services/netilion_agent';
-import _swagger_config from './swagger.json';
 import { server_root_address } from './services/mappers';
+import netilion_agent from './services/netilion_agent';
+import { decodeBase64 } from './oi4_definitions/oi4_helpers';
+import _swagger_config from './swagger.json';
 
 if (process.env.NODE_ENV !== 'production') {
     const dotenv = require('dotenv');
@@ -24,7 +24,7 @@ import swaggerUI from 'swagger-ui-express';
 const swagger_config: swaggerUI.JsonObject = _swagger_config;
 
 swagger_config.servers.push({ url: server_root_address() });
-console.log(swagger_config);
+swaggerUI ? logger.info('SwaggerUI found') : logger.info('SwaggerUI not found');
 
 /********************************************/
 
@@ -83,7 +83,7 @@ router.use(async (req, res, next) => {
                     message: 'No authorization information found'
                 });
             }
-            // console.log(cookies ? cookies : 'no coookie :(');
+            // console.log(cookies ? cookies : 'no coookie :⟨');
         }
         res.locals.token = user_token;
     } else if (process.env.MAPPER_AUTH_MODE === 'INTERNAL') {
@@ -115,7 +115,11 @@ router.use((req, res, next) => {
     );
 
     if (req.method == 'OPTIONS') {
-        res.header('Access-Control-Allow-Methods', 'GET PATCH DELETE POST PUT');
+        res.header(
+            'Access-Control-Allow-Methods',
+            'GET, PATCH, DELETE, POST, PUT, OPTIONS'
+        );
+        res.send(200);
     }
     next();
 });

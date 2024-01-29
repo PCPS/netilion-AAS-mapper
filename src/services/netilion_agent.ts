@@ -9,12 +9,18 @@ import { logger } from './logger';
 import {
     netilionAssetIdToShellId,
     netilionAssetIdToSubmodelId,
-    netilionAssetToNameplateInput
+    netilionAssetToNameplateInput,
+    netilionAssetToTechnicalDaataInput
 } from './mappers';
 import { NetelionClient } from './netilionAPI';
 import { Generate_SM_ConfigurationAsBuilt } from '../oi4_definitions/submodels/configuration_as_built_sm';
 import { Generate_SM_ConfigurationAsDocumented } from '../oi4_definitions/submodels/configuration_as_documented_sm';
-import { NetilionAsset, NetilionAssetId } from '../interfaces/Netilion';
+import {
+    NetilionAsset,
+    NetilionAssetId,
+    NetilionProduct,
+    NetilionSpecification
+} from '../interfaces/Netilion';
 import { OAUTH_TOKEN } from '../interfaces/Auth';
 import { AGENT_OP_RESULT } from '../interfaces/Agent';
 import { json } from 'body-parser';
@@ -92,14 +98,14 @@ async function get_vdi_categories(auth: OAUTH_TOKEN): Promise<Array<any>> {
         let cats: Array<any> = [];
         let page_number = 1;
         let page = await (await netilionClient.getVDICategories(auth)).data;
-        while (await page.pagination.next) {
+        while (page.pagination.next) {
             page_number++;
-            cats.push(await page.categories);
+            cats.push(page.categories);
             page = await (
                 await netilionClient.getAllAssets(auth, page_number)
             ).data;
         }
-        cats.push(await page.categories);
+        cats.push(page.categories);
 
         const CATS = (await Promise.all(cats)).reduce((a, b) => {
             a = a.concat(b);
@@ -161,13 +167,14 @@ async function get_all_assets(
         {
             let page_number = 1;
             let page = await (await netilionClient.getAllAssets(auth)).data;
-            while (await page.pagination.next) {
+            while (page.pagination.next) {
                 page_number++;
-                assets.push(await page.assets);
-                page = (await netilionClient.getAllAssets(auth, page_number))
-                    .data;
+                assets.push(page.assets);
+                page = await (
+                    await netilionClient.getAllAssets(auth, page_number)
+                ).data;
             }
-            assets.push(await page.assets);
+            assets.push(page.assets);
         }
         const ASSETS = (await Promise.all(assets)).reduce((a, b) => {
             a = a.concat(b);
@@ -182,6 +189,31 @@ async function get_all_assets(
     }
 }
 
+// Retrieve a product in user's Netilion account
+async function get_product(
+    auth: OAUTH_TOKEN,
+    product_id: number
+): Promise<NetilionProduct> {
+    const str_product_id = product_id.toString();
+    try {
+        const product: NetilionProduct = await (
+            await netilionClient.getProduct(auth, str_product_id)
+        ).data;
+        return product;
+    } catch (error: any) {
+        logger.error(
+            `failed to get product ${str_product_id} from netilion: ${error}`
+        );
+        error.message =
+            'Failed to get product [' +
+            str_product_id +
+            '] from Netilion: ' +
+            error.message;
+        error.response = error.response || { status: 500 };
+        throw error;
+    }
+}
+
 // Retrieve software information for an asset in user's Netilion account
 async function get_asset_softwares(
     auth: OAUTH_TOKEN,
@@ -191,12 +223,13 @@ async function get_asset_softwares(
     try {
         const softwares: Array<any> = [];
         let page_number = 1;
-        let page = (await netilionClient.getAssetSoftwares(auth, str_asset_id))
-            .data;
-        while (await page.pagination.next) {
+        let page = await (
+            await netilionClient.getAssetSoftwares(auth, str_asset_id)
+        ).data;
+        while (page.pagination.next) {
             page_number++;
-            softwares.push(await page.softwares);
-            page = (
+            softwares.push(page.softwares);
+            page = await (
                 await netilionClient.getAssetSoftwares(
                     auth,
                     str_asset_id,
@@ -204,7 +237,7 @@ async function get_asset_softwares(
                 )
             ).data;
         }
-        softwares.push(await page.softwares);
+        softwares.push(page.softwares);
         const SOFTWARES = (await Promise.all(softwares)).reduce((a, b) => {
             a = a.concat(b);
             return a;
@@ -233,13 +266,13 @@ async function get_product_categories(
     try {
         const categories: Array<any> = [];
         let page_number = 1;
-        let page = (
+        let page = await (
             await netilionClient.getProductCategories(auth, str_product_id)
         ).data;
-        while (await page.pagination.next) {
+        while (page.pagination.next) {
             page_number++;
-            categories.push(await page.categories);
-            page = (
+            categories.push(page.categories);
+            page = await (
                 await netilionClient.getProductCategories(
                     auth,
                     str_product_id,
@@ -247,7 +280,7 @@ async function get_product_categories(
                 )
             ).data;
         }
-        categories.push(await page.categories);
+        categories.push(page.categories);
         const CATEGORIES = (await Promise.all(categories)).reduce((a, b) => {
             a = a.concat(b);
             return a;
@@ -271,7 +304,7 @@ async function get_product_categories(
 async function get_asset_specifications(
     auth: OAUTH_TOKEN,
     assset_id: number
-): Promise<any> {
+): Promise<NetilionSpecification> {
     const str_asset_id = assset_id.toString();
     try {
         let specs: any;
@@ -307,7 +340,7 @@ async function get_product_documents(
         let docs: Array<any> = [];
         {
             let page_number = 1;
-            let page = (
+            let page = await (
                 await netilionClient.getProductDocs(
                     auth,
                     str_product_id,
@@ -315,10 +348,10 @@ async function get_product_documents(
                     categories
                 )
             ).data;
-            while (await page.pagination.next) {
+            while (page.pagination.next) {
                 page_number++;
-                docs.push(await page.documents);
-                page = (
+                docs.push(page.documents);
+                page = await (
                     await netilionClient.getProductDocs(
                         auth,
                         str_product_id,
@@ -327,7 +360,7 @@ async function get_product_documents(
                     )
                 ).data;
             }
-            docs.push(await page.documents);
+            docs.push(page.documents);
         }
         const DOCS = (await Promise.all(docs)).reduce((a, b) => {
             a = a.concat(b);
@@ -360,12 +393,13 @@ async function get_asset_documents(
         let docs: Array<any> = [];
         {
             let page_number = 1;
-            let page = (await netilionClient.getAssetDocs(auth, str_asset_id))
-                .data;
-            while (await page.pagination.next) {
+            let page = await (
+                await netilionClient.getAssetDocs(auth, str_asset_id)
+            ).data;
+            while (page.pagination.next) {
                 page_number++;
-                docs.push(await page.documents);
-                page = (
+                docs.push(page.documents);
+                page = await (
                     await netilionClient.getAssetDocs(
                         auth,
                         str_asset_id,
@@ -373,7 +407,7 @@ async function get_asset_documents(
                     )
                 ).data;
             }
-            docs.push(await page.documents);
+            docs.push(page.documents);
         }
         const DOCS = (await Promise.all(docs)).reduce((a, b) => {
             a = a.concat(b);
@@ -462,7 +496,7 @@ async function asset_to_aas(
             id: netilionAssetIdToShellId(asset.id),
             assetInformation: {
                 assetKind: 'Instance',
-                globalAssetId: 'dsp.endress.com/' + asset.serial_number
+                globalAssetId: 'https://dsp.endress.com/' + asset.serial_number
             },
             submodels: submodel_refs
         });
@@ -492,9 +526,7 @@ async function asset_to_nameplate(
     let manufacturer: any = {};
     try {
         try {
-            assetSpecs = (
-                await netilionClient.getAssetSpecs(auth, asset.id.toString())
-            ).data;
+            assetSpecs = await get_asset_specifications(auth, asset.id);
         } catch (error: any) {
             error.message =
                 'Failed to get asset specifications [' +
@@ -514,12 +546,7 @@ async function asset_to_nameplate(
             throw error;
         }
         try {
-            product = (
-                await netilionClient.getProduct(
-                    auth,
-                    asset.product.id.toString()
-                )
-            ).data;
+            product = await get_product(auth, asset.product.id);
         } catch (error: any) {
             error.message =
                 'Failed to get product [' +
@@ -529,7 +556,7 @@ async function asset_to_nameplate(
             throw error;
         }
         try {
-            manufacturer = (
+            manufacturer = await (
                 await netilionClient.getManufacturer(
                     auth,
                     product.manufacturer.id
@@ -592,8 +619,8 @@ async function asset_to_configuration_as_built(
             error.response = { status: 404 };
             throw error;
         }
-        MinTemp = specs['anfangswert_des_messbereiches'].value;
-        MaxTemp = specs['endwert_des_messbereiches'].value;
+        MinTemp = Number(specs['anfangswert_des_messbereiches'].value);
+        MaxTemp = Number(specs['endwert_des_messbereiches'].value);
         const cap = Generate_SM_ConfigurationAsBuilt(
             {
                 NetilionAssetId: String(asset.id),
@@ -638,8 +665,8 @@ async function asset_to_configuration_as_documented(
             error.response = { status: 404 };
             throw error;
         }
-        MinTemp = specs['anfangswert_des_messbereiches'].value;
-        MaxTemp = specs['endwert_des_messbereiches'].value;
+        MinTemp = Number(specs['anfangswert_des_messbereiches'].value);
+        MaxTemp = Number(specs['endwert_des_messbereiches'].value);
         const cad = Generate_SM_ConfigurationAsDocumented(
             {
                 NetilionAssetId: String(asset.id),
@@ -678,9 +705,6 @@ async function get_aas(
         logger.error(
             `failed to get asset [id: ` + asset_id + `] from netilion: ${error}`
         );
-        console.error({ start: '!!!!!!!!' });
-        console.error(error.response.data);
-        console.error({ end: '!!!!!!!!!!' });
         return netilion_error_to_agent_error(
             error,
             'Failed to get AssetAdministrationShell for asset [' +
@@ -727,13 +751,14 @@ async function get_all_aas(auth: OAUTH_TOKEN): Promise<AGENT_OP_RESULT> {
                 shells.push(shell_resp.res as AssetAdministrationShell);
             }
         });
-        return success
-            ? fail
+        return fail
+            ? success
                 ? { status: 207, json: { shells, failed } }
-                : { status: 200, json: { shells } }
-            : fail
-            ? { status: 500, json: { message: 'All failed', error: failed } }
-            : { status: 404, json: { message: 'None found' } };
+                : {
+                      status: 500,
+                      json: { message: 'All failed', error: failed }
+                  }
+            : { status: 200, json: { shells } };
     } catch (error: any) {
         logger.error(`failed to get aas from assets in netilion: ${error}`);
         return netilion_error_to_agent_error(
@@ -866,13 +891,14 @@ async function get_submodel_for_all_assets(
                 submodels.push(sm_resp.res as Submodel);
             }
         });
-        return success
-            ? fail
+        return fail
+            ? success
                 ? { status: 207, json: { submodels, failed } }
-                : { status: 200, json: { submodels } }
-            : fail
-            ? { status: 500, json: { message: 'All failed', error: failed } }
-            : { status: 404, json: { message: 'None found' } };
+                : {
+                      status: 500,
+                      json: { message: 'All failed', error: failed }
+                  }
+            : { status: 200, json: { submodels } };
     } catch (error: any) {
         return netilion_error_to_agent_error(
             error,
@@ -970,13 +996,14 @@ async function get_all_submodels_for_asset(
         }, new Array<AGENT_OP_RESULT>());
         const success = submodels.length;
         const fail = failed.length;
-        return success
-            ? fail
+        return fail
+            ? success
                 ? { status: 207, json: { submodels, failed } }
-                : { status: 200, json: { submodels } }
-            : fail
-            ? { status: 500, json: { message: 'All failed', error: failed } }
-            : { status: 404, json: { message: 'Non found' } };
+                : {
+                      status: 500,
+                      json: { message: 'All failed', error: failed }
+                  }
+            : { status: 200, json: { submodels } };
     } catch (error: any) {
         logger.error(error.message);
         return netilion_error_to_agent_error(
@@ -1012,13 +1039,14 @@ async function get_all_submodels_for_all_assets(auth: OAUTH_TOKEN) {
         }, []);
         const success = submodels.length;
         const fail = failed.length;
-        return success
-            ? fail
+        return fail
+            ? success
                 ? { status: 207, json: { submodels, failed } }
-                : { status: 200, json: { submodels } }
-            : fail
-            ? { status: 500, json: { message: 'All failed', error: failed } }
-            : { status: 404, json: { message: 'None found' } };
+                : {
+                      status: 500,
+                      json: { message: 'All failed', error: failed }
+                  }
+            : { status: 200, json: { submodels } };
     } catch (error: any) {
         logger.error(error.message);
         return netilion_error_to_agent_error(
@@ -1030,7 +1058,7 @@ async function get_all_submodels_for_all_assets(auth: OAUTH_TOKEN) {
 // Extract Netilion asset ID from submodel ID
 function submodel_id_to_source_asset_id(submodel_id: string): AssetId {
     const id_split = submodel_id.split('/');
-    const assetId = Number(id_split[id_split.length - 4]);
+    const assetId = Number(id_split[id_split.length - 3]);
     return assetId;
 }
 

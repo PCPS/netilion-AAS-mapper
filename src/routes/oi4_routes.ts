@@ -12,4 +12,6 @@ router.get('/shells/:shell_id_b64', oi4_repo_controller.get_aas);
 router.get('/submodels', oi4_repo_controller.get_all_submodels);
 router.get('/submodels/:sm_id_b64', oi4_repo_controller.get_submodel);
 
+router.get('/passthrough/*', oi4_repo_controller.passthrough);
+
 export = router;

@@ -10,31 +10,72 @@ export interface NetilionPagination {
     first?: string;
     last?: string;
 }
+export interface NetilionBatchResponseBase {
+    pagination: NetilionPagination;
+}
 
-export interface NetilionBatchResposeAsset {
+export interface NetilionBatchResponseAsset extends NetilionBatchResponseBase {
     assets: Array<NetilionAsset>;
-    pagination: NetilionPagination;
 }
-export interface NetilionBatchResposeProduct {
+export interface NetilionBatchResponseProduct
+    extends NetilionBatchResponseBase {
     products: Array<NetilionProduct>;
-    pagination: NetilionPagination;
 }
-export interface NetilionBatchResposeDocument {
+export interface NetilionBatchResponseDocument
+    extends NetilionBatchResponseBase {
     documents: Array<NetilionDocument>;
-    pagination: NetilionPagination;
 }
-export interface NetilionBatchResposeSoftware<T> {
+export interface NetilionBatchResponseSoftware
+    extends NetilionBatchResponseBase {
     softwares: Array<NetilionSoftware>;
-    pagination: NetilionPagination;
 }
-export interface NetilionBatchResposeDocumentCategory {
+
+export interface NetilionBatchResponseDocumentCategory {
     categories: Array<NetilionDocumentCategory>;
     pagination: NetilionPagination;
 }
-export interface NetilionBatchResposeProductCategories {
+export interface NetilionBatchResponseProductCategory {
     categories: Array<NetilionProductCategory>;
     pagination: NetilionPagination;
 }
+
+export type NetilionBatchable =
+    | NetilionAsset
+    | NetilionProduct
+    | NetilionDocument
+    | NetilionSoftware
+    | NetilionDocumentCategory
+    | NetilionProductCategory;
+
+export type NetilionBatchResponse<T extends NetilionBatchable> =
+    T extends NetilionAsset
+        ? NetilionBatchResponseAsset
+        : T extends NetilionProduct
+        ? NetilionBatchResponseProduct
+        : T extends NetilionDocument
+        ? NetilionBatchResponseDocument
+        : T extends NetilionSoftware
+        ? NetilionBatchResponseSoftware
+        : T extends NetilionDocumentCategory
+        ? NetilionBatchResponseDocumentCategory
+        : T extends NetilionProductCategory
+        ? NetilionBatchResponseProductCategory
+        : NetilionBatchResponseBase;
+
+export type NetilionBatchItem<T extends NetilionBatchResponseBase> =
+    T extends NetilionBatchResponseAsset
+        ? NetilionAsset
+        : T extends NetilionBatchResponseProduct
+        ? NetilionProduct
+        : T extends NetilionBatchResponseDocument
+        ? NetilionDocument
+        : T extends NetilionBatchResponseSoftware
+        ? NetilionSoftware
+        : T extends NetilionBatchResponseDocumentCategory
+        ? NetilionDocumentCategory
+        : T extends NetilionBatchResponseProductCategory
+        ? NetilionProductCategory
+        : never;
 
 export interface NetilionLink {
     href: string;

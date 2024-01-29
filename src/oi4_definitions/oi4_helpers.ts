@@ -1,12 +1,9 @@
-import { Reference } from '../oi4_definitions/aas_components';
+import { Reference } from './aas_components';
 import model_semantics from '../dictionaries/model_semantics.json';
-import {
-    KeyTypes,
-    ReferenceTypes
-} from '../oi4_definitions/primitive_data_types';
+import { KeyTypes, ReferenceTypes } from './primitive_data_types';
 import fs from 'fs';
 import path from 'path';
-import DataSpecificationTemplates from '../oi4_definitions/interfaces/data_specification_interfaces';
+import DataSpecificationTemplates from './interfaces/data_specification_interfaces';
 
 // convert from index number to a zero-padded number in string format.
 // used as postfix to idShort of recurrent submodel elements
@@ -35,11 +32,12 @@ export function GetSemanticId(idShort: string): Reference {
         return new Reference({ type: 'ExternalReference', keys: [] });
     }
 }
-// Serilize Object 'obj' to desired output format using Objects 'modifyKeys' and 'removeKeys'.
+// Serialize Object 'obj' to desired output format using Objects 'modifyKeys' and 'removeKeys'.
 // modifyKeys is a mapping from keys to functions on obj.
 // removeKeys is a list of keys that, if included in obj, will be removed from it along with their value.
 // Serialization method must be defined per class by adding a 'serialize()' method to the class.
 // Serialization is recursive and applize to all properties of class.
+
 export function Serialize<T>(
     obj: T,
     opt: {
@@ -107,24 +105,21 @@ export function GenerateDescriptionsFromEclass() {
     });
     let irdis = semanticIds
         .filter((item: { [key: string]: string }) => {
-            return item.id.split(' ')[0] === '[IRDI]';
+            return item.id.startsWith('0173') || item.id.startsWith('0112');
         })
         .map((item: { [key: string]: string }) => {
-            let irdi = item.id.split(' ')[1];
-            return irdi;
+            return item.id;
         });
     let dataSpecContents = irdis.map((item: string) => {
         let found = properties.find((p: any) => {
             return p._attributes.id == item;
         });
         let name = semanticIds.find((sid: { [key: string]: string }) => {
-            return sid.id.split(' ')[1] == item;
+            return sid.id == item;
         })?.name;
-        let id = semanticIds
-            .find((sid: { [key: string]: string }) => {
-                return sid.id.split(' ')[1] == item;
-            })
-            ?.id.split(' ')[1];
+        let id = semanticIds.find((sid: { [key: string]: string }) => {
+            return sid.id == item;
+        })?.id;
         if (found) {
             return {
                 name,

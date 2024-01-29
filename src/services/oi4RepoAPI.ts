@@ -122,14 +122,29 @@ export class OI4Client {
     }
 
     public postSubmodel<T = any, R = AxiosResponse<T>>(
+        aas_id: string,
         submodel: Submodel
     ): Promise<R> {
-        return this.api.post('/submodels', submodel);
+        return this.api.post(
+            '/shells/' + makeBase64(aas_id) + '/submodels',
+            submodel
+        );
     }
 
     public updateSubmodel<T = any, R = AxiosResponse<T>>(
+        aas_id: string,
         submodel: Submodel
     ): Promise<R> {
-        return this.api.put('/submodels/' + makeBase64(submodel.id), submodel);
+        return this.api.put(
+            '/shells/' +
+                makeBase64(aas_id) +
+                '/submodels/' +
+                makeBase64(submodel.id),
+            submodel
+        );
+    }
+
+    public direct<T = any, R = AxiosResponse<T>>(query: string): Promise<R> {
+        return this.api.get(query);
     }
 }

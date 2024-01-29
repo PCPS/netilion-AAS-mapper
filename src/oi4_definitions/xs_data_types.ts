@@ -171,6 +171,14 @@ export namespace xs {
                 return 'N/A';
             }
         }
+
+        toString() {
+            if (this._valid) {
+                return this._original_input;
+            } else {
+                return 'N/A';
+            }
+        }
     }
     export class date {
         private _date: Date;
@@ -217,6 +225,15 @@ export namespace xs {
         }
 
         toJSON() {
+            if (this._valid) {
+                const dateTime = this._date.toISOString();
+                return dateTime.substring(0, dateTime.indexOf('T'));
+            } else {
+                return 'N/A';
+            }
+        }
+
+        toString() {
             if (this._valid) {
                 const dateTime = this._date.toISOString();
                 return dateTime.substring(0, dateTime.indexOf('T'));

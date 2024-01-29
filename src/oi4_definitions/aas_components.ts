@@ -23,7 +23,7 @@ import {
 } from './primitive_data_types';
 import { Mixin } from 'ts-mixer';
 import { logger } from '../services/logger';
-import { Serialize } from '../services/oi4_helpers';
+import { Serialize } from './oi4_helpers';
 import DST from './data_specifications';
 
 /** AAS standard structure for References.

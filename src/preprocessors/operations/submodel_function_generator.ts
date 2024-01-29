@@ -24,6 +24,11 @@ import {
 //  * = [0-*]      //
 /////////////////////
 
+// Keep track of genrated functions to avoid duplicates.
+// Sometimes submodels hierarchically reuse submodel elment collections or submodels.
+
+let generated_functions: Record<string, boolean> = {};
+
 function GetArbitraryElementName(model: Model): string {
     let suffix = 'ERROR_BAD_TYPE';
     let element_key = 'arbitrary_';
@@ -48,6 +53,14 @@ function GetArbitraryElementName(model: Model): string {
                 suffix = 'file';
             }
             break;
+        case 'Entity':
+            {
+                suffix = 'entity';
+            }
+            break;
+        case 'SubmodelElement': {
+            suffix = 'element';
+        }
     }
     if (model.count === '*' || model.count === '+') {
         suffix = suffix.replace(/s$/, 'se').replace(/y$/, 'ie') + 's';
@@ -79,6 +92,19 @@ function ExpandArbitraryElement(model: Model): string {
             {
                 element_body +=
                     '\nvalue: PathType' + '\ncontentType: ContentType';
+            }
+            break;
+        case 'Entity': {
+            element_body +=
+                '\nstatement?: Array<SubmodelElement>' +
+                '\nentityType: EntityType' +
+                '\nglobalAssetId?: Identifier' +
+                '\nspificiAssetIds?: Array<SpecificAssetIds>';
+        }
+        case 'SubmodelElement':
+            {
+                element_body += '\nmodelType: AasSubmodelElements';
+                element_body += '\nvalue: Record<string, any>';
             }
             break;
     }
@@ -239,7 +265,7 @@ function GenerateArbitraryAssignmentBody(sme: Model): string {
                     ',\nvalue: ' +
                     'opt.' +
                     element_name +
-                    '.value';
+                    '.value.toString()';
             }
             break;
         case 'MultiLanguageProperty':
@@ -262,8 +288,8 @@ function GenerateArbitraryAssignmentBody(sme: Model): string {
                     ',\nvalue: ' +
                     'opt.' +
                     element_name +
-                    '.value,' +
-                    '\ncontentType: ' +
+                    '.value' +
+                    ',\ncontentType: ' +
                     'opt.' +
                     element_name +
                     '.contentType';
@@ -276,19 +302,27 @@ function GenerateArbitraryAssignmentBody(sme: Model): string {
                     ',\nstatements: ' +
                     'opt.' +
                     element_name +
-                    '.statements,' +
-                    '\nentityType: ' +
+                    '.statements' +
+                    ',\nentityType: ' +
                     'opt.' +
                     element_name +
-                    '.entityType,' +
-                    '\nglobalAssetId: ' +
+                    '.entityType' +
+                    ',\nglobalAssetId: ' +
                     'opt.' +
                     element_name +
-                    '.globalAssetId,' +
-                    '\nspecificAssetIds: ' +
+                    '.globalAssetId' +
+                    ',\nspecificAssetIds: ' +
                     'opt.' +
                     element_name +
-                    '.specificAssetIds,';
+                    '.specificAssetIds';
+            }
+            break;
+
+        case 'SubmodelElement':
+            {
+                assignment_body =
+                    '({' + assignment_body.replace(/\n/g, '\n    ') + '\n});';
+                return assignment_body;
             }
             break;
     }
@@ -304,16 +338,14 @@ function GenerateArbitraryAssignmentBody(sme: Model): string {
 function GenerateAssignmentBody(sme: Model, idShort: string): string {
     let assignment_body: string = '\n';
     assignment_body += "idShort: '" + idShort + "'";
-    if (sme.semanticId && sme.semanticIdType) {
+    if (sme.semanticId) {
         assignment_body +=
             ',\nsemanticId: {\n' +
             '    type: "ModelReference",\n' +
             '    keys: [\n' +
             '              {\n' +
             '                  type: "ConceptDescription",\n' +
-            '                  value: "[' +
-            sme.semanticIdType +
-            '] ' +
+            '                  value: "' +
             sme.semanticId +
             '"\n' +
             '              }\n' +
@@ -331,7 +363,8 @@ function GenerateAssignmentBody(sme: Model, idShort: string): string {
                     "'" +
                     ',\nvalue: ' +
                     'opt.' +
-                    (m.alias || idShort);
+                    (m.alias || idShort) +
+                    '.toString()';
             }
             break;
         case 'MultiLanguageProperty':
@@ -433,6 +466,12 @@ function GenerateFunction(
     let model_type_short = 'ERROR_BAD_MODEL_TYPE';
     let extra_parameters = '';
     let function_body: string = '';
+    const function_name: string =
+        'Generate_' + model_type_short + '_' + model_name;
+    if (generated_functions[function_name]) {
+        return { main_function: '', auxiliaries: [] };
+    }
+    generated_functions[function_name] = true;
     switch (model.modelType) {
         case 'Submodel':
             {
@@ -484,6 +523,7 @@ function GenerateFunction(
             smes[key as keyof Model].modelType !== 'SubmodelElementCollection'
         );
     }); // remove this! unless used
+
     main_function +=
         'function Generate_' +
         model_type_short +
@@ -502,7 +542,105 @@ function GenerateFunction(
         let assignment: string = '';
         if (key === '{arbitrary}') {
             let arbitrary_element_name = GetArbitraryElementName(sme);
-            assignment = GenerateArbitraryAssignmentBody(sme);
+            if (sme.modelType == 'SubmodelElement') {
+                let assignment_body: string =
+                    '\nidShort: opt.' + arbitrary_element_name + '.idShort';
+                assignment_body +=
+                    ',\nsemanticId: opt.' +
+                    arbitrary_element_name +
+                    '.semanticId';
+                let property_assignment_body =
+                    assignment_body +
+                    ',\nvalueType: opt.' +
+                    arbitrary_element_name +
+                    '.value.valueType' +
+                    ',\nvalue: opt.' +
+                    arbitrary_element_name +
+                    '.value.value';
+                let mlp_assignment_body =
+                    assignment_body +
+                    ',\nvalue: opt.' +
+                    arbitrary_element_name +
+                    '.value.value';
+                let reference_element_assignment_body =
+                    assignment_body +
+                    ',\nvalue: opt.' +
+                    arbitrary_element_name +
+                    '.value.value';
+                let file_assignment_body =
+                    assignment_body +
+                    ',\nvalue: opt.' +
+                    arbitrary_element_name +
+                    '.value.value' +
+                    ',\ncontentType: opt.' +
+                    arbitrary_element_name +
+                    '.value.contentType';
+                let entity_assignment_body =
+                    assignment_body +
+                    ',\nstatements: opt.' +
+                    arbitrary_element_name +
+                    '.value.statements' +
+                    ',\nentityType: opt.' +
+                    arbitrary_element_name +
+                    '.value.entityType' +
+                    ',\nglobalAssetId: opt.' +
+                    arbitrary_element_name +
+                    '.value.globalAssetId' +
+                    ',\nspecificAssetIds: opt.' +
+                    arbitrary_element_name +
+                    '.value.spicificAssetIds';
+                let case_property =
+                    '\nconst element = new Property({' +
+                    property_assignment_body.replace(/\n/g, '\n    ') +
+                    '\n})';
+                let case_mlp =
+                    '\nconst element = new MultiLanguageProperty({' +
+                    mlp_assignment_body.replace(/\n/g, '\n    ') +
+                    '\n})';
+                let case_reference_element =
+                    '\nconst element = new ReferenceElement({' +
+                    reference_element_assignment_body.replace(/\n/g, '\n    ') +
+                    '\n})';
+                let case_file =
+                    '\nconst element = new File({' +
+                    file_assignment_body.replace(/\n/g, '\n    ') +
+                    '\n})';
+                let case_entity =
+                    '\nconst element = new Entity({' +
+                    entity_assignment_body.replace(/\n/g, '\n    ') +
+                    '\n})';
+                const switchCases: string =
+                    '\ncase "Property":\n{' +
+                    case_property.replace(/\n/g, '\n    ') +
+                    '\nsubmodelElements.push(element)' +
+                    '\n}\nbreak;\n' +
+                    '\ncase "MultiLanguageProperty":\n{' +
+                    case_mlp.replace(/\n/g, '\n    ') +
+                    '\nsubmodelElements.push(element)' +
+                    '\n}\nbreak;\n' +
+                    '\ncase "ReferenceElement":\n{' +
+                    case_reference_element.replace(/\n/g, '\n    ') +
+                    '\nsubmodelElements.push(element)' +
+                    '\n}\nbreak;\n' +
+                    '\ncase "File":\n{' +
+                    case_file.replace(/\n/g, '\n    ') +
+                    '\nsubmodelElements.push(element)' +
+                    '\n}\nbreak;\n' +
+                    '\ncase "Entity":\n{' +
+                    case_entity.replace(/\n/g, '\n    ') +
+                    '\nsubmodelElements.push(element)' +
+                    '\n}\nbreak;\n';
+                assignment +=
+                    'switch(opt.' +
+                    arbitrary_element_name +
+                    '.modelType){' +
+                    switchCases.replace(/\n/g, '\n    ') +
+                    '\n}\n';
+            } else {
+                assignment += 'const element = ';
+                assignment += GenerateArbitraryAssignmentBody(sme) + '\n';
+                assignment += 'submodelElements.push(element)';
+            }
             if (sme.count === '+' || sme.count === '*') {
                 assignment = assignment.replace(
                     new RegExp('opt.' + arbitrary_element_name + '.', 'g'),
@@ -518,7 +656,7 @@ function GenerateFunction(
             if (sme.count === '*' || sme.count === '?') {
                 assignment =
                     'if (opt.' +
-                    (sme.alias || key) +
+                    arbitrary_element_name +
                     ') {\n    ' +
                     assignment.replace(/\n/g, '\n    ') +
                     '\n}';
@@ -579,7 +717,7 @@ function CreateGenerator(json_submodel: { [key: string]: Model }): void {
         const model_name = model.alias || item;
         let imports: string =
             "import { Reference, SpecificAssetId, Submodel } from '../aas_components';\n" +
-            "import { ContentType, DataTypeDefXsd, LangStringSet, PathType, ValueDataType, EntityType, Identifier } from '../primitive_data_types';\n" +
+            "import { ContentType, DataTypeDefXsd, LangStringSet, PathType, ValueDataType, EntityType, Identifier, AasSubmodelElements } from '../primitive_data_types';\n" +
             "import { SubmodelElementCollection, Property, MultiLanguageProperty, ReferenceElement, File, Entity } from '../submodel_elements';\n" +
             "import { xs } from '../xs_data_types';\n" +
             "import { SubmodelElement } from '../aas_components';\n" +
@@ -604,6 +742,7 @@ function CreateGenerator(json_submodel: { [key: string]: Model }): void {
             fs.unlinkSync(path.join(__dirname, file_path));
         } catch (error) {}
         fs.writeFileSync(path.join(__dirname, file_path), script_str);
+        generated_functions = {};
     });
 }
 

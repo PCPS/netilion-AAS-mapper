@@ -136,7 +136,7 @@ export function GenerateDescriptionsFromEclass() {
                                   {
                                       type: 'GlobalReference',
                                       value:
-                                          '[IRDI] ' +
+                                          '' +
                                           found.domain.unit._attributes.unit_ref
                                   }
                               ]

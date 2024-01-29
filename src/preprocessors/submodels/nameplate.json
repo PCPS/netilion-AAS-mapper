@@ -27,7 +27,7 @@
             "ContactInformation": {
                 "semanticId": "https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation",
                 "semanticIdType": "IRI",
-                "isCaseOf": "[IRDI] 0173-1#02-AAQ837#005",
+                "isCaseOf": "0173-1#02-AAQ837#005",
                 "modelType": "SubmodelElementCollection",
                 "count": "!",
                 "value": {
@@ -65,7 +65,7 @@
                     "Language": {
                         "semanticId": "https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/Language",
                         "semanticIdType": "IRI",
-                        "isCaseOf": "[IRDI] 0173-1#02-AAO895#003",
+                        "isCaseOf": "0173-1#02-AAO895#003",
                         "modelType": "Property",
                         "count": "*",
                         "valueType": "xs:string"
@@ -92,7 +92,7 @@
                     "Phone": {
                         "semanticId": "https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/Phone",
                         "semanticIdType": "IRI",
-                        "isCaseOf": "[IRDI] 0173-1#02-AAQ833#005",
+                        "isCaseOf": "0173-1#02-AAQ833#005",
                         "modelType": "SubmodelElementCollection",
                         "count": "?",
                         "value": {

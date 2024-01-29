@@ -255,7 +255,7 @@ export class Capability extends SubmodelElement {
  * asset ID.
  * 'Entity.statements' describes statements applicable to entity by a set of SubmodelElements which
  * typically have qualified values.
- * 'Enitity.entityType' is either 'CoManagedEntity' or 'SelfManagedEntity'.
+ * 'Entity.entityType' is either 'CoManagedEntity' or 'SelfManagedEntity'.
  * 'Entity.globalAssetId' and 'Entity.SpecificAssetId refer to the asset represented by the entity.
  * See document: Specification of the Asset Administration Shell part 1 v3.0 section 5.3.7.7
  */

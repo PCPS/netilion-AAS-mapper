@@ -1,21 +1,26 @@
-import { Reference, Submodel } from '../aas_components';
+import { Reference, SpecificAssetId, Submodel } from '../aas_components';
 import {
     ContentType,
     DataTypeDefXsd,
     LangStringSet,
     PathType,
-    ValueDataType
+    ValueDataType,
+    EntityType,
+    Identifier,
+    AasSubmodelElements
 } from '../primitive_data_types';
 import {
     SubmodelElementCollection,
     Property,
     MultiLanguageProperty,
     ReferenceElement,
-    File
+    File,
+    Entity
 } from '../submodel_elements';
 import { xs } from '../xs_data_types';
 import { SubmodelElement } from '../aas_components';
-import { number_to_padded_string } from '../../services/oi4_helpers';
+import { GetSemanticId } from '../oi4_helpers';
+import { number_to_padded_string } from '../oi4_helpers';
 
 function Generate_SMC_Phone(
     opt: {
@@ -34,7 +39,7 @@ function Generate_SMC_Phone(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAO136#002'
+                    value: '0173-1#02-AAO136#002'
                 }
             ]
         },
@@ -49,12 +54,12 @@ function Generate_SMC_Phone(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO137#003'
+                        value: '0173-1#02-AAO137#003'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.TypeOfTelephone
+            value: opt.TypeOfTelephone.toString()
         });
         submodelElements.push(TypeOfTelephone);
     }
@@ -66,7 +71,7 @@ function Generate_SMC_Phone(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRI] https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/AvailableTime/'
+                        value: 'https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/AvailableTime/'
                     }
                 ]
             },
@@ -81,7 +86,7 @@ function Generate_SMC_Phone(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRI] https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/Phone'
+                    value: 'https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/Phone'
                 }
             ]
         },
@@ -105,7 +110,7 @@ function Generate_SMC_Fax(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAO195#002'
+                    value: '0173-1#02-AAO195#002'
                 }
             ]
         },
@@ -120,12 +125,12 @@ function Generate_SMC_Fax(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO196#003'
+                        value: '0173-1#02-AAO196#003'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.TypeOfFaxNumber
+            value: opt.TypeOfFaxNumber.toString()
         });
         submodelElements.push(TypeOfFaxNumber);
     }
@@ -136,7 +141,7 @@ function Generate_SMC_Fax(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAQ834#005'
+                    value: '0173-1#02-AAQ834#005'
                 }
             ]
         },
@@ -162,12 +167,12 @@ function Generate_SMC_Email(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAO198#002'
+                    value: '0173-1#02-AAO198#002'
                 }
             ]
         },
         valueType: 'xs:string',
-        value: opt.EmailAddress
+        value: opt.EmailAddress.toString()
     });
     submodelElements.push(EmailAddress);
     if (opt.PublicKey) {
@@ -178,7 +183,7 @@ function Generate_SMC_Email(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO200#002'
+                        value: '0173-1#02-AAO200#002'
                     }
                 ]
             },
@@ -194,12 +199,12 @@ function Generate_SMC_Email(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO199#003'
+                        value: '0173-1#02-AAO199#003'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.TypeOfEmailAddress
+            value: opt.TypeOfEmailAddress.toString()
         });
         submodelElements.push(TypeOfEmailAddress);
     }
@@ -211,7 +216,7 @@ function Generate_SMC_Email(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO201#002'
+                        value: '0173-1#02-AAO201#002'
                     }
                 ]
             },
@@ -226,7 +231,7 @@ function Generate_SMC_Email(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAQ836#005'
+                    value: '0173-1#02-AAQ836#005'
                 }
             ]
         },
@@ -251,12 +256,12 @@ function Generate_SMC_IPCommunication(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAQ326#002'
+                    value: '0173-1#02-AAQ326#002'
                 }
             ]
         },
         valueType: 'xs:string',
-        value: opt.AddressOfAdditionalLink
+        value: opt.AddressOfAdditionalLink.toString()
     });
     submodelElements.push(AddressOfAdditionalLink);
     if (opt.TypeOfCommunication) {
@@ -267,12 +272,12 @@ function Generate_SMC_IPCommunication(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRI] https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/IPCommunication/TypeOfCommunication'
+                        value: 'https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/IPCommunication/TypeOfCommunication'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.TypeOfCommunication
+            value: opt.TypeOfCommunication.toString()
         });
         submodelElements.push(TypeOfCommunication);
     }
@@ -284,7 +289,7 @@ function Generate_SMC_IPCommunication(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRI] https://admin- shell.io/zvei/nameplate/1/0/ContactInformations/ ContactInformation/AvailableTime/'
+                        value: 'https://admin- shell.io/zvei/nameplate/1/0/ContactInformations/ ContactInformation/AvailableTime/'
                     }
                 ]
             },
@@ -299,7 +304,7 @@ function Generate_SMC_IPCommunication(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRI] https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/IPCommunication'
+                    value: 'https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/IPCommunication'
                 }
             ]
         },
@@ -327,12 +332,12 @@ function Generate_SMC_SafetyRelatedPropertiesForPassiveBehaviour(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAQ372#003'
+                        value: '0173-1#02-AAQ372#003'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.MaxInputPower
+            value: opt.MaxInputPower.toString()
         });
         submodelElements.push(MaxInputPower);
     }
@@ -344,12 +349,12 @@ function Generate_SMC_SafetyRelatedPropertiesForPassiveBehaviour(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM638#003'
+                        value: '0173-1#02-AAM638#003'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.MaxInputVoltage
+            value: opt.MaxInputVoltage.toString()
         });
         submodelElements.push(MaxInputVoltage);
     }
@@ -361,12 +366,12 @@ function Generate_SMC_SafetyRelatedPropertiesForPassiveBehaviour(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM642#004'
+                        value: '0173-1#02-AAM642#004'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.MaxInputCurrent
+            value: opt.MaxInputCurrent.toString()
         });
         submodelElements.push(MaxInputCurrent);
     }
@@ -378,12 +383,12 @@ function Generate_SMC_SafetyRelatedPropertiesForPassiveBehaviour(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM640#004'
+                        value: '0173-1#02-AAM640#004'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.MaxInternalCapacitance
+            value: opt.MaxInternalCapacitance.toString()
         });
         submodelElements.push(MaxInternalCapacitance);
     }
@@ -395,12 +400,12 @@ function Generate_SMC_SafetyRelatedPropertiesForPassiveBehaviour(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM639#003'
+                        value: '0173-1#02-AAM639#003'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.MaxInternalInductance
+            value: opt.MaxInternalInductance.toString()
         });
         submodelElements.push(MaxInternalInductance);
     }
@@ -411,7 +416,7 @@ function Generate_SMC_SafetyRelatedPropertiesForPassiveBehaviour(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAQ380#006'
+                    value: '0173-1#02-AAQ380#006'
                 }
             ]
         },
@@ -440,12 +445,12 @@ function Generate_SMC_SafetyRelatedPropertiesForActiveBehaviour(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAQ371#003'
+                        value: '0173-1#02-AAQ371#003'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.MaxOutputPower
+            value: opt.MaxOutputPower.toString()
         });
         submodelElements.push(MaxOutputPower);
     }
@@ -457,12 +462,12 @@ function Generate_SMC_SafetyRelatedPropertiesForActiveBehaviour(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM635#003'
+                        value: '0173-1#02-AAM635#003'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.MaxOutputVoltage
+            value: opt.MaxOutputVoltage.toString()
         });
         submodelElements.push(MaxOutputVoltage);
     }
@@ -474,12 +479,12 @@ function Generate_SMC_SafetyRelatedPropertiesForActiveBehaviour(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM641#004'
+                        value: '0173-1#02-AAM641#004'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.MaxOutputCurrent
+            value: opt.MaxOutputCurrent.toString()
         });
         submodelElements.push(MaxOutputCurrent);
     }
@@ -491,12 +496,12 @@ function Generate_SMC_SafetyRelatedPropertiesForActiveBehaviour(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM637#004'
+                        value: '0173-1#02-AAM637#004'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.MaxExternalCapacitance
+            value: opt.MaxExternalCapacitance.toString()
         });
         submodelElements.push(MaxExternalCapacitance);
     }
@@ -508,12 +513,12 @@ function Generate_SMC_SafetyRelatedPropertiesForActiveBehaviour(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM636#003'
+                        value: '0173-1#02-AAM636#003'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.MaxExternalInductance
+            value: opt.MaxExternalInductance.toString()
         });
         submodelElements.push(MaxExternalInductance);
     }
@@ -525,12 +530,12 @@ function Generate_SMC_SafetyRelatedPropertiesForActiveBehaviour(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM634#003'
+                        value: '0173-1#02-AAM634#003'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.MaxExternalInductanceResistanceRatio
+            value: opt.MaxExternalInductanceResistanceRatio.toString()
         });
         submodelElements.push(MaxExternalInductanceResistanceRatio);
     }
@@ -541,7 +546,7 @@ function Generate_SMC_SafetyRelatedPropertiesForActiveBehaviour(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAQ381#006'
+                    value: '0173-1#02-AAQ381#006'
                 }
             ]
         },
@@ -573,12 +578,12 @@ function Generate_SMC_AmbientConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAK297#004'
+                        value: '0173-1#02-AAK297#004'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.DeviceCategory
+            value: opt.DeviceCategory.toString()
         });
         submodelElements.push(DeviceCategory);
     }
@@ -590,7 +595,7 @@ function Generate_SMC_AmbientConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM668#001'
+                        value: '0173-1#02-AAM668#001'
                     }
                 ]
             },
@@ -606,12 +611,12 @@ function Generate_SMC_AmbientConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/RegionalSpecificMarking'
+                        value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/RegionalSpecificMarking'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.RegionalSpecificMarking
+            value: opt.RegionalSpecificMarking.toString()
         });
         submodelElements.push(RegionalSpecificMarking);
     }
@@ -623,12 +628,12 @@ function Generate_SMC_AmbientConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAQ325#003'
+                        value: '0173-1#02-AAQ325#003'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.TypeOfProtection
+            value: opt.TypeOfProtection.toString()
         });
         submodelElements.push(TypeOfProtection);
     }
@@ -640,12 +645,12 @@ function Generate_SMC_AmbientConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAT372#001'
+                        value: '0173-1#02-AAT372#001'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.ExplosionGroup
+            value: opt.ExplosionGroup.toString()
         });
         submodelElements.push(ExplosionGroup);
     }
@@ -657,12 +662,12 @@ function Generate_SMC_AmbientConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAZ952#001'
+                        value: '0173-1#02-AAZ952#001'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.MinimumAmbientTemperature
+            value: opt.MinimumAmbientTemperature.toString()
         });
         submodelElements.push(MinimumAmbientTemperature);
     }
@@ -674,12 +679,12 @@ function Generate_SMC_AmbientConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-BAA039#010'
+                        value: '0173-1#02-BAA039#010'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.MaxAmbientTemperature
+            value: opt.MaxAmbientTemperature.toString()
         });
         submodelElements.push(MaxAmbientTemperature);
     }
@@ -691,12 +696,12 @@ function Generate_SMC_AmbientConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM666#005'
+                        value: '0173-1#02-AAM666#005'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.MaxSurfaceTemperatureForDustProof
+            value: opt.MaxSurfaceTemperatureForDustProof.toString()
         });
         submodelElements.push(MaxSurfaceTemperatureForDustProof);
     }
@@ -708,12 +713,12 @@ function Generate_SMC_AmbientConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO371#004'
+                        value: '0173-1#02-AAO371#004'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.TemperatureClass
+            value: opt.TemperatureClass.toString()
         });
         submodelElements.push(TemperatureClass);
     }
@@ -724,7 +729,7 @@ function Generate_SMC_AmbientConditions(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/AmbientConditions'
+                    value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/AmbientConditions'
                 }
             ]
         },
@@ -756,12 +761,12 @@ function Generate_SMC_ProcessConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAK297#004'
+                        value: '0173-1#02-AAK297#004'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.DeviceCategory
+            value: opt.DeviceCategory.toString()
         });
         submodelElements.push(DeviceCategory);
     }
@@ -773,7 +778,7 @@ function Generate_SMC_ProcessConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM668#001'
+                        value: '0173-1#02-AAM668#001'
                     }
                 ]
             },
@@ -789,12 +794,12 @@ function Generate_SMC_ProcessConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/RegionalSpecificMarking'
+                        value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/RegionalSpecificMarking'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.RegionalSpecificMarking
+            value: opt.RegionalSpecificMarking.toString()
         });
         submodelElements.push(RegionalSpecificMarking);
     }
@@ -806,12 +811,12 @@ function Generate_SMC_ProcessConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAQ325#003'
+                        value: '0173-1#02-AAQ325#003'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.TypeOfProtection
+            value: opt.TypeOfProtection.toString()
         });
         submodelElements.push(TypeOfProtection);
     }
@@ -823,12 +828,12 @@ function Generate_SMC_ProcessConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAT372#001'
+                        value: '0173-1#02-AAT372#001'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.ExplosionGroup
+            value: opt.ExplosionGroup.toString()
         });
         submodelElements.push(ExplosionGroup);
     }
@@ -840,12 +845,12 @@ function Generate_SMC_ProcessConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAN309#004'
+                        value: '0173-1#02-AAN309#004'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.LowerLimitingValueOfProcessTemperature
+            value: opt.LowerLimitingValueOfProcessTemperature.toString()
         });
         submodelElements.push(LowerLimitingValueOfProcessTemperature);
     }
@@ -857,12 +862,12 @@ function Generate_SMC_ProcessConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAN307#004'
+                        value: '0173-1#02-AAN307#004'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.UpperLimitingValueOfProcessTemperature
+            value: opt.UpperLimitingValueOfProcessTemperature.toString()
         });
         submodelElements.push(UpperLimitingValueOfProcessTemperature);
     }
@@ -874,12 +879,12 @@ function Generate_SMC_ProcessConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM666#005'
+                        value: '0173-1#02-AAM666#005'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.MaxSurfaceTemperatureForDustProof
+            value: opt.MaxSurfaceTemperatureForDustProof.toString()
         });
         submodelElements.push(MaxSurfaceTemperatureForDustProof);
     }
@@ -891,12 +896,12 @@ function Generate_SMC_ProcessConditions(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO371#004'
+                        value: '0173-1#02-AAO371#004'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.TemperatureClass
+            value: opt.TemperatureClass.toString()
         });
         submodelElements.push(TemperatureClass);
     }
@@ -907,7 +912,7 @@ function Generate_SMC_ProcessConditions(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/ProcessConditions'
+                    value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/ProcessConditions'
                 }
             ]
         },
@@ -952,12 +957,12 @@ function Generate_SMC_ExternalElectricalCircuit(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0112/2///61987#ABB147#004'
+                        value: '0112/2///61987#ABB147#004'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.DesignationOfElectricalTerminal
+            value: opt.DesignationOfElectricalTerminal.toString()
         });
         submodelElements.push(DesignationOfElectricalTerminal);
     }
@@ -969,12 +974,12 @@ function Generate_SMC_ExternalElectricalCircuit(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAQ325#003'
+                        value: '0173-1#02-AAQ325#003'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.TypeOfProtection
+            value: opt.TypeOfProtection.toString()
         });
         submodelElements.push(TypeOfProtection);
     }
@@ -986,7 +991,7 @@ function Generate_SMC_ExternalElectricalCircuit(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM668#001'
+                        value: '0173-1#02-AAM668#001'
                     }
                 ]
             },
@@ -1002,12 +1007,12 @@ function Generate_SMC_ExternalElectricalCircuit(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAT372#001'
+                        value: '0173-1#02-AAT372#001'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.ExplosionGroup
+            value: opt.ExplosionGroup.toString()
         });
         submodelElements.push(ExplosionGroup);
     }
@@ -1019,12 +1024,12 @@ function Generate_SMC_ExternalElectricalCircuit(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/ExternalElectricalCircuitCharacteristics'
+                        value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/ExternalElectricalCircuitCharacteristics'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.Characteristics
+            value: opt.Characteristics.toString()
         });
         submodelElements.push(Characteristics);
     }
@@ -1036,12 +1041,12 @@ function Generate_SMC_ExternalElectricalCircuit(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/ExternalElectricalCircuit/Fisco'
+                        value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/ExternalElectricalCircuit/Fisco'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.Fisco
+            value: opt.Fisco.toString()
         });
         submodelElements.push(Fisco);
     }
@@ -1053,12 +1058,12 @@ function Generate_SMC_ExternalElectricalCircuit(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/ExternalElectricalCircuit/TwoWISE'
+                        value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/ExternalElectricalCircuit/TwoWISE'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.TwoWISE
+            value: opt.TwoWISE.toString()
         });
         submodelElements.push(TwoWISE);
     }
@@ -1083,7 +1088,7 @@ function Generate_SMC_ExternalElectricalCircuit(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/ExternalElectricalCircuit'
+                    value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/ExternalElectricalCircuit'
                 }
             ]
         },
@@ -1160,12 +1165,12 @@ function Generate_SMC_ExplosionSafty(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0112/2///61987#ABH783#001'
+                        value: '0112/2///61987#ABH783#001'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.DesignationOfCertificateOrApproval
+            value: opt.DesignationOfCertificateOrApproval.toString()
         });
         submodelElements.push(DesignationOfCertificateOrApproval);
     }
@@ -1177,7 +1182,7 @@ function Generate_SMC_ExplosionSafty(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM812#003'
+                        value: '0173-1#02-AAM812#003'
                     }
                 ]
             },
@@ -1193,7 +1198,7 @@ function Generate_SMC_ExplosionSafty(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM632#001'
+                        value: '0173-1#02-AAM632#001'
                     }
                 ]
             },
@@ -1209,12 +1214,12 @@ function Generate_SMC_ExplosionSafty(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAQ325#003'
+                        value: '0173-1#02-AAQ325#003'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.TypeOfProtection
+            value: opt.TypeOfProtection.toString()
         });
         submodelElements.push(TypeOfProtection);
     }
@@ -1226,12 +1231,12 @@ function Generate_SMC_ExplosionSafty(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAN532#003'
+                        value: '0173-1#02-AAN532#003'
                     }
                 ]
             },
             valueType: 'xs:decimal',
-            value: opt.RatedInsulationVoltage
+            value: opt.RatedInsulationVoltage.toString()
         });
         submodelElements.push(RatedInsulationVoltage);
     }
@@ -1243,7 +1248,7 @@ function Generate_SMC_ExplosionSafty(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0112/2///61987#ABO102#001'
+                        value: '0112/2///61987#ABO102#001'
                     }
                 ]
             },
@@ -1259,12 +1264,12 @@ function Generate_SMC_ExplosionSafty(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/SpecificConditionsForUse'
+                        value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/SpecificConditionsForUse'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.SpecificConditionsForUse
+            value: opt.SpecificConditionsForUse.toString()
         });
         submodelElements.push(SpecificConditionsForUse);
     }
@@ -1276,12 +1281,12 @@ function Generate_SMC_ExplosionSafty(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/IncompleteDevice'
+                        value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety/IncompleteDevice'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.IncompleteDevice
+            value: opt.IncompleteDevice.toString()
         });
         submodelElements.push(IncompleteDevice);
     }
@@ -1311,7 +1316,7 @@ function Generate_SMC_ExplosionSafty(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety'
+                    value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties/ExplosionSafety'
                 }
             ]
         },
@@ -1393,7 +1398,7 @@ function Generate_SMC_ExplosionSafties(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties'
+                    value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExplosionSafeties'
                 }
             ]
         },
@@ -1479,12 +1484,12 @@ function Generate_SMC_Marking(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/MarkingName'
+                    value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/MarkingName'
                 }
             ]
         },
         valueType: 'xs:string',
-        value: opt.MarkingName
+        value: opt.MarkingName.toString()
     });
     submodelElements.push(MarkingName);
     if (opt.DesignationOfCertificateOrApproval) {
@@ -1495,12 +1500,12 @@ function Generate_SMC_Marking(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0112/2///61987#ABH783#001'
+                        value: '0112/2///61987#ABH783#001'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.DesignationOfCertificateOrApproval
+            value: opt.DesignationOfCertificateOrApproval.toString()
         });
         submodelElements.push(DesignationOfCertificateOrApproval);
     }
@@ -1512,12 +1517,12 @@ function Generate_SMC_Marking(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/IssueDate'
+                        value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/IssueDate'
                     }
                 ]
             },
             valueType: 'xs:date',
-            value: opt.IssueDate
+            value: opt.IssueDate.toString()
         });
         submodelElements.push(IssueDate);
     }
@@ -1529,12 +1534,12 @@ function Generate_SMC_Marking(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExpiryDate'
+                        value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/ExpiryDate'
                     }
                 ]
             },
             valueType: 'xs:date',
-            value: opt.ExpiryDate
+            value: opt.ExpiryDate.toString()
         });
         submodelElements.push(ExpiryDate);
     }
@@ -1545,7 +1550,7 @@ function Generate_SMC_Marking(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/MarkingFile'
+                    value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/MarkingFile'
                 }
             ]
         },
@@ -1565,12 +1570,12 @@ function Generate_SMC_Marking(
                     keys: [
                         {
                             type: 'ConceptDescription',
-                            value: '[IRDI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/MarkingAdditionalText'
+                            value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/Markings/Marking/MarkingAdditionalText'
                         }
                     ]
                 },
                 valueType: 'xs:string',
-                value: item
+                value: item.toString()
             });
             submodelElements.push(MarkingAdditionalText);
         });
@@ -1588,7 +1593,7 @@ function Generate_SMC_Marking(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#01-AHD206#001'
+                    value: '0173-1#01-AHD206#001'
                 }
             ]
         },
@@ -1617,21 +1622,22 @@ function Generate_SMC_GuidelineSpecificProperties(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAO856#002'
+                    value: '0173-1#02-AAO856#002'
                 }
             ]
         },
         valueType: 'xs:string',
-        value: opt.GuidelineForConformityDeclaration
+        value: opt.GuidelineForConformityDeclaration.toString()
     });
     submodelElements.push(GuidelineForConformityDeclaration);
     opt.arbitrary_properties.forEach((item) => {
-        new Property({
+        const element = new Property({
             idShort: item.idShort,
             semanticId: item.semanticId,
             valueType: item.valueType,
-            value: item.value
+            value: item.value.toString()
         });
+        submodelElements.push(element);
     });
     const result = new SubmodelElementCollection({
         idShort: 'GuidelineSpecificProperties' + postfix,
@@ -1640,7 +1646,7 @@ function Generate_SMC_GuidelineSpecificProperties(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#01-AHD205#001'
+                    value: '0173-1#01-AHD205#001'
                 }
             ]
         },
@@ -1701,7 +1707,7 @@ function Generate_SMC_ContactInformation(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAO128#002'
+                    value: '0173-1#02-AAO128#002'
                 }
             ]
         },
@@ -1715,7 +1721,7 @@ function Generate_SMC_ContactInformation(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAO129#002'
+                    value: '0173-1#02-AAO129#002'
                 }
             ]
         },
@@ -1729,7 +1735,7 @@ function Generate_SMC_ContactInformation(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAO132#002'
+                    value: '0173-1#02-AAO132#002'
                 }
             ]
         },
@@ -1743,7 +1749,7 @@ function Generate_SMC_ContactInformation(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAO134#002'
+                    value: '0173-1#02-AAO134#002'
                 }
             ]
         },
@@ -1758,12 +1764,12 @@ function Generate_SMC_ContactInformation(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO204#003'
+                        value: '0173-1#02-AAO204#003'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.RoleOfContactPerson
+            value: opt.RoleOfContactPerson.toString()
         });
         submodelElements.push(RoleOfContactPerson);
     }
@@ -1776,12 +1782,12 @@ function Generate_SMC_ContactInformation(
                     keys: [
                         {
                             type: 'ConceptDescription',
-                            value: '[IRI] https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/Language'
+                            value: 'https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation/Language'
                         }
                     ]
                 },
                 valueType: 'xs:string',
-                value: item
+                value: item.toString()
             });
             submodelElements.push(Language);
         });
@@ -1794,12 +1800,12 @@ function Generate_SMC_ContactInformation(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRI] https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/'
+                        value: 'https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.TimeZone
+            value: opt.TimeZone.toString()
         });
         submodelElements.push(TimeZone);
     }
@@ -1811,7 +1817,7 @@ function Generate_SMC_ContactInformation(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAW001#001'
+                        value: '0173-1#02-AAW001#001'
                     }
                 ]
             },
@@ -1827,7 +1833,7 @@ function Generate_SMC_ContactInformation(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO127#003'
+                        value: '0173-1#02-AAO127#003'
                     }
                 ]
             },
@@ -1861,7 +1867,7 @@ function Generate_SMC_ContactInformation(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO130#002'
+                        value: '0173-1#02-AAO130#002'
                     }
                 ]
             },
@@ -1877,7 +1883,7 @@ function Generate_SMC_ContactInformation(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO131#002'
+                        value: '0173-1#02-AAO131#002'
                     }
                 ]
             },
@@ -1893,7 +1899,7 @@ function Generate_SMC_ContactInformation(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO133#002'
+                        value: '0173-1#02-AAO133#002'
                     }
                 ]
             },
@@ -1909,7 +1915,7 @@ function Generate_SMC_ContactInformation(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO205#002'
+                        value: '0173-1#02-AAO205#002'
                     }
                 ]
             },
@@ -1925,7 +1931,7 @@ function Generate_SMC_ContactInformation(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO206#002'
+                        value: '0173-1#02-AAO206#002'
                     }
                 ]
             },
@@ -1941,7 +1947,7 @@ function Generate_SMC_ContactInformation(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO207#002'
+                        value: '0173-1#02-AAO207#002'
                     }
                 ]
             },
@@ -1957,7 +1963,7 @@ function Generate_SMC_ContactInformation(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO208#003'
+                        value: '0173-1#02-AAO208#003'
                     }
                 ]
             },
@@ -1973,7 +1979,7 @@ function Generate_SMC_ContactInformation(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO209#003'
+                        value: '0173-1#02-AAO209#003'
                     }
                 ]
             },
@@ -1989,7 +1995,7 @@ function Generate_SMC_ContactInformation(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO210#002'
+                        value: '0173-1#02-AAO210#002'
                     }
                 ]
             },
@@ -2005,12 +2011,12 @@ function Generate_SMC_ContactInformation(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAQ326#002'
+                        value: '0173-1#02-AAQ326#002'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.AddressOfAdditionalLink
+            value: opt.AddressOfAdditionalLink.toString()
         });
         submodelElements.push(AddressOfAdditionalLink);
     }
@@ -2021,7 +2027,7 @@ function Generate_SMC_ContactInformation(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRI] https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation'
+                    value: 'https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation'
                 }
             ]
         },
@@ -2113,7 +2119,7 @@ function Generate_SMC_Markings(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#01-AGZ673#001'
+                    value: '0173-1#01-AGZ673#001'
                 }
             ]
         },
@@ -2149,12 +2155,13 @@ function Generate_SMC_AssetSpecificProperties(
         submodelElements.push(GuidelineSpecificProperties);
     });
     opt.arbitrary_properties.forEach((item) => {
-        new Property({
+        const element = new Property({
             idShort: item.idShort,
             semanticId: item.semanticId,
             valueType: item.valueType,
-            value: item.value
+            value: item.value.toString()
         });
+        submodelElements.push(element);
     });
     const result = new SubmodelElementCollection({
         idShort: 'AssetSpecificProperties' + postfix,
@@ -2163,7 +2170,7 @@ function Generate_SMC_AssetSpecificProperties(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#01-AGZ672#001'
+                    value: '0173-1#01-AGZ672#001'
                 }
             ]
         },
@@ -2328,12 +2335,12 @@ export function Generate_SM_Nameplate(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAY811#001'
+                    value: '0173-1#02-AAY811#001'
                 }
             ]
         },
         valueType: 'xs:string',
-        value: opt.URIOfTheProduct
+        value: opt.URIOfTheProduct.toString()
     });
     submodelElements.push(URIOfTheProduct);
     const ManufacturerName = new MultiLanguageProperty({
@@ -2343,7 +2350,7 @@ export function Generate_SM_Nameplate(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAO677#002'
+                    value: '0173-1#02-AAO677#002'
                 }
             ]
         },
@@ -2357,7 +2364,7 @@ export function Generate_SM_Nameplate(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAW338#001'
+                    value: '0173-1#02-AAW338#001'
                 }
             ]
         },
@@ -2376,7 +2383,7 @@ export function Generate_SM_Nameplate(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAU732#001'
+                        value: '0173-1#02-AAU732#001'
                     }
                 ]
             },
@@ -2392,7 +2399,7 @@ export function Generate_SM_Nameplate(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAU731#001'
+                        value: '0173-1#02-AAU731#001'
                     }
                 ]
             },
@@ -2408,7 +2415,7 @@ export function Generate_SM_Nameplate(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO057#002'
+                        value: '0173-1#02-AAO057#002'
                     }
                 ]
             },
@@ -2424,7 +2431,7 @@ export function Generate_SM_Nameplate(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO227#002'
+                        value: '0173-1#02-AAO227#002'
                     }
                 ]
             },
@@ -2440,7 +2447,7 @@ export function Generate_SM_Nameplate(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO676#003'
+                        value: '0173-1#02-AAO676#003'
                     }
                 ]
             },
@@ -2456,12 +2463,12 @@ export function Generate_SM_Nameplate(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM556#002'
+                        value: '0173-1#02-AAM556#002'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.SerialNumber
+            value: opt.SerialNumber.toString()
         });
         submodelElements.push(SerialNumber);
     }
@@ -2472,12 +2479,12 @@ export function Generate_SM_Nameplate(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRDI] 0173-1#02-AAP906#001'
+                    value: '0173-1#02-AAP906#001'
                 }
             ]
         },
         valueType: 'xs:string',
-        value: opt.YearOfConstruction
+        value: opt.YearOfConstruction.toString()
     });
     submodelElements.push(YearOfConstruction);
     if (opt.DateOfManufacture) {
@@ -2488,12 +2495,12 @@ export function Generate_SM_Nameplate(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAR972#002'
+                        value: '0173-1#02-AAR972#002'
                     }
                 ]
             },
             valueType: 'xs:date',
-            value: opt.DateOfManufacture
+            value: opt.DateOfManufacture.toString()
         });
         submodelElements.push(DateOfManufacture);
     }
@@ -2505,7 +2512,7 @@ export function Generate_SM_Nameplate(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAN270#002'
+                        value: '0173-1#02-AAN270#002'
                     }
                 ]
             },
@@ -2521,7 +2528,7 @@ export function Generate_SM_Nameplate(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM985#002'
+                        value: '0173-1#02-AAM985#002'
                     }
                 ]
             },
@@ -2537,7 +2544,7 @@ export function Generate_SM_Nameplate(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAM737#002'
+                        value: '0173-1#02-AAM737#002'
                     }
                 ]
             },
@@ -2553,12 +2560,12 @@ export function Generate_SM_Nameplate(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRDI] 0173-1#02-AAO259#004'
+                        value: '0173-1#02-AAO259#004'
                     }
                 ]
             },
             valueType: 'xs:string',
-            value: opt.CountryOfOrigin
+            value: opt.CountryOfOrigin.toString()
         });
         submodelElements.push(CountryOfOrigin);
     }
@@ -2570,7 +2577,7 @@ export function Generate_SM_Nameplate(
                 keys: [
                     {
                         type: 'ConceptDescription',
-                        value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate/CompanyLogo'
+                        value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate/CompanyLogo'
                     }
                 ]
             },
@@ -2597,7 +2604,7 @@ export function Generate_SM_Nameplate(
             keys: [
                 {
                     type: 'ConceptDescription',
-                    value: '[IRI] https://admin-shell.io/zvei/nameplate/2/0/Nameplate'
+                    value: 'https://admin-shell.io/zvei/nameplate/2/0/Nameplate'
                 }
             ]
         },

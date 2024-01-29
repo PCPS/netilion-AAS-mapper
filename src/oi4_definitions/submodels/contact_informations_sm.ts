@@ -1,12 +1,26 @@
-import { Submodel } from '../aas_components';
-import { LangStringSet } from '../primitive_data_types';
+import { Reference, SpecificAssetId, Submodel } from '../aas_components';
+import {
+    ContentType,
+    DataTypeDefXsd,
+    LangStringSet,
+    PathType,
+    ValueDataType,
+    EntityType,
+    Identifier,
+    AasSubmodelElements
+} from '../primitive_data_types';
 import {
     SubmodelElementCollection,
     Property,
-    MultiLanguageProperty
+    MultiLanguageProperty,
+    ReferenceElement,
+    File,
+    Entity
 } from '../submodel_elements';
+import { xs } from '../xs_data_types';
 import { SubmodelElement } from '../aas_components';
-import { number_to_padded_string } from '../../services/oi4_helpers';
+import { GetSemanticId } from '../oi4_helpers';
+import { number_to_padded_string } from '../oi4_helpers';
 
 function Generate_SMC_Phone(
     opt: {
@@ -27,7 +41,7 @@ function Generate_SMC_Phone(
         const TypeOfTelephone = new Property({
             idShort: 'TypeOfTelephone',
             valueType: 'xs:string',
-            value: opt.TypeOfTelephone
+            value: opt.TypeOfTelephone.toString()
         });
         submodelElements.push(TypeOfTelephone);
     }
@@ -62,7 +76,7 @@ function Generate_SMC_Fax(
         const TypeOfFaxNumber = new Property({
             idShort: 'TypeOfFaxNumber',
             valueType: 'xs:string',
-            value: opt.TypeOfFaxNumber
+            value: opt.TypeOfFaxNumber.toString()
         });
         submodelElements.push(TypeOfFaxNumber);
     }
@@ -86,7 +100,7 @@ function Generate_SMC_Email(
     const EmailAddress = new Property({
         idShort: 'EmailAddress',
         valueType: 'xs:string',
-        value: opt.EmailAddress
+        value: opt.EmailAddress.toString()
     });
     submodelElements.push(EmailAddress);
     if (opt.PublicKey) {
@@ -100,7 +114,7 @@ function Generate_SMC_Email(
         const TypeOfEmailAddress = new Property({
             idShort: 'TypeOfEmailAddress',
             valueType: 'xs:string',
-            value: opt.TypeOfEmailAddress
+            value: opt.TypeOfEmailAddress.toString()
         });
         submodelElements.push(TypeOfEmailAddress);
     }
@@ -130,14 +144,14 @@ function Generate_SMC_IPCommunication(
     const AddressOfAdditionalLink = new Property({
         idShort: 'AddressOfAdditionalLink',
         valueType: 'xs:string',
-        value: opt.AddressOfAdditionalLink
+        value: opt.AddressOfAdditionalLink.toString()
     });
     submodelElements.push(AddressOfAdditionalLink);
     if (opt.TypeOfCommunication) {
         const TypeOfCommunication = new Property({
             idShort: 'TypeOfCommunication',
             valueType: 'xs:string',
-            value: opt.TypeOfCommunication
+            value: opt.TypeOfCommunication.toString()
         });
         submodelElements.push(TypeOfCommunication);
     }
@@ -204,7 +218,7 @@ function Generate_SMC_ContactInformation(
         const RoleOfContactPerson = new Property({
             idShort: 'RoleOfContactPerson',
             valueType: 'xs:string',
-            value: opt.RoleOfContactPerson
+            value: opt.RoleOfContactPerson.toString()
         });
         submodelElements.push(RoleOfContactPerson);
     }
@@ -218,7 +232,7 @@ function Generate_SMC_ContactInformation(
             const Language = new Property({
                 idShort: 'Language{' + number_to_padded_string(i, 3) + '}',
                 valueType: 'xs:string',
-                value: item
+                value: item.toString()
             });
             submodelElements.push(Language);
         });
@@ -227,7 +241,7 @@ function Generate_SMC_ContactInformation(
         const TimeZone = new Property({
             idShort: 'TimeZone',
             valueType: 'xs:string',
-            value: opt.TimeZone
+            value: opt.TimeZone.toString()
         });
         submodelElements.push(TimeZone);
     }
@@ -345,7 +359,7 @@ function Generate_SMC_ContactInformation(
         const AddressOfAdditionalLink = new Property({
             idShort: 'AddressOfAdditionalLink',
             valueType: 'xs:string',
-            value: opt.AddressOfAdditionalLink
+            value: opt.AddressOfAdditionalLink.toString()
         });
         submodelElements.push(AddressOfAdditionalLink);
     }

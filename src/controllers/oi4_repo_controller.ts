@@ -32,9 +32,15 @@ async function get_all_submodels(
     res.status(result.status).json(result.json);
 }
 
+async function passthrough(req: Request, res: Response, next: NextFunction) {
+    const result = await oi4.passthrough(req.params[0]);
+    res.status(result.status).json(result.json);
+}
+
 export default {
     get_aas,
     get_all_aas,
     get_submodel,
-    get_all_submodels
+    get_all_submodels,
+    passthrough
 };

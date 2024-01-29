@@ -5,7 +5,7 @@ import axios, {
     AxiosInstance
 } from 'axios';
 import { logger } from './logger';
-import { makeBase64 } from './oi4_helpers';
+import { makeBase64 } from '../oi4_definitions/oi4_helpers';
 import { AuthType, OAUTH_TOKEN, OAUTH_REQUEST_BODY } from '../interfaces/Auth';
 
 if (process.env.NODE_ENV !== 'production') {

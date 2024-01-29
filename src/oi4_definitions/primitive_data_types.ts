@@ -46,7 +46,7 @@ export type PathType = string;
 
 export type QualifierType = NameType;
 
-export type ValueDataType = any;
+export type ValueDataType = string;
 
 export type ValuedElementCategory = 'CONSTANT' | 'PARAMETER' | 'VARIABLE';
 

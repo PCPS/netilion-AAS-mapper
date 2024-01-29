@@ -1,10 +1,13 @@
 import { Reference, SpecificAssetId, Submodel } from '../aas_components';
 import {
     ContentType,
+    DataTypeDefXsd,
     LangStringSet,
     PathType,
+    ValueDataType,
     EntityType,
-    Identifier
+    Identifier,
+    AasSubmodelElements
 } from '../primitive_data_types';
 import {
     SubmodelElementCollection,
@@ -16,7 +19,8 @@ import {
 } from '../submodel_elements';
 import { xs } from '../xs_data_types';
 import { SubmodelElement } from '../aas_components';
-import { number_to_padded_string } from '../../services/oi4_helpers';
+import { GetSemanticId } from '../oi4_helpers';
+import { number_to_padded_string } from '../oi4_helpers';
 
 function Generate_SMC_DocumentId(
     opt: {
@@ -31,20 +35,20 @@ function Generate_SMC_DocumentId(
     const DocumentDomainId = new Property({
         idShort: 'DocumentDomainId',
         valueType: 'xs:string',
-        value: opt.DocumentDomainId
+        value: opt.DocumentDomainId.toString()
     });
     submodelElements.push(DocumentDomainId);
     const ValueId = new Property({
         idShort: 'ValueId',
         valueType: 'xs:string',
-        value: opt.ValueId
+        value: opt.ValueId.toString()
     });
     submodelElements.push(ValueId);
     if (opt.IsPrimary) {
         const IsPrimary = new Property({
             idShort: 'IsPrimary',
             valueType: 'xs:boolean',
-            value: opt.IsPrimary
+            value: opt.IsPrimary.toString()
         });
         submodelElements.push(IsPrimary);
     }
@@ -67,7 +71,7 @@ function Generate_SMC_DocumentClassification(
     const ClassId = new Property({
         idShort: 'ClassId',
         valueType: 'xs:string',
-        value: opt.ClassId
+        value: opt.ClassId.toString()
     });
     submodelElements.push(ClassId);
     const ClassName = new MultiLanguageProperty({
@@ -78,7 +82,7 @@ function Generate_SMC_DocumentClassification(
     const ClassificationSystem = new Property({
         idShort: 'ClassificationSystem',
         valueType: 'xs:string',
-        value: opt.ClassificationSystem
+        value: opt.ClassificationSystem.toString()
     });
     submodelElements.push(ClassificationSystem);
     const result = new SubmodelElementCollection({
@@ -113,14 +117,14 @@ function Generate_SMC_DocumentVersion(
         const Language = new Property({
             idShort: 'Language{' + number_to_padded_string(i, 3) + '}',
             valueType: 'xs:string',
-            value: item
+            value: item.toString()
         });
         submodelElements.push(Language);
     });
     const DocumentVersionId = new Property({
         idShort: 'DocumentVersionId',
         valueType: 'xs:string',
-        value: opt.DocumentVersionId
+        value: opt.DocumentVersionId.toString()
     });
     submodelElements.push(DocumentVersionId);
     const Title = new MultiLanguageProperty({
@@ -148,25 +152,25 @@ function Generate_SMC_DocumentVersion(
     const StatusSetDate = new Property({
         idShort: 'StatusSetDate',
         valueType: 'xs:date',
-        value: opt.StatusSetDate
+        value: opt.StatusSetDate.toString()
     });
     submodelElements.push(StatusSetDate);
     const StatusValue = new Property({
         idShort: 'StatusValue',
         valueType: 'xs:string',
-        value: opt.StatusValue
+        value: opt.StatusValue.toString()
     });
     submodelElements.push(StatusValue);
     const OrganizationName = new Property({
         idShort: 'OrganizationName',
         valueType: 'xs:string',
-        value: opt.OrganizationName
+        value: opt.OrganizationName.toString()
     });
     submodelElements.push(OrganizationName);
     const OrganizationOfficialName = new Property({
         idShort: 'OrganizationOfficialName',
         valueType: 'xs:string',
-        value: opt.OrganizationOfficialName
+        value: opt.OrganizationOfficialName.toString()
     });
     submodelElements.push(OrganizationOfficialName);
     opt.DigitalFile.forEach((item, i) => {

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import netilion, { SubmodelName } from '../services/netilion_agent';
-import { decodeBase64, makeBase64 } from '../services/oi4_helpers';
+import { decodeBase64, makeBase64 } from '../oi4_definitions/oi4_helpers';
 import { logger } from '../services/logger';
 import { OAUTH_TOKEN } from '../interfaces/Auth';
 import oi4_repo_agent from '../services/oi4_repo_agent';
@@ -9,6 +9,7 @@ import {
     Submodel
 } from '../oi4_definitions/aas_components';
 import { log } from 'winston';
+import { netilionAssetIdToShellId } from '../services/mappers';
 if (process.env.NODE_ENV !== 'production') {
     const dotenv = require('dotenv');
     // Use dev dependency
@@ -174,6 +175,9 @@ async function submit_submodel_for_asset(
         );
         if (result.status === 200) {
             const submit_result = await oi4_repo_agent.submit_submodel(
+                netilionAssetIdToShellId(
+                    netilion.string_id_to_asset_id(req.params.id)
+                ),
                 result.json
             );
             res.status(submit_result.status).json(submit_result.json);
@@ -203,7 +207,12 @@ async function submit_all_submodels_for_asset(
             'submodels',
             submodels as Submodel[],
             async (sm: Submodel) => {
-                const resp = await oi4_repo_agent.submit_submodel(sm);
+                const resp = await oi4_repo_agent.submit_submodel(
+                    netilionAssetIdToShellId(
+                        netilion.string_id_to_asset_id(req.params.id)
+                    ),
+                    sm
+                );
                 return resp;
             }
         );
@@ -231,7 +240,12 @@ async function submit_submodel_for_all_assets(
                 'submodels',
                 submodels as Submodel[],
                 async (sm: Submodel) => {
-                    const resp = await oi4_repo_agent.submit_submodel(sm);
+                    const resp = await oi4_repo_agent.submit_submodel(
+                        netilionAssetIdToShellId(
+                            netilion.submodel_id_to_source_asset_id(sm.id)
+                        ),
+                        sm
+                    );
                     return resp;
                 }
             );
@@ -261,7 +275,12 @@ async function submit_all_submodels_for_all_assets(
             'submodels',
             submodels as Submodel[],
             async (sm: Submodel) => {
-                const resp = await oi4_repo_agent.submit_submodel(sm);
+                const resp = await oi4_repo_agent.submit_submodel(
+                    netilionAssetIdToShellId(
+                        netilion.submodel_id_to_source_asset_id(sm.id)
+                    ),
+                    sm
+                );
                 return resp;
             }
         );

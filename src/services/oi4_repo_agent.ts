@@ -4,7 +4,7 @@ import {
     Submodel,
     SubmodelElement
 } from '../oi4_definitions/aas_components';
-import { decodeBase64 } from './oi4_helpers';
+import { decodeBase64 } from '../oi4_definitions/oi4_helpers';
 import source_agent from './netilion_agent';
 import { SubmodelName, AssetId } from './netilion_agent';
 import { OI4Client } from './oi4RepoAPI';
@@ -60,9 +60,12 @@ async function update_aas(
 }
 
 // Post submodel to OI4 Repo
-async function post_submodel(submodel: Submodel): Promise<AGENT_OP_RESULT> {
+async function post_submodel(
+    aas_id: string,
+    submodel: Submodel
+): Promise<AGENT_OP_RESULT> {
     try {
-        const resp = await oi4Client.postSubmodel(submodel);
+        const resp = await oi4Client.postSubmodel(aas_id, submodel);
         const data = await resp.data;
 
         return {
@@ -86,9 +89,12 @@ async function post_submodel(submodel: Submodel): Promise<AGENT_OP_RESULT> {
 }
 
 // Update submodel in OI4 Repo
-async function update_submodel(submodel: Submodel): Promise<AGENT_OP_RESULT> {
+async function update_submodel(
+    aas_id: string,
+    submodel: Submodel
+): Promise<AGENT_OP_RESULT> {
     try {
-        const resp = await oi4Client.updateSubmodel(submodel);
+        const resp = await oi4Client.updateSubmodel(aas_id, submodel);
 
         return {
             status: 200,
@@ -257,10 +263,10 @@ async function delete_submodel(submodel_id: string): Promise<AGENT_OP_RESULT> {
     }
 }
 
-async function submit_submodel(sm: Submodel) {
-    const post_result = await post_submodel(sm);
+async function submit_submodel(aas_id: string, sm: Submodel) {
+    const post_result = await post_submodel(aas_id, sm);
     if (post_result.status === 409) {
-        const update_result = await update_submodel(sm);
+        const update_result = await update_submodel(aas_id, sm);
         return { status: update_result.status, json: update_result.json };
     } else {
         return { status: post_result.status, json: post_result.json };
@@ -343,6 +349,23 @@ export async function multi_submit<T>(
     }
 }
 
+export async function passthrough(q: string) {
+    try {
+        const resp = await oi4Client.direct(q);
+        const result = await resp.data;
+        return { status: resp.status, json: result };
+    } catch (error: any) {
+        logger.error(`passthrough failed [query: ` + q + `] to OI4: ${error}`);
+        const resp = error.response || { status: 500, data: {} };
+        return {
+            status: resp.status,
+            json: {
+                message: 'Failed to pass [' + q + '] through to OI4 Repo'
+            }
+        };
+    }
+}
+
 export default {
     post_aas,
     post_submodel,
@@ -356,5 +379,6 @@ export default {
     submit_submodel,
     delete_submodel,
     delete_aas,
-    multi_submit
+    multi_submit,
+    passthrough
 };
