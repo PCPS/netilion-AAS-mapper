@@ -19,8 +19,6 @@ import {
 } from '../submodel_elements';
 import { xs } from '../xs_data_types';
 import { SubmodelElement } from '../aas_components';
-import { GetSemanticId } from '../oi4_helpers';
-import { number_to_padded_string } from '../oi4_helpers';
 
 function Generate_SMC_ProductClassificationItem(
     opt: {
@@ -388,7 +386,7 @@ function Generate_SMC_GeneralInformation(
     if (opt.ProdutImage) {
         opt.ProdutImage.forEach((item, i) => {
             const ProdutImage = new File({
-                idShort: 'ProdutImage{' + number_to_padded_string(i, 3) + '}',
+                idShort: 'ProdutImage' + i.toString().padStart(3, '0'),
                 semanticId: {
                     type: 'ModelReference',
                     keys: [
@@ -594,7 +592,7 @@ function Generate_SMC_FurtherInformation(
     if (opt.TextStatement) {
         opt.TextStatement.forEach((item, i) => {
             const TextStatement = new MultiLanguageProperty({
-                idShort: 'TextStatement{' + number_to_padded_string(i, 3) + '}',
+                idShort: 'TextStatement' + i.toString().padStart(3, '0'),
                 semanticId: {
                     type: 'ModelReference',
                     keys: [

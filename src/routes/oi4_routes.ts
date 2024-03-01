@@ -8,10 +8,20 @@ const router = Router();
 
 router.get('/shells', oi4_repo_controller.get_all_aas);
 router.get('/shells/:shell_id_b64', oi4_repo_controller.get_aas);
+router.get(
+    '/shells/:shell_id_b64/submodels',
+    oi4_repo_controller.get_all_submodels_of_aas
+);
+router.get(
+    '/shells/:shell_id_b64/submodels/:sm_id_b64',
+    oi4_repo_controller.get_submodel_of_aas
+);
 
 router.get('/submodels', oi4_repo_controller.get_all_submodels);
-router.get('/submodels/:sm_id_b64', oi4_repo_controller.get_submodel);
 
 router.get('/passthrough/*', oi4_repo_controller.passthrough);
+
+router.post('/submit-dummies/:dummy_count', oi4_repo_controller.submit_dummies);
+router.post('/delete-dummies', oi4_repo_controller.delete_dummies);
 
 export = router;

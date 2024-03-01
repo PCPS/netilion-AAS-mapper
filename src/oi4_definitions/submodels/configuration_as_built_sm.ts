@@ -19,8 +19,6 @@ import {
 } from '../submodel_elements';
 import { xs } from '../xs_data_types';
 import { SubmodelElement } from '../aas_components';
-import { GetSemanticId } from '../oi4_helpers';
-import { number_to_padded_string } from '../oi4_helpers';
 
 export function Generate_SM_ConfigurationAsBuilt(
     opt: {

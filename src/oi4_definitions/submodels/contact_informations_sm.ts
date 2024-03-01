@@ -19,8 +19,6 @@ import {
 } from '../submodel_elements';
 import { xs } from '../xs_data_types';
 import { SubmodelElement } from '../aas_components';
-import { GetSemanticId } from '../oi4_helpers';
-import { number_to_padded_string } from '../oi4_helpers';
 
 function Generate_SMC_Phone(
     opt: {
@@ -230,7 +228,7 @@ function Generate_SMC_ContactInformation(
     if (opt.Language) {
         opt.Language.forEach((item, i) => {
             const Language = new Property({
-                idShort: 'Language{' + number_to_padded_string(i, 3) + '}',
+                idShort: 'Language' + i.toString().padStart(3, '0'),
                 valueType: 'xs:string',
                 value: item.toString()
             });

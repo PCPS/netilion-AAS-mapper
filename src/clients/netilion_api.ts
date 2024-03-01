@@ -4,7 +4,7 @@ import axios, {
     CreateAxiosDefaults,
     AxiosInstance
 } from 'axios';
-import { logger } from './logger';
+import { logger } from '../services/logger';
 import { makeBase64 } from '../oi4_definitions/oi4_helpers';
 import { AuthType, OAUTH_TOKEN, OAUTH_REQUEST_BODY } from '../interfaces/Auth';
 
@@ -135,7 +135,7 @@ export class NetelionClient {
         this.api = axios.create(apiConfig);
         this.api.interceptors.request.use((config) => {
             logger.info(
-                `request ready with URL[${
+                `${config.method} request ready with URL[${
                     config.baseURL! + config.url!
                 }] and headers[${config.headers}]`
             );
@@ -146,21 +146,49 @@ export class NetelionClient {
             (error: AxiosError) => {
                 const { data, status, config } = error.response!;
                 switch (status) {
-                    //TODO: make this logs with logger and display more relevant information
                     case 400:
-                        console.error(data);
+                        logger.error(
+                            error.request.method +
+                                ' request with path ' +
+                                error.request.path +
+                                ' failed: bad request'
+                        );
                         break;
 
                     case 401:
-                        console.error('unauthorised');
+                        logger.error(
+                            error.request.method +
+                                ' request with path ' +
+                                error.request.path +
+                                ' failed: unauthorised'
+                        );
                         break;
 
                     case 404:
-                        console.error('/not-found');
+                        logger.error(
+                            error.request.method +
+                                ' request with path ' +
+                                error.request.path +
+                                ' failed: not found'
+                        );
+                        break;
+
+                    case 409:
+                        logger.error(
+                            error.request.method +
+                                ' request with path ' +
+                                error.request.path +
+                                ' failed: conflict'
+                        );
                         break;
 
                     case 500:
-                        console.error('/server-error');
+                        logger.error(
+                            error.request.method +
+                                ' request with path ' +
+                                error.request.path +
+                                ' failed: server error'
+                        );
                         break;
                 }
                 return Promise.reject(error);

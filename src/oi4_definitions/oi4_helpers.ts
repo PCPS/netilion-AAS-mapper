@@ -1,19 +1,14 @@
-import { Reference } from './aas_components';
+import {
+    AssetAdministrationShell,
+    Reference,
+    Submodel
+} from './aas_components';
 import model_semantics from '../dictionaries/model_semantics.json';
 import { KeyTypes, ReferenceTypes } from './primitive_data_types';
 import fs from 'fs';
 import path from 'path';
 import DataSpecificationTemplates from './interfaces/data_specification_interfaces';
-
-// convert from index number to a zero-padded number in string format.
-// used as postfix to idShort of recurrent submodel elements
-// example: (1) => '01', (5, 3) => '005', (24, 3) => '024',
-export function number_to_padded_string(i: number, width?: number) {
-    let w = width || 2;
-    const zeros = '0'.repeat(w);
-    const conc = zeros + i;
-    return conc.slice(conc.length - zeros.length);
-}
+import { Generate_SM_Nameplate } from './submodels/nameplate_sm';
 
 // retrieve semantic ID of an element via its idShort from a list of semantic IDs from a JSON file.
 export function GetSemanticId(idShort: string): Reference {
@@ -152,7 +147,22 @@ export function GenerateDescriptionsFromEclass() {
 // Encode string to Base64 (by default from utf8)
 export function makeBase64(str: string, encodeing: BufferEncoding = 'utf8') {
     const buffer = Buffer.from(str, encodeing);
-    return buffer.toString('base64');
+    console.log('+++!!!!!b64 id check!!!!+++');
+    console.log('raw:');
+    console.log(str);
+    console.log('encoded:');
+    console.log(buffer.toString('base64'));
+    const url_safe_string = buffer
+        .toString('base64')
+        .split('=')[0]
+        .split('+')
+        .join('-')
+        .split('/')
+        .join('_');
+    console.log('url safe:');
+    console.log(url_safe_string);
+    console.log('---!!!!!b64 id check!!!!---');
+    return url_safe_string;
 }
 
 // Decode string from Base64 (by default to utf8)

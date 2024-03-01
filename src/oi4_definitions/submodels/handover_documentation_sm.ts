@@ -19,8 +19,6 @@ import {
 } from '../submodel_elements';
 import { xs } from '../xs_data_types';
 import { SubmodelElement } from '../aas_components';
-import { GetSemanticId } from '../oi4_helpers';
-import { number_to_padded_string } from '../oi4_helpers';
 
 function Generate_SMC_DocumentId(
     opt: {
@@ -115,7 +113,7 @@ function Generate_SMC_DocumentVersion(
     const submodelElements: Array<SubmodelElement> = [];
     opt.Language.forEach((item, i) => {
         const Language = new Property({
-            idShort: 'Language{' + number_to_padded_string(i, 3) + '}',
+            idShort: 'Language' + i.toString().padStart(3, '0'),
             valueType: 'xs:string',
             value: item.toString()
         });
@@ -175,7 +173,7 @@ function Generate_SMC_DocumentVersion(
     submodelElements.push(OrganizationOfficialName);
     opt.DigitalFile.forEach((item, i) => {
         const DigitalFile = new File({
-            idShort: 'DigitalFile{' + number_to_padded_string(i, 3) + '}',
+            idShort: 'DigitalFile' + i.toString().padStart(3, '0'),
             value: item.value,
             contentType: item.contentType
         });
@@ -192,7 +190,7 @@ function Generate_SMC_DocumentVersion(
     if (opt.ReferesTo) {
         opt.ReferesTo.forEach((item, i) => {
             const ReferesTo = new ReferenceElement({
-                idShort: 'ReferesTo{' + number_to_padded_string(i, 3) + '}',
+                idShort: 'ReferesTo' + i.toString().padStart(3, '0'),
                 value: item
             });
             submodelElements.push(ReferesTo);
@@ -201,7 +199,7 @@ function Generate_SMC_DocumentVersion(
     if (opt.BasedOn) {
         opt.BasedOn.forEach((item, i) => {
             const BasedOn = new ReferenceElement({
-                idShort: 'BasedOn{' + number_to_padded_string(i, 3) + '}',
+                idShort: 'BasedOn' + i.toString().padStart(3, '0'),
                 value: item
             });
             submodelElements.push(BasedOn);
@@ -210,7 +208,7 @@ function Generate_SMC_DocumentVersion(
     if (opt.TranslationOf) {
         opt.TranslationOf.forEach((item, i) => {
             const TranslationOf = new ReferenceElement({
-                idShort: 'TranslationOf{' + number_to_padded_string(i, 3) + '}',
+                idShort: 'TranslationOf' + i.toString().padStart(3, '0'),
                 value: item
             });
             submodelElements.push(TranslationOf);
@@ -275,8 +273,7 @@ function Generate_SMC_Document(
     if (opt.DocumentedEntity) {
         opt.DocumentedEntity.forEach((item, i) => {
             const DocumentedEntity = new ReferenceElement({
-                idShort:
-                    'DocumentedEntity{' + number_to_padded_string(i, 3) + '}',
+                idShort: 'DocumentedEntity' + i.toString().padStart(3, '0'),
                 value: item
             });
             submodelElements.push(DocumentedEntity);
@@ -344,7 +341,7 @@ export function Generate_SM_HandoverDocumentation(
     if (opt.entity) {
         opt.entity.forEach((item, i) => {
             const entity = new Entity({
-                idShort: 'Entity{' + number_to_padded_string(i, 3) + '}',
+                idShort: 'Entity' + i.toString().padStart(3, '0'),
                 statements: item.statements,
                 entityType: item.entityType,
                 globalAssetId: item.globalAssetId,

@@ -681,9 +681,7 @@ function GenerateFunction(
                 );
                 assignment = assignment.replace(
                     "idShort: '" + key + "'",
-                    "idShort: '" +
-                        key +
-                        "{' + number_to_padded_string(i, 3) + '}'"
+                    "idShort: '" + key + "' + i.toString().padStart(3, '0') "
                 );
                 assignment =
                     'opt.' +
@@ -721,8 +719,7 @@ function CreateGenerator(json_submodel: { [key: string]: Model }): void {
             "import { SubmodelElementCollection, Property, MultiLanguageProperty, ReferenceElement, File, Entity } from '../submodel_elements';\n" +
             "import { xs } from '../xs_data_types';\n" +
             "import { SubmodelElement } from '../aas_components';\n" +
-            "import { GetSemanticId } from '../../services/oi4_helpers';" +
-            "import { number_to_padded_string } from '../../services/oi4_helpers';";
+            "import { GetSemanticId } from '../../services/oi4_helpers';";
         let script_str: string = '';
         let functions = GenerateFunction(model, model_name);
         script_str +=

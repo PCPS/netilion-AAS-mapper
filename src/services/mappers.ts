@@ -1,7 +1,7 @@
 import { LangStringSet } from '../oi4_definitions/primitive_data_types';
 import { xs } from '../oi4_definitions/xs_data_types';
 import { NetilionAsset, NetilionAssetId } from '../interfaces/Netilion';
-import { submodel_name } from './netilion_agent';
+import { submodel_name } from '../agents/netilion_agent';
 if (process.env.NODE_ENV !== 'production') {
     const dotenv = require('dotenv');
     // Use dev dependency

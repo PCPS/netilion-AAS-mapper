@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import netilion, { SubmodelName } from '../services/netilion_agent';
-import { decodeBase64, makeBase64 } from '../oi4_definitions/oi4_helpers';
+import netilion, { SubmodelName } from '../agents/netilion_agent';
+import { decodeBase64 } from '../oi4_definitions/oi4_helpers';
 import { logger } from '../services/logger';
 import { OAUTH_TOKEN } from '../interfaces/Auth';
-import oi4_repo_agent from '../services/oi4_repo_agent';
+import oi4_repo_agent from '../agents/oi4_repo_agent';
 import {
     AssetAdministrationShell,
     Submodel
@@ -174,7 +174,7 @@ async function submit_submodel_for_asset(
             submodel_name
         );
         if (result.status === 200) {
-            const submit_result = await oi4_repo_agent.submit_submodel(
+            const submit_result = await oi4_repo_agent.submit_submodel_of_aas(
                 netilionAssetIdToShellId(
                     netilion.string_id_to_asset_id(req.params.id)
                 ),
@@ -207,7 +207,7 @@ async function submit_all_submodels_for_asset(
             'submodels',
             submodels as Submodel[],
             async (sm: Submodel) => {
-                const resp = await oi4_repo_agent.submit_submodel(
+                const resp = await oi4_repo_agent.submit_submodel_of_aas(
                     netilionAssetIdToShellId(
                         netilion.string_id_to_asset_id(req.params.id)
                     ),
@@ -240,7 +240,7 @@ async function submit_submodel_for_all_assets(
                 'submodels',
                 submodels as Submodel[],
                 async (sm: Submodel) => {
-                    const resp = await oi4_repo_agent.submit_submodel(
+                    const resp = await oi4_repo_agent.submit_submodel_of_aas(
                         netilionAssetIdToShellId(
                             netilion.submodel_id_to_source_asset_id(sm.id)
                         ),
@@ -275,7 +275,7 @@ async function submit_all_submodels_for_all_assets(
             'submodels',
             submodels as Submodel[],
             async (sm: Submodel) => {
-                const resp = await oi4_repo_agent.submit_submodel(
+                const resp = await oi4_repo_agent.submit_submodel_of_aas(
                     netilionAssetIdToShellId(
                         netilion.submodel_id_to_source_asset_id(sm.id)
                     ),
@@ -350,7 +350,7 @@ async function flush_oi4(req: Request, res: Response, next: NextFunction) {
             shells.map(async (shell: AssetAdministrationShell) => {
                 if (shell.id.match(/^http:\/\/127\.0\.0\.1(:.*|)\/v1\/.+$/)) {
                     const shell_delete_resp = await oi4_repo_agent.delete_aas(
-                        makeBase64(shell.id)
+                        shell.id
                     );
                     const shell_delete_status = shell_delete_resp.status;
                     if (
@@ -378,8 +378,13 @@ async function flush_oi4(req: Request, res: Response, next: NextFunction) {
                     submodel.id.match(/^http:\/\/127\.0\.0\.1(:.*|)\/v1\/.+$/)
                 ) {
                     const submodel_delete_resp =
-                        await oi4_repo_agent.delete_submodel(
-                            makeBase64(submodel.id)
+                        await oi4_repo_agent.delete_submodel_of_aas(
+                            netilionAssetIdToShellId(
+                                netilion.submodel_id_to_source_asset_id(
+                                    submodel.id
+                                )
+                            ),
+                            submodel.id
                         );
                     const submodel_delete_status = submodel_delete_resp.status;
                     if (

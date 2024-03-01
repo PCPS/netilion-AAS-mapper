@@ -8,7 +8,7 @@ import { logger } from './services/logger';
 // import auto_update from './services/auto_update';
 import { OAUTH_TOKEN } from './interfaces/Auth';
 import { server_root_address } from './services/mappers';
-import netilion_agent from './services/netilion_agent';
+import netilion_agent from './agents/netilion_agent';
 import { decodeBase64 } from './oi4_definitions/oi4_helpers';
 import _swagger_config from './swagger.json';
 

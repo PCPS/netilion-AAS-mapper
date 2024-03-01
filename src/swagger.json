@@ -5148,7 +5148,7 @@
                     "name": "query",
                     "in": "path",
                     "required": true,
-                    "description": "Path passed on to the OI4 repository"
+                    "description": "Query passed on to the OI4 repository"
                 }
             ],
             "get": {
