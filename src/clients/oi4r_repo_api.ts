@@ -5,22 +5,18 @@ import axios, {
     CreateAxiosDefaults,
     AxiosInstance
 } from 'axios';
-import { logger } from './logger';
+import { logger } from '../services/logger';
 import {
     AssetAdministrationShell,
     Submodel
 } from '../oi4_definitions/aas_components';
+import { makeBase64 } from '../oi4_definitions/oi4_helpers';
 
 if (process.env.NODE_ENV !== 'production') {
     const dotenv = require('dotenv');
     // Use dev dependency
     dotenv.config();
 }
-
-const makeBase64 = (str: string, encodeing: BufferEncoding = 'utf8') => {
-    const buffer = Buffer.from(str, encodeing);
-    return buffer.toString('base64');
-};
 
 export class OI4Client {
     private api: AxiosInstance;
@@ -49,25 +45,49 @@ export class OI4Client {
             (error: AxiosError) => {
                 const { data, status } = error.response!;
                 switch (status) {
-                    //TODO: make this logs with logger and display more relevant information
                     case 400:
-                        console.error(error);
+                        logger.error(
+                            error.request.method +
+                                ' request with path ' +
+                                error.request.path +
+                                ' failed: bad request'
+                        );
                         break;
 
                     case 401:
-                        console.error('unauthorised');
+                        logger.error(
+                            error.request.method +
+                                ' request with path ' +
+                                error.request.path +
+                                ' failed: unauthorised'
+                        );
                         break;
 
                     case 404:
-                        console.error('/not-found');
+                        logger.error(
+                            error.request.method +
+                                ' request with path ' +
+                                error.request.path +
+                                ' failed: not found'
+                        );
                         break;
 
                     case 409:
-                        console.error('/conflict');
+                        logger.error(
+                            error.request.method +
+                                ' request with path ' +
+                                error.request.path +
+                                ' failed: conflict'
+                        );
                         break;
 
                     case 500:
-                        console.error('/server-error');
+                        logger.error(
+                            error.request.method +
+                                ' request with path ' +
+                                error.request.path +
+                                ' failed: server error'
+                        );
                         break;
                 }
                 return Promise.reject(error);
@@ -76,19 +96,20 @@ export class OI4Client {
     }
 
     public getAllShells<T = any, R = AxiosResponse<T>>(
-        page: number = 1
+        cursor: string = ''
     ): Promise<R> {
-        return this.api.get('/shells');
+        const cursor_url_ext = cursor ? '?cursor=' + cursor : '';
+        return this.api.get('/shells' + cursor_url_ext);
     }
 
     public getShell<T = any, R = AxiosResponse<T>>(aas_id: string): Promise<R> {
-        return this.api.get('/shells/' + aas_id);
+        return this.api.get('/shells/' + makeBase64(aas_id));
     }
 
     public deleteShell<T = any, R = AxiosResponse<T>>(
         aas_id: string
     ): Promise<R> {
-        return this.api.delete('/shells/' + aas_id);
+        return this.api.delete('/shells/' + makeBase64(aas_id));
     }
 
     public postShell<T = any, R = AxiosResponse<T>>(
@@ -104,21 +125,37 @@ export class OI4Client {
     }
 
     public getAllSubmodels<T = any, R = AxiosResponse<T>>(
-        page: number = 1
+        aas_id: string,
+        cursor: string = ''
     ): Promise<R> {
-        return this.api.get('/submodels');
+        const cursor_url_ext = cursor ? '?cursor=' + cursor : '';
+        return this.api.get(
+            '/shells/' + makeBase64(aas_id) + '/submodels' + cursor_url_ext
+        );
     }
 
     public getSubmodel<T = any, R = AxiosResponse<T>>(
+        aas_id: string,
         submodel_id: string
     ): Promise<R> {
-        return this.api.get('/submodels/' + submodel_id);
+        return this.api.get(
+            '/shells/' +
+                makeBase64(aas_id) +
+                '/submodels/' +
+                makeBase64(submodel_id)
+        );
     }
 
     public deleteSubmodel<T = any, R = AxiosResponse<T>>(
+        aas_id: string,
         submodel_id: string
     ): Promise<R> {
-        return this.api.delete('/submodels/' + submodel_id);
+        return this.api.delete(
+            '/shells/' +
+                makeBase64(aas_id) +
+                '/submodels/' +
+                makeBase64(submodel_id)
+        );
     }
 
     public postSubmodel<T = any, R = AxiosResponse<T>>(
@@ -144,7 +181,22 @@ export class OI4Client {
         );
     }
 
-    public direct<T = any, R = AxiosResponse<T>>(query: string): Promise<R> {
-        return this.api.get(query);
+    public direct<T = any, R = AxiosResponse<T>>(
+        query: string,
+        params: Record<string, any>
+    ): Promise<R> {
+        return axios.get(query + '?' + new URLSearchParams(params), {
+            baseURL: process.env.OI4_REPO_API_URL,
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: '*/*',
+                Authorization: process.env.OI4_REPO_AUTH_TOKEN
+            },
+            responseType: 'arraybuffer',
+            // TODO: REMOVE THE FOLLOWING HACK
+            httpsAgent: new https.Agent({
+                rejectUnauthorized: false
+            })
+        });
     }
 }

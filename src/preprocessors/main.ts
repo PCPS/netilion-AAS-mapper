@@ -1,4 +1,3 @@
-import agent_generator from './operations/agent_generator';
 import semantic_id_collector from './operations/semantic_id_collector';
 import submodel_function_generator from './operations/submodel_function_generator';
 
@@ -40,6 +39,3 @@ submodel_function_generator.CreateGenerator(
 submodel_function_generator.CreateGenerator(
     configuration_as_documented as { [key: string]: Model }
 );
-
-// Generate agents
-agent_generator.write_agents(map_descriptor as Map_Descriptor);
